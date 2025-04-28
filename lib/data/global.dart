@@ -3,7 +3,7 @@ import '../page/page0.dart';
 
 String token = '';
 String selectpage = '';
-Widget CuPage = const Page0();
+// Widget CuPage = const Page0();
 int CuPageLV = 0;
 
 class USERDATA {
@@ -20,4 +20,6 @@ class logindata {
   static String userPASS = '';
 }
 
+String PageName = '';
 String serverG = 'http://172.23.10.51:15152/';
+String ToServer = 'http://127.0.0.1:14001';

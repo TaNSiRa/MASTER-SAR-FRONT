@@ -4,49 +4,48 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../page/P1CUSSERVICE/P01CUSSERVICEMAIN.dart';
-import '../../page/P1CUSSERVICE/P01CUSSERVICEVAR.dart';
+import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import '../../widget/common/Loading.dart';
 
 //-------------------------------------------------
 
-abstract class P01CUSSERVICEGETDATA_Event {}
+abstract class P01DASHBOARDGETDATA_Event {}
 
-class P01CUSSERVICEGETDATA_GET extends P01CUSSERVICEGETDATA_Event {}
+class P01DASHBOARDGETDATA_GET extends P01DASHBOARDGETDATA_Event {}
 
-class P01CUSSERVICEGETDATA_GET2 extends P01CUSSERVICEGETDATA_Event {}
+class P01DASHBOARDGETDATA_GET2 extends P01DASHBOARDGETDATA_Event {}
 
-class P01CUSSERVICEGETDATA_GET3 extends P01CUSSERVICEGETDATA_Event {}
+class P01DASHBOARDGETDATA_GET3 extends P01DASHBOARDGETDATA_Event {}
 
-class P01CUSSERVICEGETDATA_FLUSH extends P01CUSSERVICEGETDATA_Event {}
+class P01DASHBOARDGETDATA_FLUSH extends P01DASHBOARDGETDATA_Event {}
 
-class P01CUSSERVICEGETDATA_Bloc
-    extends Bloc<P01CUSSERVICEGETDATA_Event, List<P01CUSSERVICEGETDATAclass>> {
-  P01CUSSERVICEGETDATA_Bloc() : super([]) {
-    on<P01CUSSERVICEGETDATA_GET>((event, emit) {
-      return _P01CUSSERVICEGETDATA_GET([], emit);
+class P01DASHBOARDGETDATA_Bloc
+    extends Bloc<P01DASHBOARDGETDATA_Event, List<P01DASHBOARDGETDATAclass>> {
+  P01DASHBOARDGETDATA_Bloc() : super([]) {
+    on<P01DASHBOARDGETDATA_GET>((event, emit) {
+      return _P01DASHBOARDGETDATA_GET([], emit);
     });
 
-    on<P01CUSSERVICEGETDATA_GET2>((event, emit) {
-      return _P01CUSSERVICEGETDATA_GET2([], emit);
+    on<P01DASHBOARDGETDATA_GET2>((event, emit) {
+      return _P01DASHBOARDGETDATA_GET2([], emit);
     });
-    on<P01CUSSERVICEGETDATA_GET3>((event, emit) {
-      return _P01CUSSERVICEGETDATA_GET3([], emit);
+    on<P01DASHBOARDGETDATA_GET3>((event, emit) {
+      return _P01DASHBOARDGETDATA_GET3([], emit);
     });
-    on<P01CUSSERVICEGETDATA_FLUSH>((event, emit) {
-      return _P01CUSSERVICEGETDATA_FLUSH([], emit);
+    on<P01DASHBOARDGETDATA_FLUSH>((event, emit) {
+      return _P01DASHBOARDGETDATA_FLUSH([], emit);
     });
   }
 
-  Future<void> _P01CUSSERVICEGETDATA_GET(List<P01CUSSERVICEGETDATAclass> toAdd,
-      Emitter<List<P01CUSSERVICEGETDATAclass>> emit) async {
-    FreeLoadingTan(P01CUSSERVICEMAINcontext);
-    List<P01CUSSERVICEGETDATAclass> output = [];
+  Future<void> _P01DASHBOARDGETDATA_GET(List<P01DASHBOARDGETDATAclass> toAdd,
+      Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
+    FreeLoadingTan(P01DASHBOARDMAINcontext);
+    List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final response = await Dio().post(
       "http://172.23.10.51:14000/02SARKPI/CustServiceSelect",
       data: {
-        'YEAR': P01CUSSERVICEVAR.DropDownYear.toString(),
+        // 'YEAR': P01DASHBOARDVAR.DropDownYear.toString(),
       },
     );
     var input = [];
@@ -56,10 +55,10 @@ class P01CUSSERVICEGETDATA_Bloc
       var databuff = response.data;
       input = databuff;
 
-      // var input = dummyCusService;
+      // var input = dummyDASHBOARD;
 
-      List<P01CUSSERVICEGETDATAclass> outputdata = input.map((data) {
-        return P01CUSSERVICEGETDATAclass(
+      List<P01DASHBOARDGETDATAclass> outputdata = input.map((data) {
+        return P01DASHBOARDGETDATAclass(
           TYPE: 'Group ${savenull(data['Type'])}',
           MKTGROUP: savenull(data['MKTGroup']),
           GROUP: savenull(data['Group']),
@@ -286,7 +285,7 @@ class P01CUSSERVICEGETDATA_Bloc
           REASON4: savenull(data['Reason4']),
         );
       }).toList();
-      Navigator.pop(P01CUSSERVICEMAINcontext);
+      Navigator.pop(P01DASHBOARDMAINcontext);
 
       output = outputdata;
       emit(output);
@@ -297,19 +296,19 @@ class P01CUSSERVICEGETDATA_Bloc
     }
   }
 
-  Future<void> _P01CUSSERVICEGETDATA_GET2(List<P01CUSSERVICEGETDATAclass> toAdd,
-      Emitter<List<P01CUSSERVICEGETDATAclass>> emit) async {
-    // List<P01CUSSERVICEGETDATAclass> output = [];
+  Future<void> _P01DASHBOARDGETDATA_GET2(List<P01DASHBOARDGETDATAclass> toAdd,
+      Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
+    // List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     // var input = dummydatainput2;
 
-    // List<P01CUSSERVICEGETDATAclass> outputdata = input
+    // List<P01DASHBOARDGETDATAclass> outputdata = input
     //     .where((data) =>
     //         data['location'] == 'ESIE1' &&
     //         data['plant'] == 'YES' &&
     //         data['step01'] == 'YES')
     //     .map((data) {
-    //   return P01CUSSERVICEGETDATAclass(
+    //   return P01DASHBOARDGETDATAclass(
     //     PLANT: savenull(data['plant']),
     //     ORDER: savenull(data['order']),
     //     MAT: savenull(data['mat']),
@@ -334,30 +333,30 @@ class P01CUSSERVICEGETDATA_Bloc
     // emit(output);
   }
 
-  Future<void> _P01CUSSERVICEGETDATA_GET3(List<P01CUSSERVICEGETDATAclass> toAdd,
-      Emitter<List<P01CUSSERVICEGETDATAclass>> emit) async {
-    // List<P01CUSSERVICEGETDATAclass> output = [];
+  Future<void> _P01DASHBOARDGETDATA_GET3(List<P01DASHBOARDGETDATAclass> toAdd,
+      Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
+    // List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    // List<P01CUSSERVICEGETDATAclass> datadummy = [
-    //   P01CUSSERVICEGETDATAclass(
+    // List<P01DASHBOARDGETDATAclass> datadummy = [
+    //   P01DASHBOARDGETDATAclass(
     //     PLANT: "PH PO:1234",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //   ),
-    //   P01CUSSERVICEGETDATAclass(
+    //   P01DASHBOARDGETDATAclass(
     //     PLANT: "PH PO:5555",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //     STEP04: "YES",
     //   ),
-    //   P01CUSSERVICEGETDATAclass(
+    //   P01DASHBOARDGETDATAclass(
     //     PLANT: "PH PO:5556",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //   ),
-    //   P01CUSSERVICEGETDATAclass(
+    //   P01DASHBOARDGETDATAclass(
     //     PLANT: "PH PO:9999",
     //   ),
     // ];
@@ -367,16 +366,15 @@ class P01CUSSERVICEGETDATA_Bloc
     // emit(output);
   }
 
-  Future<void> _P01CUSSERVICEGETDATA_FLUSH(
-      List<P01CUSSERVICEGETDATAclass> toAdd,
-      Emitter<List<P01CUSSERVICEGETDATAclass>> emit) async {
-    List<P01CUSSERVICEGETDATAclass> output = [];
+  Future<void> _P01DASHBOARDGETDATA_FLUSH(List<P01DASHBOARDGETDATAclass> toAdd,
+      Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
+    List<P01DASHBOARDGETDATAclass> output = [];
     emit(output);
   }
 }
 
-class P01CUSSERVICEGETDATAclass {
-  P01CUSSERVICEGETDATAclass({
+class P01DASHBOARDGETDATAclass {
+  P01DASHBOARDGETDATAclass({
     this.TYPE = '',
     this.MKTGROUP = '',
     this.GROUP = '',

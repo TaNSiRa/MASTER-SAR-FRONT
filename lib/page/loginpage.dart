@@ -71,7 +71,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
             child: SingleChildScrollView(
               child: SizedBox(
                 height: 500,
-                width: 350,
+                width: 450,
                 child: Card(
                   color: Colors.white,
                   elevation: 10,
@@ -100,7 +100,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                             end: Alignment.bottomRight,
                           ).createShader(bounds),
                           child: const Text(
-                            'SAR KPI : LOGIN',
+                            'Salt Spray Monitoring System : LOGIN',
                             style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,

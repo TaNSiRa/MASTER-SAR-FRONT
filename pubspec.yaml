@@ -47,6 +47,10 @@ dependencies:
   dio: ^5.7.0
   equatable: ^2.0.5
   pdf: ^3.11.1
+  percent_indicator: ^4.2.4
+  dropdown_search: ^5.0.6
+  lottie: ^3.3.1
+  printing: ^5.14.2
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +78,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

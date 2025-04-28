@@ -4,50 +4,54 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../page/P3ACHIEVEDCUS/P03ACHIEVEDCUSMAIN.dart';
+import '../../page/P2INSIDEINSTRUMENT/P02INSIDEINSTRUMENTMAIN.dart';
 import '../../widget/common/Loading.dart';
 
 //-------------------------------------------------
 
-abstract class P03ACHIEVEDCUSGETDATA_Event {}
+abstract class P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P03ACHIEVEDCUSGETDATA_GET extends P03ACHIEVEDCUSGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_GET extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P03ACHIEVEDCUSGETDATA_GET2 extends P03ACHIEVEDCUSGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_GET2
+    extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P03ACHIEVEDCUSGETDATA_GET3 extends P03ACHIEVEDCUSGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_GET3
+    extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P03ACHIEVEDCUSGETDATA_FLUSH extends P03ACHIEVEDCUSGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_FLUSH
+    extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
-    List<P03ACHIEVEDCUSGETDATAclass>> {
-  P03ACHIEVEDCUSGETDATA_Bloc() : super([]) {
-    on<P03ACHIEVEDCUSGETDATA_GET>((event, emit) {
-      return _P03ACHIEVEDCUSGETDATA_GET([], emit);
+class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
+    P02INSIDEINSTRUMENTGETDATA_Event, List<P02INSIDEINSTRUMENTGETDATAclass>> {
+  P02INSIDEINSTRUMENTGETDATA_Bloc() : super([]) {
+    on<P02INSIDEINSTRUMENTGETDATA_GET>((event, emit) {
+      return _P02INSIDEINSTRUMENTGETDATA_GET([], emit);
     });
 
-    on<P03ACHIEVEDCUSGETDATA_GET2>((event, emit) {
-      return _P03ACHIEVEDCUSGETDATA_GET2([], emit);
+    on<P02INSIDEINSTRUMENTGETDATA_GET2>((event, emit) {
+      return _P02INSIDEINSTRUMENTGETDATA_GET2([], emit);
     });
-    on<P03ACHIEVEDCUSGETDATA_GET3>((event, emit) {
-      return _P03ACHIEVEDCUSGETDATA_GET3([], emit);
+    on<P02INSIDEINSTRUMENTGETDATA_GET3>((event, emit) {
+      return _P02INSIDEINSTRUMENTGETDATA_GET3([], emit);
     });
-    on<P03ACHIEVEDCUSGETDATA_FLUSH>((event, emit) {
-      return _P03ACHIEVEDCUSGETDATA_FLUSH([], emit);
+    on<P02INSIDEINSTRUMENTGETDATA_FLUSH>((event, emit) {
+      return _P02INSIDEINSTRUMENTGETDATA_FLUSH([], emit);
     });
   }
 
-  Future<void> _P03ACHIEVEDCUSGETDATA_GET(
-      List<P03ACHIEVEDCUSGETDATAclass> toAdd,
-      Emitter<List<P03ACHIEVEDCUSGETDATAclass>> emit) async {
-    FreeLoadingTan(P03ACHIEVEDCUSMAINcontext);
-    List<P03ACHIEVEDCUSGETDATAclass> output = [];
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET(
+      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
+    FreeLoadingTan(P02INSIDEINSTRUMENTMAINcontext);
+    List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final response = await Dio().post(
-      "http://172.23.10.51:14000/02SARKPI/AchievedCustomerSelect",
+      "http://172.23.10.51:14000/02SARKPI/ReportOverKPISelect",
       data: {
-        // 'TYPE': P03ACHIEVEDCUSVAR.DropDownType.toString(),
-        // 'YEAR': P03ACHIEVEDCUSVAR.DropDownYear.toString(),
+        // 'TYPE': P02INSIDEINSTRUMENTVAR.DropDownType.toString(),
+        // 'MONTH': P02INSIDEINSTRUMENTVAR.DropDownMonth.toString(),
+        // 'YEAR': P02INSIDEINSTRUMENTVAR.DropDownYear.toString(),
       },
     );
     var input = [];
@@ -56,10 +60,11 @@ class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
       // print(response.data);
       var databuff = response.data;
       input = databuff;
-      // var input = dummyAchievedCust;
 
-      List<P03ACHIEVEDCUSGETDATAclass> outputdata = input.map((data) {
-        return P03ACHIEVEDCUSGETDATAclass(
+      // var input = dummyOverKPI;
+
+      List<P02INSIDEINSTRUMENTGETDATAclass> outputdata = input.map((data) {
+        return P02INSIDEINSTRUMENTGETDATAclass(
           TYPE: savenull(data['Type']),
           MKTGROUP: savenull(data['MKTGroup']),
           GROUP: savenull(data['Group']),
@@ -286,7 +291,7 @@ class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
           REASON4: savenull(data['Reason4']),
         );
       }).toList();
-      Navigator.pop(P03ACHIEVEDCUSMAINcontext);
+      Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
 
       output = outputdata;
       emit(output);
@@ -297,20 +302,20 @@ class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
     }
   }
 
-  Future<void> _P03ACHIEVEDCUSGETDATA_GET2(
-      List<P03ACHIEVEDCUSGETDATAclass> toAdd,
-      Emitter<List<P03ACHIEVEDCUSGETDATAclass>> emit) async {
-    // List<P03ACHIEVEDCUSGETDATAclass> output = [];
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET2(
+      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
+    // List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     // var input = dummydatainput2;
 
-    // List<P03ACHIEVEDCUSGETDATAclass> outputdata = input
+    // List<P02INSIDEINSTRUMENTGETDATAclass> outputdata = input
     //     .where((data) =>
     //         data['location'] == 'ESIE1' &&
     //         data['plant'] == 'YES' &&
     //         data['step01'] == 'YES')
     //     .map((data) {
-    //   return P03ACHIEVEDCUSGETDATAclass(
+    //   return P02INSIDEINSTRUMENTGETDATAclass(
     //     PLANT: savenull(data['plant']),
     //     ORDER: savenull(data['order']),
     //     MAT: savenull(data['mat']),
@@ -335,31 +340,31 @@ class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
     // emit(output);
   }
 
-  Future<void> _P03ACHIEVEDCUSGETDATA_GET3(
-      List<P03ACHIEVEDCUSGETDATAclass> toAdd,
-      Emitter<List<P03ACHIEVEDCUSGETDATAclass>> emit) async {
-    // List<P03ACHIEVEDCUSGETDATAclass> output = [];
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET3(
+      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
+    // List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    // List<P03ACHIEVEDCUSGETDATAclass> datadummy = [
-    //   P03ACHIEVEDCUSGETDATAclass(
+    // List<P02INSIDEINSTRUMENTGETDATAclass> datadummy = [
+    //   P02INSIDEINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:1234",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //   ),
-    //   P03ACHIEVEDCUSGETDATAclass(
+    //   P02INSIDEINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:5555",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //     STEP04: "YES",
     //   ),
-    //   P03ACHIEVEDCUSGETDATAclass(
+    //   P02INSIDEINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:5556",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //   ),
-    //   P03ACHIEVEDCUSGETDATAclass(
+    //   P02INSIDEINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:9999",
     //   ),
     // ];
@@ -369,16 +374,16 @@ class P03ACHIEVEDCUSGETDATA_Bloc extends Bloc<P03ACHIEVEDCUSGETDATA_Event,
     // emit(output);
   }
 
-  Future<void> _P03ACHIEVEDCUSGETDATA_FLUSH(
-      List<P03ACHIEVEDCUSGETDATAclass> toAdd,
-      Emitter<List<P03ACHIEVEDCUSGETDATAclass>> emit) async {
-    List<P03ACHIEVEDCUSGETDATAclass> output = [];
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_FLUSH(
+      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
+    List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     emit(output);
   }
 }
 
-class P03ACHIEVEDCUSGETDATAclass {
-  P03ACHIEVEDCUSGETDATAclass({
+class P02INSIDEINSTRUMENTGETDATAclass {
+  P02INSIDEINSTRUMENTGETDATAclass({
     this.TYPE = '',
     this.MKTGROUP = '',
     this.GROUP = '',
@@ -843,8 +848,9 @@ String formatDate(String? date) {
   if (date == null || date.isEmpty) return '';
   if (date == 'CLOSE LINE') return 'CLOSE LINE';
   try {
+    // print(date);
     DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
-    return DateFormat('dd-MMM').format(parsedDate);
+    return DateFormat('dd/MM/yyyy').format(parsedDate);
   } catch (e) {
     return '';
   }

@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+class P01DASHBOARDVAR {
+  static List<Color> containerColors = [];
+  static Color containerColor1_1 = Colors.blue.withOpacity(0.5);
+  static Color containerColor1_2 = Colors.blue.withOpacity(0.5);
+  static Color containerColor1_3 = Colors.blue.withOpacity(0.5);
+  static Color containerColor1_4 = Colors.blue.withOpacity(0.5);
+  static Color containerColor1_5 = Colors.blue.withOpacity(0.5);
+  static Color containerColor1_6 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_1 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_2 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_3 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_4 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_5 = Colors.blue.withOpacity(0.5);
+  static Color containerColor2_6 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_1 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_2 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_3 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_4 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_5 = Colors.blue.withOpacity(0.5);
+  static Color containerColor3_6 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_1 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_2 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_3 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_4 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_5 = Colors.blue.withOpacity(0.5);
+  static Color containerColor4_6 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_1 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_2 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_3 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_4 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_5 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor5_6 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_1 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_2 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_3 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_4 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_5 = Colors.blue.withOpacity(0.5);
+  // static Color containerColor6_6 = Colors.blue.withOpacity(0.5);
+}
