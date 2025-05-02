@@ -202,7 +202,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     // print(lastMethodSST3);
     // print(lastMethodSST4);
 
-    // print(SSTAllData);
+    print(SSTAllData);
     startChecking(P01DASHBOARDMAINcontext, SSTAllData);
 
     return Scaffold(
@@ -1047,8 +1047,25 @@ void checkForNotification(BuildContext context, List<Map<String, String>> SSTAll
           DateTime finishDate = DateFormat('dd-MM-yy HH:mm').parse(dateString);
           final difference = now.difference(finishDate).inSeconds;
           if (difference >= 0 && difference <= 60) {
-            showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!);
-          } else {}
+            if (i == 10) {
+              showAlert(
+                  context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!, "ออก");
+              break;
+            } else {
+              String key2 = 'FINISHDATE${i + 1}';
+              String? dateString2 = item[key2];
+
+              if (dateString2 == null || dateString2.isEmpty) {
+                showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
+                    "ถึงเวลาเอางานออก");
+                break;
+              } else {
+                showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
+                    "หยุดครั้งที่ $i");
+                break;
+              }
+            }
+          }
         } catch (e) {
           print('Error parsing date: $dateString');
         }
@@ -1057,8 +1074,8 @@ void checkForNotification(BuildContext context, List<Map<String, String>> SSTAll
   }
 }
 
-void showAlert(
-    BuildContext context, String instrument, String customerName, String finishDate, String checkbox) {
+void showAlert(BuildContext context, String instrument, String customerName, String finishDate,
+    String checkbox, String StopFinish) {
   final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer();
   bool isMuted = false;
   bool isPlaying = true;
@@ -1100,8 +1117,23 @@ void showAlert(
                 children: [
                   Icon(Icons.notifications_active, size: 50, color: Colors.red),
                   SizedBox(width: 10),
-                  Text('ถึงเวลาเอางานออก กรุณาตรวจสอบชิ้นงานดังรูปภาพข้างล่าง !!!',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  RichText(
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 24, color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: StopFinish,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' กรุณาตรวจสอบชิ้นงานดังรูปภาพข้างล่าง !!!',
+                        ),
+                      ],
+                    ),
+                  ),
                   Spacer(),
                   IconButton(
                     icon: Icon(isMuted ? Icons.volume_off : Icons.volume_up),

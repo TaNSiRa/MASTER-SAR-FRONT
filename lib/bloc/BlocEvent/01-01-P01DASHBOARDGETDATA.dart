@@ -41,7 +41,7 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
 
   Future<void> _P01DASHBOARDGETDATA_GET(
       List<P01DASHBOARDGETDATAclass> toAdd, Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
-    FreeLoadingTan(P01DASHBOARDMAINcontext);
+    // FreeLoadingTan(P01DASHBOARDMAINcontext);
     List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final response = await Dio().post(
@@ -142,12 +142,12 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
           CHECKBOX: savenull(data['CheckBox']),
         );
       }).toList();
-      Navigator.pop(P01DASHBOARDMAINcontext);
+      // Navigator.pop(P01DASHBOARDMAINcontext);
 
       output = outputdata;
       emit(output);
     } else {
-      Navigator.pop(P01DASHBOARDMAINcontext);
+      // Navigator.pop(P01DASHBOARDMAINcontext);
       showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
       output = [];
       emit(output);

@@ -71,7 +71,8 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
             data.PARTNAME9.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
             data.PARTNO9.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
             data.PARTNAME10.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO10.toLowerCase().contains(P03DATATABLEVAR.SEARCH),
+            data.PARTNO10.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
+            data.INSTRUMENT.toLowerCase().contains(P03DATATABLEVAR.SEARCH),
       ),
     );
 
