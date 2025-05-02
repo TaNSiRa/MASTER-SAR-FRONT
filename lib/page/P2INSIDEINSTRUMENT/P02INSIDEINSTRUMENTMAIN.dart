@@ -507,6 +507,18 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                               : () {
                                                   setState(() {
                                                     selectedTickets2[index2] = !selectedTickets2[index2];
+                                                    int realIndex = index2 + 73;
+
+                                                    if (selectedTickets2[index2]) {
+                                                      // เพิ่มเข้า list ถ้าเลือก
+                                                      if (!selectedTicketIndexes.contains(realIndex)) {
+                                                        selectedTicketIndexes.add(realIndex);
+                                                      }
+                                                    } else {
+                                                      // ลบออกถ้ายกเลิกเลือก
+                                                      selectedTicketIndexes.remove(realIndex);
+                                                    }
+                                                    print(selectedTicketIndexes);
                                                   });
                                                   print(index2 + 73);
                                                 },

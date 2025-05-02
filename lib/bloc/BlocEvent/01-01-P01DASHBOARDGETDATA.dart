@@ -173,11 +173,11 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
       print(responseInstrument.statusCode);
       // print(response.data);
       var databuff = responseInstrument.data;
-      print(databuff);
-      print(databuff[0]['Status']);
-      print(databuff[1]['Status']);
-      print(databuff[2]['Status']);
-      print(databuff[3]['Status']);
+      // print(databuff);
+      // print(databuff[0]['Status']);
+      // print(databuff[1]['Status']);
+      // print(databuff[2]['Status']);
+      // print(databuff[3]['Status']);
       P01DASHBOARDVAR.SST1Staus = databuff[0]['Status'];
       P01DASHBOARDVAR.SST2Staus = databuff[1]['Status'];
       P01DASHBOARDVAR.SST3Staus = databuff[2]['Status'];
@@ -411,11 +411,27 @@ int savenullint(input) {
 
 String formatDate(String? date) {
   if (date == null || date.isEmpty) return '';
-  if (date == 'CLOSE LINE') return 'CLOSE LINE';
   try {
-    DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
-    return DateFormat('dd-MMM').format(parsedDate);
+    DateTime parsedDate = DateTime.parse(date);
+    if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
+      return DateFormat('dd-MM-yy').format(parsedDate);
+    } else {
+      return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
+    }
   } catch (e) {
     return '';
+  }
+}
+
+DateTime? convertStringToDateTime(String input) {
+  try {
+    if (input == '') {
+      return null;
+    }
+    final formatter = input.contains(' ') ? DateFormat("dd-MM-yy HH:mm") : DateFormat("dd-MM-yy");
+    return formatter.parseStrict(input);
+  } catch (e) {
+    print("Error parsing date: $e");
+    return null;
   }
 }
