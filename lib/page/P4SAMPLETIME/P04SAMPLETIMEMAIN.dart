@@ -35,9 +35,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
     List<P04SAMPLETIMEGETDATAclass> _datain = widget.data ?? [];
     // print(_datain.length);
 // ตัวแปรสําหรับใช้กับ Dropdown
-    final selectedType = (P04SAMPLETIMEVAR.DropDownType.isNotEmpty)
-        ? P04SAMPLETIMEVAR.DropDownType
-        : 'A';
+    final selectedType = (P04SAMPLETIMEVAR.DropDownType.isNotEmpty) ? P04SAMPLETIMEVAR.DropDownType : 'A';
     final selectedYear = (P04SAMPLETIMEVAR.DropDownYear.isNotEmpty)
         ? P04SAMPLETIMEVAR.DropDownYear
         : P04SAMPLETIMEVAR.currentYear;
@@ -45,8 +43,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
         ? P04SAMPLETIMEVAR.DropDownMonth
         : P04SAMPLETIMEVAR.currentMonth2;
     // แปลง MM เป็น MMM
-    final selectedMonthMMM =
-        P04SAMPLETIMEVAR.convertMonthToMMM(P04SAMPLETIMEVAR.DropDownMonth);
+    final selectedMonthMMM = P04SAMPLETIMEVAR.convertMonthToMMM(P04SAMPLETIMEVAR.DropDownMonth);
 
 // Map สำหรับจับคู่ระหว่าง selectedType กับ GroupTargetDays
     final groupTargetDaysMap = {
@@ -55,8 +52,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
     };
 
     // เลือก Group A,B ตาม selectedType
-    final GroupTargetDays =
-        groupTargetDaysMap[selectedType] ?? P04SAMPLETIMEVAR.GroupA;
+    final GroupTargetDays = groupTargetDaysMap[selectedType] ?? P04SAMPLETIMEVAR.GroupA;
 
     // กรองข้อมูลด้วยปีและเดือน
     List<P04SAMPLETIMEGETDATAclass> filteredData = _datain.where((data) {
@@ -234,7 +230,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
       }
     }
 
-// ข้อมูลทั้งหมด
+    // ข้อมูลทั้งหมด
     List<Map<String, String>> AllData = [];
     for (var data in filteredData) {
       // เก็บข้อมูลแรก
@@ -391,9 +387,9 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
     }
 
     double IssueReport = IssueData.where((item) =>
-        item['type'] == selectedType &&
-        item['month'] == selectedMonth &&
-        item['year'] == selectedYear).length.toDouble();
+            item['type'] == selectedType && item['month'] == selectedMonth && item['year'] == selectedYear)
+        .length
+        .toDouble();
     IssueReport = double.parse(IssueReport.toStringAsFixed(1));
 
     double AllReport = AllData.where((item) =>
@@ -503,10 +499,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                     child: Center(
                       child: ShaderMask(
                         shaderCallback: (bounds) => LinearGradient(
-                          colors: const [
-                            Colors.blueAccent,
-                            Colors.lightBlueAccent
-                          ],
+                          colors: const [Colors.blueAccent, Colors.lightBlueAccent],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ).createShader(bounds),
@@ -545,8 +538,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                               Column(
                                 children: [
                                   if (P04SAMPLETIMEVAR.DropDownType.isNotEmpty ||
-                                      P04SAMPLETIMEVAR
-                                          .DropDownYear.isNotEmpty ||
+                                      P04SAMPLETIMEVAR.DropDownYear.isNotEmpty ||
                                       P04SAMPLETIMEVAR.DropDownMonth.isNotEmpty)
                                     SizedBox(
                                       width: 100,
@@ -554,9 +546,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                         'TYPE',
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold),
+                                            color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   AdvanceDropDown(
@@ -586,8 +576,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                               Column(
                                 children: [
                                   if (P04SAMPLETIMEVAR.DropDownType.isNotEmpty ||
-                                      P04SAMPLETIMEVAR
-                                          .DropDownYear.isNotEmpty ||
+                                      P04SAMPLETIMEVAR.DropDownYear.isNotEmpty ||
                                       P04SAMPLETIMEVAR.DropDownMonth.isNotEmpty)
                                     SizedBox(
                                       width: 100,
@@ -595,9 +584,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                         'YEAR',
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold),
+                                            color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   AdvanceDropDown(
@@ -643,8 +630,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                               Column(
                                 children: [
                                   if (P04SAMPLETIMEVAR.DropDownType.isNotEmpty ||
-                                      P04SAMPLETIMEVAR
-                                          .DropDownYear.isNotEmpty ||
+                                      P04SAMPLETIMEVAR.DropDownYear.isNotEmpty ||
                                       P04SAMPLETIMEVAR.DropDownMonth.isNotEmpty)
                                     SizedBox(
                                       width: 100,
@@ -652,9 +638,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                         'MONTH',
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold),
+                                            color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   AdvanceDropDown(
@@ -741,10 +725,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                 PieChart(
                                   dataMap: pieData1,
                                   chartRadius: 300,
-                                  colorList: [
-                                    Colors.lightGreen,
-                                    Colors.yellow.shade200
-                                  ],
+                                  colorList: [Colors.lightGreen, Colors.yellow.shade200],
                                   chartValuesOptions: ChartValuesOptions(
                                     showChartValueBackground: true,
                                     chartValueBackgroundColor: Colors.white,
@@ -775,17 +756,13 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                 ),
                                 SizedBox(width: 160),
                                 PieChart(
-                                    dataMap: P04SAMPLETIMEVAR.DropDownType ==
-                                            'B'
+                                    dataMap: P04SAMPLETIMEVAR.DropDownType == 'B'
                                         ? pieData3
                                         : P04SAMPLETIMEVAR.DropDownType == 'A'
                                             ? pieData2
                                             : {},
                                     chartRadius: 200,
-                                    colorList: [
-                                      Colors.yellow.shade200,
-                                      Colors.red
-                                    ],
+                                    colorList: [Colors.yellow.shade200, Colors.red],
                                     chartValuesOptions: ChartValuesOptions(
                                       showChartValueBackground: true,
                                       chartValueBackgroundColor: Colors.white,
@@ -810,9 +787,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                     ),
-                                    initialAngleInDegree: P04SAMPLETIMEVAR
-                                                .DropDownType ==
-                                            'B'
+                                    initialAngleInDegree: P04SAMPLETIMEVAR.DropDownType == 'B'
                                         ? initialAngleInDegree1113
                                         : P04SAMPLETIMEVAR.DropDownType == 'A'
                                             ? initialAngleInDegree1315
@@ -823,8 +798,7 @@ class _P04SAMPLETIMEMAINState extends State<P04SAMPLETIMEMAIN> {
                         ),
                         CustomPaint(
                           size: Size(800, 400), // กำหนดขนาดของพื้นที่วาด
-                          painter:
-                              LinePainter(), // ใช้ CustomPainter ที่สร้างขึ้น
+                          painter: LinePainter(), // ใช้ CustomPainter ที่สร้างขึ้น
                         ),
                       ],
                     ),

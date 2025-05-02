@@ -3,6 +3,8 @@ import '../page/page0.dart';
 
 String token = '';
 String selectpage = '';
+String selectstatus = '';
+TextEditingController selectslot = TextEditingController();
 // Widget CuPage = const Page0();
 int CuPageLV = 0;
 

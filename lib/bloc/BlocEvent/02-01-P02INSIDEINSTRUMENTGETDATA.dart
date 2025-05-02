@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../../data/global.dart';
 import '../../page/P2INSIDEINSTRUMENT/P02INSIDEINSTRUMENTMAIN.dart';
+import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
 
 //-------------------------------------------------
@@ -13,17 +15,14 @@ abstract class P02INSIDEINSTRUMENTGETDATA_Event {}
 
 class P02INSIDEINSTRUMENTGETDATA_GET extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P02INSIDEINSTRUMENTGETDATA_GET2
-    extends P02INSIDEINSTRUMENTGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_GET2 extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P02INSIDEINSTRUMENTGETDATA_GET3
-    extends P02INSIDEINSTRUMENTGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_GET3 extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P02INSIDEINSTRUMENTGETDATA_FLUSH
-    extends P02INSIDEINSTRUMENTGETDATA_Event {}
+class P02INSIDEINSTRUMENTGETDATA_FLUSH extends P02INSIDEINSTRUMENTGETDATA_Event {}
 
-class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
-    P02INSIDEINSTRUMENTGETDATA_Event, List<P02INSIDEINSTRUMENTGETDATAclass>> {
+class P02INSIDEINSTRUMENTGETDATA_Bloc
+    extends Bloc<P02INSIDEINSTRUMENTGETDATA_Event, List<P02INSIDEINSTRUMENTGETDATAclass>> {
   P02INSIDEINSTRUMENTGETDATA_Bloc() : super([]) {
     on<P02INSIDEINSTRUMENTGETDATA_GET>((event, emit) {
       return _P02INSIDEINSTRUMENTGETDATA_GET([], emit);
@@ -40,19 +39,19 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
     });
   }
 
-  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET(
-      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET(List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
       Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
     FreeLoadingTan(P02INSIDEINSTRUMENTMAINcontext);
     List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final response = await Dio().post(
-      "http://172.23.10.51:14000/02SARKPI/ReportOverKPISelect",
-      data: {
-        // 'TYPE': P02INSIDEINSTRUMENTVAR.DropDownType.toString(),
-        // 'MONTH': P02INSIDEINSTRUMENTVAR.DropDownMonth.toString(),
-        // 'YEAR': P02INSIDEINSTRUMENTVAR.DropDownYear.toString(),
-      },
+      "$ToServer/02SALTSPRAY/DataTable",
+      data: {},
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
     );
     var input = [];
     if (response.statusCode == 200) {
@@ -60,235 +59,87 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
       // print(response.data);
       var databuff = response.data;
       input = databuff;
-
-      // var input = dummyOverKPI;
-
+      // var input = dummyAchievedCust;
+      // print(input);
       List<P02INSIDEINSTRUMENTGETDATAclass> outputdata = input.map((data) {
         return P02INSIDEINSTRUMENTGETDATAclass(
-          TYPE: savenull(data['Type']),
-          MKTGROUP: savenull(data['MKTGroup']),
-          GROUP: savenull(data['Group']),
-          CUSTOMER: savenull(data['Customer']),
-          CUSTSHORT: savenull(data['CustShort']),
-          FREQUENCY: savenull(data['Frequency']),
+          REQUESTNO: savenull(data['Request_No']),
+          REPORTNO: savenull(data['Report_No']),
+          SECTION: savenull(data['Section']),
+          REQUESTER: savenull(data['Requester']),
+          RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
+          CUSTOMERNAME: savenull(data['Customer_Name']),
+          PARTNAME1: savenull(data['Part_Name1']),
+          PARTNO1: savenull(data['Part_No1']),
+          PARTNAME2: savenull(data['Part_Name2']),
+          PARTNO2: savenull(data['Part_No2']),
+          PARTNAME3: savenull(data['Part_Name3']),
+          PARTNO3: savenull(data['Part_No3']),
+          PARTNAME4: savenull(data['Part_Name4']),
+          PARTNO4: savenull(data['Part_No4']),
+          PARTNAME5: savenull(data['Part_Name5']),
+          PARTNO5: savenull(data['Part_No5']),
+          PARTNAME6: savenull(data['Part_Name6']),
+          PARTNO6: savenull(data['Part_No6']),
+          PARTNAME7: savenull(data['Part_Name7']),
+          PARTNO7: savenull(data['Part_No7']),
+          PARTNAME8: savenull(data['Part_Name8']),
+          PARTNO8: savenull(data['Part_No8']),
+          PARTNAME9: savenull(data['Part_Name9']),
+          PARTNO9: savenull(data['Part_No9']),
+          PARTNAME10: savenull(data['Part_Name10']),
+          PARTNO10: savenull(data['Part_No10']),
+          AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
+          TAKEPHOTO: savenullint(data['Take_Photo']),
+          STARTDATE: formatDate(savenull(data['Start_Date'])),
+          TIME1: savenullint(data['Time1']),
+          FINISHDATE1: formatDate(savenull(data['Finish_Date1'])),
+          TEMPDATE1: formatDate(savenull(data['Temp_Date1'])),
+          DUEDATE1: formatDate(savenull(data['Due_Date1'])),
+          TIME2: savenullint(data['Time2']),
+          FINISHDATE2: formatDate(savenull(data['Finish_Date2'])),
+          TEMPDATE2: formatDate(savenull(data['Temp_Date2'])),
+          DUEDATE2: formatDate(savenull(data['Due_Date2'])),
+          TIME3: savenullint(data['Time3']),
+          FINISHDATE3: formatDate(savenull(data['Finish_Date3'])),
+          TEMPDATE3: formatDate(savenull(data['Temp_Date3'])),
+          DUEDATE3: formatDate(savenull(data['Due_Date3'])),
+          TIME4: savenullint(data['Time4']),
+          FINISHDATE4: formatDate(savenull(data['Finish_Date4'])),
+          TEMPDATE4: formatDate(savenull(data['Temp_Date4'])),
+          DUEDATE4: formatDate(savenull(data['Due_Date4'])),
+          TIME5: savenullint(data['Time5']),
+          FINISHDATE5: formatDate(savenull(data['Finish_Date5'])),
+          TEMPDATE5: formatDate(savenull(data['Temp_Date5'])),
+          DUEDATE5: formatDate(savenull(data['Due_Date5'])),
+          TIME6: savenullint(data['Time6']),
+          FINISHDATE6: formatDate(savenull(data['Finish_Date6'])),
+          TEMPDATE6: formatDate(savenull(data['Temp_Date6'])),
+          DUEDATE6: formatDate(savenull(data['Due_Date6'])),
+          TIME7: savenullint(data['Time7']),
+          FINISHDATE7: formatDate(savenull(data['Finish_Date7'])),
+          TEMPDATE7: formatDate(savenull(data['Temp_Date7'])),
+          DUEDATE7: formatDate(savenull(data['Due_Date7'])),
+          TIME8: savenullint(data['Time8']),
+          FINISHDATE8: formatDate(savenull(data['Finish_Date8'])),
+          TEMPDATE8: formatDate(savenull(data['Temp_Date8'])),
+          DUEDATE8: formatDate(savenull(data['Due_Date8'])),
+          TIME9: savenullint(data['Time9']),
+          FINISHDATE9: formatDate(savenull(data['Finish_Date9'])),
+          TEMPDATE9: formatDate(savenull(data['Temp_Date9'])),
+          DUEDATE9: formatDate(savenull(data['Due_Date9'])),
+          TIME10: savenullint(data['Time10']),
+          FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
+          TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
+          DUEDATE10: formatDate(savenull(data['Due_Date10'])),
+          INSTRUMENT: savenull(data['Instrument']),
+          METHOD: savenull(data['Method']),
           INCHARGE: savenull(data['Incharge']),
-          KPISERV: savenull(data['KPIServ']),
-          KPIPERIOD: savenull(data['KPIPeriod']),
-          REPITEM: savenull(data['RepItems']),
-          MONTH: savenull(data['Month']),
-          YEAR: savenull(data['Year']),
-          REQNO1: savenull(data['ReqNo1']),
-          FREQ1: savenull(data['Freq1']),
-          PLANSAM1: formatDate(savenull(data['PlanSam1'])),
-          ACTSAM1: formatDate(savenull(data['ActSam1'])),
-          REPDUE1: formatDate(savenull(data['RepDue1'])),
-          SENTREP1: formatDate(savenull(data['SentRep1'])),
-          REPDAYS1: savenull(data['RepDays1']),
-          REQUEST1: formatDate(savenull(data['Request1'])),
-          TTCRESULT1: formatDate(savenull(data['TTCResult1'])),
-          ISSUEDATE1: formatDate(savenull(data['IssueDate1'])),
-          SUBLEAD1: formatDate(savenull(data['Sublead1'])),
-          GL1: formatDate(savenull(data['GL1'])),
-          MGR1: formatDate(savenull(data['MGR1'])),
-          JP1: formatDate(savenull(data['JP1'])),
-          REVISE1_1: formatDate(savenull(data['Revise1_1'])),
-          SUBLEAD1_1: formatDate(savenull(data['Sublead1_1'])),
-          GL1_1: formatDate(savenull(data['GL1_1'])),
-          MGR1_1: formatDate(savenull(data['MGR1_1'])),
-          JP1_1: formatDate(savenull(data['JP1_1'])),
-          REVISE1_2: formatDate(savenull(data['Revise1_2'])),
-          SUBLEAD1_2: formatDate(savenull(data['Sublead1_2'])),
-          GL1_2: formatDate(savenull(data['GL1_2'])),
-          MGR1_2: formatDate(savenull(data['MGR1_2'])),
-          JP1_2: formatDate(savenull(data['JP1_2'])),
-          REVISE1_3: formatDate(savenull(data['Revise1_3'])),
-          SUBLEAD1_3: formatDate(savenull(data['Sublead1_3'])),
-          GL1_3: formatDate(savenull(data['GL1_3'])),
-          MGR1_3: formatDate(savenull(data['MGR1_3'])),
-          JP1_3: formatDate(savenull(data['JP1_3'])),
-          BDPREPARE1: savenull(data['BDPrepare1']),
-          BDTTC1: savenull(data['BDTTC1']),
-          BDISSUE1: savenull(data['BDIssue1']),
-          BDSUBLEAD1: savenull(data['BDSublead1']),
-          BDGL1: savenull(data['BDGL1']),
-          BDMGR1: savenull(data['BDMGR1']),
-          BDJP1: savenull(data['BDJP1']),
-          BDREVISE1_1: savenull(data['BDRevise1_1']),
-          BDSUBLEAD1_1: savenull(data['BDSublead1_1']),
-          BDGL1_1: savenull(data['BDGL1_1']),
-          BDMGR1_1: savenull(data['BDMGR1_1']),
-          BDJP1_1: savenull(data['BDJP1_1']),
-          BDREVISE1_2: savenull(data['BDRevise1_2']),
-          BDSUBLEAD1_2: savenull(data['BDSublead1_2']),
-          BDGL1_2: savenull(data['BDGL1_2']),
-          BDMGR1_2: savenull(data['BDMGR1_2']),
-          BDJP1_2: savenull(data['BDJP1_2']),
-          BDREVISE1_3: savenull(data['BDRevise1_3']),
-          BDSUBLEAD1_3: savenull(data['BDSublead1_3']),
-          BDGL1_3: savenull(data['BDGL1_3']),
-          BDMGR1_3: savenull(data['BDMGR1_3']),
-          BDJP1_3: savenull(data['BDJP1_3']),
-          BDSENT1: savenull(data['BDSent1']),
-          REASON1: savenull(data['Reason1']),
-          REQNO2: savenull(data['ReqNo2']),
-          FREQ2: savenull(data['Freq2']),
-          PLANSAM2: formatDate(savenull(data['PlanSam2'])),
-          ACTSAM2: formatDate(savenull(data['ActSam2'])),
-          REPDUE2: formatDate(savenull(data['RepDue2'])),
-          SENTREP2: formatDate(savenull(data['SentRep2'])),
-          REPDAYS2: savenull(data['RepDays2']),
-          REQUEST2: formatDate(savenull(data['Request2'])),
-          TTCRESULT2: formatDate(savenull(data['TTCResult2'])),
-          ISSUEDATE2: formatDate(savenull(data['IssueDate2'])),
-          SUBLEAD2: formatDate(savenull(data['Sublead2'])),
-          GL2: formatDate(savenull(data['GL2'])),
-          MGR2: formatDate(savenull(data['MGR2'])),
-          JP2: formatDate(savenull(data['JP2'])),
-          REVISE2_1: formatDate(savenull(data['Revise2_1'])),
-          SUBLEAD2_1: formatDate(savenull(data['Sublead2_1'])),
-          GL2_1: formatDate(savenull(data['GL2_1'])),
-          MGR2_1: formatDate(savenull(data['MGR2_1'])),
-          JP2_1: formatDate(savenull(data['JP2_1'])),
-          REVISE2_2: formatDate(savenull(data['Revise2_2'])),
-          SUBLEAD2_2: formatDate(savenull(data['Sublead2_2'])),
-          GL2_2: formatDate(savenull(data['GL2_2'])),
-          MGR2_2: formatDate(savenull(data['MGR2_2'])),
-          JP2_2: formatDate(savenull(data['JP2_2'])),
-          REVISE2_3: formatDate(savenull(data['Revise2_3'])),
-          SUBLEAD2_3: formatDate(savenull(data['Sublead2_3'])),
-          GL2_3: formatDate(savenull(data['GL2_3'])),
-          MGR2_3: formatDate(savenull(data['MGR2_3'])),
-          JP2_3: formatDate(savenull(data['JP2_3'])),
-          BDPREPARE2: savenull(data['BDPrepare2']),
-          BDTTC2: savenull(data['BDTTC2']),
-          BDISSUE2: savenull(data['BDIssue2']),
-          BDSUBLEAD2: savenull(data['BDSublead2']),
-          BDGL2: savenull(data['BDGL2']),
-          BDMGR2: savenull(data['BDMGR2']),
-          BDJP2: savenull(data['BDJP2']),
-          BDREVISE2_1: savenull(data['BDRevise2_1']),
-          BDSUBLEAD2_1: savenull(data['BDSublead2_1']),
-          BDGL2_1: savenull(data['BDGL2_1']),
-          BDMGR2_1: savenull(data['BDMGR2_1']),
-          BDJP2_1: savenull(data['BDJP2_1']),
-          BDREVISE2_2: savenull(data['BDRevise2_2']),
-          BDSUBLEAD2_2: savenull(data['BDSublead2_2']),
-          BDGL2_2: savenull(data['BDGL2_2']),
-          BDMGR2_2: savenull(data['BDMGR2_2']),
-          BDJP2_2: savenull(data['BDJP2_2']),
-          BDREVISE2_3: savenull(data['BDRevise2_3']),
-          BDSUBLEAD2_3: savenull(data['BDSublead2_3']),
-          BDGL2_3: savenull(data['BDGL2_3']),
-          BDMGR2_3: savenull(data['BDMGR2_3']),
-          BDJP2_3: savenull(data['BDJP2_3']),
-          BDSENT2: savenull(data['BDSent2']),
-          REASON2: savenull(data['Reason2']),
-          REQNO3: savenull(data['ReqNo3']),
-          FREQ3: savenull(data['Freq3']),
-          PLANSAM3: formatDate(savenull(data['PlanSam3'])),
-          ACTSAM3: formatDate(savenull(data['ActSam3'])),
-          REPDUE3: formatDate(savenull(data['RepDue3'])),
-          SENTREP3: formatDate(savenull(data['SentRep3'])),
-          REPDAYS3: savenull(data['RepDays3']),
-          REQUEST3: formatDate(savenull(data['Request3'])),
-          TTCRESULT3: formatDate(savenull(data['TTCResult3'])),
-          ISSUEDATE3: formatDate(savenull(data['IssueDate3'])),
-          SUBLEAD3: formatDate(savenull(data['Sublead3'])),
-          GL3: formatDate(savenull(data['GL3'])),
-          MGR3: formatDate(savenull(data['MGR3'])),
-          JP3: formatDate(savenull(data['JP3'])),
-          REVISE3_1: formatDate(savenull(data['Revise3_1'])),
-          SUBLEAD3_1: formatDate(savenull(data['Sublead3_1'])),
-          GL3_1: formatDate(savenull(data['GL3_1'])),
-          MGR3_1: formatDate(savenull(data['MGR3_1'])),
-          JP3_1: formatDate(savenull(data['JP3_1'])),
-          REVISE3_2: formatDate(savenull(data['Revise3_2'])),
-          SUBLEAD3_2: formatDate(savenull(data['Sublead3_2'])),
-          GL3_2: formatDate(savenull(data['GL3_2'])),
-          MGR3_2: formatDate(savenull(data['MGR3_2'])),
-          JP3_2: formatDate(savenull(data['JP3_2'])),
-          REVISE3_3: formatDate(savenull(data['Revise3_3'])),
-          SUBLEAD3_3: formatDate(savenull(data['Sublead3_3'])),
-          GL3_3: formatDate(savenull(data['GL3_3'])),
-          MGR3_3: formatDate(savenull(data['MGR3_3'])),
-          JP3_3: formatDate(savenull(data['JP3_3'])),
-          BDPREPARE3: savenull(data['BDPrepare3']),
-          BDTTC3: savenull(data['BDTTC3']),
-          BDISSUE3: savenull(data['BDIssue3']),
-          BDSUBLEAD3: savenull(data['BDSublead3']),
-          BDGL3: savenull(data['BDGL3']),
-          BDMGR3: savenull(data['BDMGR3']),
-          BDJP3: savenull(data['BDJP3']),
-          BDREVISE3_1: savenull(data['BDRevise3_1']),
-          BDSUBLEAD3_1: savenull(data['BDSublead3_1']),
-          BDGL3_1: savenull(data['BDGL3_1']),
-          BDMGR3_1: savenull(data['BDMGR3_1']),
-          BDJP3_1: savenull(data['BDJP3_1']),
-          BDREVISE3_2: savenull(data['BDRevise3_2']),
-          BDSUBLEAD3_2: savenull(data['BDSublead3_2']),
-          BDGL3_2: savenull(data['BDGL3_2']),
-          BDMGR3_2: savenull(data['BDMGR3_2']),
-          BDJP3_2: savenull(data['BDJP3_2']),
-          BDREVISE3_3: savenull(data['BDRevise3_3']),
-          BDSUBLEAD3_3: savenull(data['BDSublead3_3']),
-          BDGL3_3: savenull(data['BDGL3_3']),
-          BDMGR3_3: savenull(data['BDMGR3_3']),
-          BDJP3_3: savenull(data['BDJP3_3']),
-          BDSENT3: savenull(data['BDSent3']),
-          REASON3: savenull(data['Reason3']),
-          REQNO4: savenull(data['ReqNo4']),
-          FREQ4: savenull(data['Freq4']),
-          PLANSAM4: formatDate(savenull(data['PlanSam4'])),
-          ACTSAM4: formatDate(savenull(data['ActSam4'])),
-          REPDUE4: formatDate(savenull(data['RepDue4'])),
-          SENTREP4: formatDate(savenull(data['SentRep4'])),
-          REPDAYS4: savenull(data['RepDays4']),
-          REQUEST4: formatDate(savenull(data['Request4'])),
-          TTCRESULT4: formatDate(savenull(data['TTCResult4'])),
-          ISSUEDATE4: formatDate(savenull(data['IssueDate4'])),
-          SUBLEAD4: formatDate(savenull(data['Sublead4'])),
-          GL4: formatDate(savenull(data['GL4'])),
-          MGR4: formatDate(savenull(data['MGR4'])),
-          JP4: formatDate(savenull(data['JP4'])),
-          REVISE4_1: formatDate(savenull(data['Revise4_1'])),
-          SUBLEAD4_1: formatDate(savenull(data['Sublead4_1'])),
-          GL4_1: formatDate(savenull(data['GL4_1'])),
-          MGR4_1: formatDate(savenull(data['MGR4_1'])),
-          JP4_1: formatDate(savenull(data['JP4_1'])),
-          REVISE4_2: formatDate(savenull(data['Revise4_2'])),
-          SUBLEAD4_2: formatDate(savenull(data['Sublead4_2'])),
-          GL4_2: formatDate(savenull(data['GL4_2'])),
-          MGR4_2: formatDate(savenull(data['MGR4_2'])),
-          JP4_2: formatDate(savenull(data['JP4_2'])),
-          REVISE4_3: formatDate(savenull(data['Revise4_3'])),
-          SUBLEAD4_3: formatDate(savenull(data['Sublead4_3'])),
-          GL4_3: formatDate(savenull(data['GL4_3'])),
-          MGR4_3: formatDate(savenull(data['MGR4_3'])),
-          JP4_3: formatDate(savenull(data['JP4_3'])),
-          BDPREPARE4: savenull(data['BDPrepare4']),
-          BDTTC4: savenull(data['BDTTC4']),
-          BDISSUE4: savenull(data['BDIssue4']),
-          BDSUBLEAD4: savenull(data['BDSublead4']),
-          BDGL4: savenull(data['BDGL4']),
-          BDMGR4: savenull(data['BDMGR4']),
-          BDJP4: savenull(data['BDJP4']),
-          BDREVISE4_1: savenull(data['BDRevise4_1']),
-          BDSUBLEAD4_1: savenull(data['BDSublead4_1']),
-          BDGL4_1: savenull(data['BDGL4_1']),
-          BDMGR4_1: savenull(data['BDMGR4_1']),
-          BDJP4_1: savenull(data['BDJP4_1']),
-          BDREVISE4_2: savenull(data['BDRevise4_2']),
-          BDSUBLEAD4_2: savenull(data['BDSublead4_2']),
-          BDGL4_2: savenull(data['BDGL4_2']),
-          BDMGR4_2: savenull(data['BDMGR4_2']),
-          BDJP4_2: savenull(data['BDJP4_2']),
-          BDREVISE4_3: savenull(data['BDRevise4_3']),
-          BDSUBLEAD4_3: savenull(data['BDSublead4_3']),
-          BDGL4_3: savenull(data['BDGL4_3']),
-          BDMGR4_3: savenull(data['BDMGR4_3']),
-          BDJP4_3: savenull(data['BDJP4_3']),
-          BDSENT4: savenull(data['BDSent4']),
-          REASON4: savenull(data['Reason4']),
+          APPROVEDDATE: formatDate(savenull(data['Approved_Date'])),
+          APPROVEDBY: savenull(data['Approved_By']),
+          STATUS: savenull(data['Status']),
+          REMARK: savenull(data['Remark']),
+          CHECKBOX: savenull(data['CheckBox']),
         );
       }).toList();
       Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
@@ -296,14 +147,14 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
       output = outputdata;
       emit(output);
     } else {
-      print("where is my server");
+      Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
+      showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, response.toString());
       output = [];
       emit(output);
     }
   }
 
-  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET2(
-      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET2(List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
       Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
     // List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
@@ -340,8 +191,7 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
     // emit(output);
   }
 
-  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET3(
-      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_GET3(List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
       Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
     // List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
@@ -374,8 +224,7 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
     // emit(output);
   }
 
-  Future<void> _P02INSIDEINSTRUMENTGETDATA_FLUSH(
-      List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
+  Future<void> _P02INSIDEINSTRUMENTGETDATA_FLUSH(List<P02INSIDEINSTRUMENTGETDATAclass> toAdd,
       Emitter<List<P02INSIDEINSTRUMENTGETDATAclass>> emit) async {
     List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     emit(output);
@@ -384,462 +233,176 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc extends Bloc<
 
 class P02INSIDEINSTRUMENTGETDATAclass {
   P02INSIDEINSTRUMENTGETDATAclass({
-    this.TYPE = '',
-    this.MKTGROUP = '',
-    this.GROUP = '',
-    this.CUSTOMER = '',
-    this.CUSTSHORT = '',
-    this.FREQUENCY = '',
+    this.REQUESTNO = '',
+    this.REPORTNO = '',
+    this.SECTION = '',
+    this.REQUESTER = '',
+    this.RECEIVEDDATE = '',
+    this.CUSTOMERNAME = '',
+    this.PARTNAME1 = '',
+    this.PARTNO1 = '',
+    this.PARTNAME2 = '',
+    this.PARTNO2 = '',
+    this.PARTNAME3 = '',
+    this.PARTNO3 = '',
+    this.PARTNAME4 = '',
+    this.PARTNO4 = '',
+    this.PARTNAME5 = '',
+    this.PARTNO5 = '',
+    this.PARTNAME6 = '',
+    this.PARTNO6 = '',
+    this.PARTNAME7 = '',
+    this.PARTNO7 = '',
+    this.PARTNAME8 = '',
+    this.PARTNO8 = '',
+    this.PARTNAME9 = '',
+    this.PARTNO9 = '',
+    this.PARTNAME10 = '',
+    this.PARTNO10 = '',
+    this.AMOUNTSAMPLE = 0,
+    this.TAKEPHOTO = 0,
+    this.STARTDATE = '',
+    this.TIME1 = 0,
+    this.FINISHDATE1 = '',
+    this.TEMPDATE1 = '',
+    this.DUEDATE1 = '',
+    this.TIME2 = 0,
+    this.FINISHDATE2 = '',
+    this.TEMPDATE2 = '',
+    this.DUEDATE2 = '',
+    this.TIME3 = 0,
+    this.FINISHDATE3 = '',
+    this.TEMPDATE3 = '',
+    this.DUEDATE3 = '',
+    this.TIME4 = 0,
+    this.FINISHDATE4 = '',
+    this.TEMPDATE4 = '',
+    this.DUEDATE4 = '',
+    this.TIME5 = 0,
+    this.FINISHDATE5 = '',
+    this.TEMPDATE5 = '',
+    this.DUEDATE5 = '',
+    this.TIME6 = 0,
+    this.FINISHDATE6 = '',
+    this.TEMPDATE6 = '',
+    this.DUEDATE6 = '',
+    this.TIME7 = 0,
+    this.FINISHDATE7 = '',
+    this.TEMPDATE7 = '',
+    this.DUEDATE7 = '',
+    this.TIME8 = 0,
+    this.FINISHDATE8 = '',
+    this.TEMPDATE8 = '',
+    this.DUEDATE8 = '',
+    this.TIME9 = 0,
+    this.FINISHDATE9 = '',
+    this.TEMPDATE9 = '',
+    this.DUEDATE9 = '',
+    this.TIME10 = 0,
+    this.FINISHDATE10 = '',
+    this.TEMPDATE10 = '',
+    this.DUEDATE10 = '',
+    this.INSTRUMENT = '',
+    this.METHOD = '',
     this.INCHARGE = '',
-    this.KPISERV = '',
-    this.KPIPERIOD = '',
-    this.REPITEM = '',
-    this.MONTH = '',
-    this.YEAR = '',
-    this.REQNO1 = '',
-    this.FREQ1 = '',
-    this.PLANSAM1 = '',
-    this.ACTSAM1 = '',
-    this.REPDUE1 = '',
-    this.SENTREP1 = '',
-    this.REPDAYS1 = '',
-    this.REQUEST1 = '',
-    this.TTCRESULT1 = '',
-    this.ISSUEDATE1 = '',
-    this.SUBLEAD1 = '',
-    this.GL1 = '',
-    this.MGR1 = '',
-    this.JP1 = '',
-    this.REVISE1_1 = '',
-    this.SUBLEAD1_1 = '',
-    this.GL1_1 = '',
-    this.MGR1_1 = '',
-    this.JP1_1 = '',
-    this.REVISE1_2 = '',
-    this.SUBLEAD1_2 = '',
-    this.GL1_2 = '',
-    this.MGR1_2 = '',
-    this.JP1_2 = '',
-    this.REVISE1_3 = '',
-    this.SUBLEAD1_3 = '',
-    this.GL1_3 = '',
-    this.MGR1_3 = '',
-    this.JP1_3 = '',
-    this.BDPREPARE1 = '',
-    this.BDTTC1 = '',
-    this.BDISSUE1 = '',
-    this.BDSUBLEAD1 = '',
-    this.BDGL1 = '',
-    this.BDMGR1 = '',
-    this.BDJP1 = '',
-    this.BDREVISE1_1 = '',
-    this.BDSUBLEAD1_1 = '',
-    this.BDGL1_1 = '',
-    this.BDMGR1_1 = '',
-    this.BDJP1_1 = '',
-    this.BDREVISE1_2 = '',
-    this.BDSUBLEAD1_2 = '',
-    this.BDGL1_2 = '',
-    this.BDMGR1_2 = '',
-    this.BDJP1_2 = '',
-    this.BDREVISE1_3 = '',
-    this.BDSUBLEAD1_3 = '',
-    this.BDGL1_3 = '',
-    this.BDMGR1_3 = '',
-    this.BDJP1_3 = '',
-    this.BDSENT1 = '',
-    this.REASON1 = '',
-    this.REQNO2 = '',
-    this.FREQ2 = '',
-    this.PLANSAM2 = '',
-    this.ACTSAM2 = '',
-    this.REPDUE2 = '',
-    this.SENTREP2 = '',
-    this.REPDAYS2 = '',
-    this.REQUEST2 = '',
-    this.TTCRESULT2 = '',
-    this.ISSUEDATE2 = '',
-    this.SUBLEAD2 = '',
-    this.GL2 = '',
-    this.MGR2 = '',
-    this.JP2 = '',
-    this.REVISE2_1 = '',
-    this.SUBLEAD2_1 = '',
-    this.GL2_1 = '',
-    this.MGR2_1 = '',
-    this.JP2_1 = '',
-    this.REVISE2_2 = '',
-    this.SUBLEAD2_2 = '',
-    this.GL2_2 = '',
-    this.MGR2_2 = '',
-    this.JP2_2 = '',
-    this.REVISE2_3 = '',
-    this.SUBLEAD2_3 = '',
-    this.GL2_3 = '',
-    this.MGR2_3 = '',
-    this.JP2_3 = '',
-    this.BDPREPARE2 = '',
-    this.BDTTC2 = '',
-    this.BDISSUE2 = '',
-    this.BDSUBLEAD2 = '',
-    this.BDGL2 = '',
-    this.BDMGR2 = '',
-    this.BDJP2 = '',
-    this.BDREVISE2_1 = '',
-    this.BDSUBLEAD2_1 = '',
-    this.BDGL2_1 = '',
-    this.BDMGR2_1 = '',
-    this.BDJP2_1 = '',
-    this.BDREVISE2_2 = '',
-    this.BDSUBLEAD2_2 = '',
-    this.BDGL2_2 = '',
-    this.BDMGR2_2 = '',
-    this.BDJP2_2 = '',
-    this.BDREVISE2_3 = '',
-    this.BDSUBLEAD2_3 = '',
-    this.BDGL2_3 = '',
-    this.BDMGR2_3 = '',
-    this.BDJP2_3 = '',
-    this.BDSENT2 = '',
-    this.REASON2 = '',
-    this.REQNO3 = '',
-    this.FREQ3 = '',
-    this.PLANSAM3 = '',
-    this.ACTSAM3 = '',
-    this.REPDUE3 = '',
-    this.SENTREP3 = '',
-    this.REPDAYS3 = '',
-    this.REQUEST3 = '',
-    this.TTCRESULT3 = '',
-    this.ISSUEDATE3 = '',
-    this.SUBLEAD3 = '',
-    this.GL3 = '',
-    this.MGR3 = '',
-    this.JP3 = '',
-    this.REVISE3_1 = '',
-    this.SUBLEAD3_1 = '',
-    this.GL3_1 = '',
-    this.MGR3_1 = '',
-    this.JP3_1 = '',
-    this.REVISE3_2 = '',
-    this.SUBLEAD3_2 = '',
-    this.GL3_2 = '',
-    this.MGR3_2 = '',
-    this.JP3_2 = '',
-    this.REVISE3_3 = '',
-    this.SUBLEAD3_3 = '',
-    this.GL3_3 = '',
-    this.MGR3_3 = '',
-    this.JP3_3 = '',
-    this.BDPREPARE3 = '',
-    this.BDTTC3 = '',
-    this.BDISSUE3 = '',
-    this.BDSUBLEAD3 = '',
-    this.BDGL3 = '',
-    this.BDMGR3 = '',
-    this.BDJP3 = '',
-    this.BDREVISE3_1 = '',
-    this.BDSUBLEAD3_1 = '',
-    this.BDGL3_1 = '',
-    this.BDMGR3_1 = '',
-    this.BDJP3_1 = '',
-    this.BDREVISE3_2 = '',
-    this.BDSUBLEAD3_2 = '',
-    this.BDGL3_2 = '',
-    this.BDMGR3_2 = '',
-    this.BDJP3_2 = '',
-    this.BDREVISE3_3 = '',
-    this.BDSUBLEAD3_3 = '',
-    this.BDGL3_3 = '',
-    this.BDMGR3_3 = '',
-    this.BDJP3_3 = '',
-    this.BDSENT3 = '',
-    this.REASON3 = '',
-    this.REQNO4 = '',
-    this.FREQ4 = '',
-    this.PLANSAM4 = '',
-    this.ACTSAM4 = '',
-    this.REPDUE4 = '',
-    this.SENTREP4 = '',
-    this.REPDAYS4 = '',
-    this.REQUEST4 = '',
-    this.TTCRESULT4 = '',
-    this.ISSUEDATE4 = '',
-    this.SUBLEAD4 = '',
-    this.GL4 = '',
-    this.MGR4 = '',
-    this.JP4 = '',
-    this.REVISE4_1 = '',
-    this.SUBLEAD4_1 = '',
-    this.GL4_1 = '',
-    this.MGR4_1 = '',
-    this.JP4_1 = '',
-    this.REVISE4_2 = '',
-    this.SUBLEAD4_2 = '',
-    this.GL4_2 = '',
-    this.MGR4_2 = '',
-    this.JP4_2 = '',
-    this.REVISE4_3 = '',
-    this.SUBLEAD4_3 = '',
-    this.GL4_3 = '',
-    this.MGR4_3 = '',
-    this.JP4_3 = '',
-    this.BDPREPARE4 = '',
-    this.BDTTC4 = '',
-    this.BDISSUE4 = '',
-    this.BDSUBLEAD4 = '',
-    this.BDGL4 = '',
-    this.BDMGR4 = '',
-    this.BDJP4 = '',
-    this.BDREVISE4_1 = '',
-    this.BDSUBLEAD4_1 = '',
-    this.BDGL4_1 = '',
-    this.BDMGR4_1 = '',
-    this.BDJP4_1 = '',
-    this.BDREVISE4_2 = '',
-    this.BDSUBLEAD4_2 = '',
-    this.BDGL4_2 = '',
-    this.BDMGR4_2 = '',
-    this.BDJP4_2 = '',
-    this.BDREVISE4_3 = '',
-    this.BDSUBLEAD4_3 = '',
-    this.BDGL4_3 = '',
-    this.BDMGR4_3 = '',
-    this.BDJP4_3 = '',
-    this.BDSENT4 = '',
-    this.REASON4 = '',
+    this.APPROVEDDATE = '',
+    this.APPROVEDBY = '',
+    this.STATUS = '',
+    this.REMARK = '',
+    this.CHECKBOX = '',
   });
 
-  String TYPE;
-  String MKTGROUP;
-  String GROUP;
-  String CUSTOMER;
-  String CUSTSHORT;
-  String FREQUENCY;
+  String REQUESTNO;
+  String REPORTNO;
+  String SECTION;
+  String REQUESTER;
+  String RECEIVEDDATE;
+  String CUSTOMERNAME;
+  String PARTNAME1;
+  String PARTNO1;
+  String PARTNAME2;
+  String PARTNO2;
+  String PARTNAME3;
+  String PARTNO3;
+  String PARTNAME4;
+  String PARTNO4;
+  String PARTNAME5;
+  String PARTNO5;
+  String PARTNAME6;
+  String PARTNO6;
+  String PARTNAME7;
+  String PARTNO7;
+  String PARTNAME8;
+  String PARTNO8;
+  String PARTNAME9;
+  String PARTNO9;
+  String PARTNAME10;
+  String PARTNO10;
+  int AMOUNTSAMPLE;
+  int TAKEPHOTO;
+  String STARTDATE;
+  int TIME1;
+  String FINISHDATE1;
+  String TEMPDATE1;
+  String DUEDATE1;
+  int TIME2;
+  String FINISHDATE2;
+  String TEMPDATE2;
+  String DUEDATE2;
+  int TIME3;
+  String FINISHDATE3;
+  String TEMPDATE3;
+  String DUEDATE3;
+  int TIME4;
+  String FINISHDATE4;
+  String TEMPDATE4;
+  String DUEDATE4;
+  int TIME5;
+  String FINISHDATE5;
+  String TEMPDATE5;
+  String DUEDATE5;
+  int TIME6;
+  String FINISHDATE6;
+  String TEMPDATE6;
+  String DUEDATE6;
+  int TIME7;
+  String FINISHDATE7;
+  String TEMPDATE7;
+  String DUEDATE7;
+  int TIME8;
+  String FINISHDATE8;
+  String TEMPDATE8;
+  String DUEDATE8;
+  int TIME9;
+  String FINISHDATE9;
+  String TEMPDATE9;
+  String DUEDATE9;
+  int TIME10;
+  String FINISHDATE10;
+  String TEMPDATE10;
+  String DUEDATE10;
+  String INSTRUMENT;
+  String METHOD;
   String INCHARGE;
-  String KPISERV;
-  String KPIPERIOD;
-  String REPITEM;
-  String MONTH;
-  String YEAR;
-  String REQNO1;
-  String FREQ1;
-  String PLANSAM1;
-  String ACTSAM1;
-  String REPDUE1;
-  String SENTREP1;
-  String REPDAYS1;
-  String REQUEST1;
-  String TTCRESULT1;
-  String ISSUEDATE1;
-  String SUBLEAD1;
-  String GL1;
-  String MGR1;
-  String JP1;
-  String REVISE1_1;
-  String SUBLEAD1_1;
-  String GL1_1;
-  String MGR1_1;
-  String JP1_1;
-  String REVISE1_2;
-  String SUBLEAD1_2;
-  String GL1_2;
-  String MGR1_2;
-  String JP1_2;
-  String REVISE1_3;
-  String SUBLEAD1_3;
-  String GL1_3;
-  String MGR1_3;
-  String JP1_3;
-  String BDPREPARE1;
-  String BDTTC1;
-  String BDISSUE1;
-  String BDSUBLEAD1;
-  String BDGL1;
-  String BDMGR1;
-  String BDJP1;
-  String BDREVISE1_1;
-  String BDSUBLEAD1_1;
-  String BDGL1_1;
-  String BDMGR1_1;
-  String BDJP1_1;
-  String BDREVISE1_2;
-  String BDSUBLEAD1_2;
-  String BDGL1_2;
-  String BDMGR1_2;
-  String BDJP1_2;
-  String BDREVISE1_3;
-  String BDSUBLEAD1_3;
-  String BDGL1_3;
-  String BDMGR1_3;
-  String BDJP1_3;
-  String BDSENT1;
-  String REASON1;
-  String REQNO2;
-  String FREQ2;
-  String PLANSAM2;
-  String ACTSAM2;
-  String REPDUE2;
-  String SENTREP2;
-  String REPDAYS2;
-  String REQUEST2;
-  String TTCRESULT2;
-  String ISSUEDATE2;
-  String SUBLEAD2;
-  String GL2;
-  String MGR2;
-  String JP2;
-  String REVISE2_1;
-  String SUBLEAD2_1;
-  String GL2_1;
-  String MGR2_1;
-  String JP2_1;
-  String REVISE2_2;
-  String SUBLEAD2_2;
-  String GL2_2;
-  String MGR2_2;
-  String JP2_2;
-  String REVISE2_3;
-  String SUBLEAD2_3;
-  String GL2_3;
-  String MGR2_3;
-  String JP2_3;
-  String BDPREPARE2;
-  String BDTTC2;
-  String BDISSUE2;
-  String BDSUBLEAD2;
-  String BDGL2;
-  String BDMGR2;
-  String BDJP2;
-  String BDREVISE2_1;
-  String BDSUBLEAD2_1;
-  String BDGL2_1;
-  String BDMGR2_1;
-  String BDJP2_1;
-  String BDREVISE2_2;
-  String BDSUBLEAD2_2;
-  String BDGL2_2;
-  String BDMGR2_2;
-  String BDJP2_2;
-  String BDREVISE2_3;
-  String BDSUBLEAD2_3;
-  String BDGL2_3;
-  String BDMGR2_3;
-  String BDJP2_3;
-  String BDSENT2;
-  String REASON2;
-  String REQNO3;
-  String FREQ3;
-  String PLANSAM3;
-  String ACTSAM3;
-  String REPDUE3;
-  String SENTREP3;
-  String REPDAYS3;
-  String REQUEST3;
-  String TTCRESULT3;
-  String ISSUEDATE3;
-  String SUBLEAD3;
-  String GL3;
-  String MGR3;
-  String JP3;
-  String REVISE3_1;
-  String SUBLEAD3_1;
-  String GL3_1;
-  String MGR3_1;
-  String JP3_1;
-  String REVISE3_2;
-  String SUBLEAD3_2;
-  String GL3_2;
-  String MGR3_2;
-  String JP3_2;
-  String REVISE3_3;
-  String SUBLEAD3_3;
-  String GL3_3;
-  String MGR3_3;
-  String JP3_3;
-  String BDPREPARE3;
-  String BDTTC3;
-  String BDISSUE3;
-  String BDSUBLEAD3;
-  String BDGL3;
-  String BDMGR3;
-  String BDJP3;
-  String BDREVISE3_1;
-  String BDSUBLEAD3_1;
-  String BDGL3_1;
-  String BDMGR3_1;
-  String BDJP3_1;
-  String BDREVISE3_2;
-  String BDSUBLEAD3_2;
-  String BDGL3_2;
-  String BDMGR3_2;
-  String BDJP3_2;
-  String BDREVISE3_3;
-  String BDSUBLEAD3_3;
-  String BDGL3_3;
-  String BDMGR3_3;
-  String BDJP3_3;
-  String BDSENT3;
-  String REASON3;
-  String REQNO4;
-  String FREQ4;
-  String PLANSAM4;
-  String ACTSAM4;
-  String REPDUE4;
-  String SENTREP4;
-  String REPDAYS4;
-  String REQUEST4;
-  String TTCRESULT4;
-  String ISSUEDATE4;
-  String SUBLEAD4;
-  String GL4;
-  String MGR4;
-  String JP4;
-  String REVISE4_1;
-  String SUBLEAD4_1;
-  String GL4_1;
-  String MGR4_1;
-  String JP4_1;
-  String REVISE4_2;
-  String SUBLEAD4_2;
-  String GL4_2;
-  String MGR4_2;
-  String JP4_2;
-  String REVISE4_3;
-  String SUBLEAD4_3;
-  String GL4_3;
-  String MGR4_3;
-  String JP4_3;
-  String BDPREPARE4;
-  String BDTTC4;
-  String BDISSUE4;
-  String BDSUBLEAD4;
-  String BDGL4;
-  String BDMGR4;
-  String BDJP4;
-  String BDREVISE4_1;
-  String BDSUBLEAD4_1;
-  String BDGL4_1;
-  String BDMGR4_1;
-  String BDJP4_1;
-  String BDREVISE4_2;
-  String BDSUBLEAD4_2;
-  String BDGL4_2;
-  String BDMGR4_2;
-  String BDJP4_2;
-  String BDREVISE4_3;
-  String BDSUBLEAD4_3;
-  String BDGL4_3;
-  String BDMGR4_3;
-  String BDJP4_3;
-  String BDSENT4;
-  String REASON4;
+  String APPROVEDDATE;
+  String APPROVEDBY;
+  String STATUS;
+  String REMARK;
+  String CHECKBOX;
 }
 
 String savenull(input) {
   String output = '';
   if (input != null) {
     output = input.toString();
+  }
+  return output;
+}
+
+int savenullint(input) {
+  int output = 0;
+  if (input != null) {
+    output = input;
   }
   return output;
 }
