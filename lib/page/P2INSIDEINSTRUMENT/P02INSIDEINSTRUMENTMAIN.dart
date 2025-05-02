@@ -7,7 +7,6 @@ import '../../data/global.dart';
 import '../../mainBody.dart';
 import '../P3DATATABLE/P03DATATABLEVAR.dart';
 import '../page1.dart';
-import 'P02INSIDEINSTRUMENTVAR.dart';
 
 late BuildContext P02INSIDEINSTRUMENTMAINcontext;
 
