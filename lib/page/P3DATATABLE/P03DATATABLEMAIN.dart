@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, unrelated_type_equality_checks, use_build_context_synchronously, deprecated_member_use
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -11,6 +12,7 @@ import '../../data/global.dart';
 import '../../widget/common/ComInputTextTan.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
+import '../P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import '../page2.dart';
 import 'P03DATATABLEVAR.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -1459,6 +1461,11 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                     P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
                                     // print(P03DATATABLEVAR.SendEditDataToAPI);
                                     EditDataToAPI();
+                                    initSocketConnection();
+                                    sendDataToServer('EditJob');
+                                    // await EditDataToAPI();
+                                    // await initSocketConnection();
+                                    // await sendDataToServer('EditJob');
                                   },
                                 );
                               },
@@ -1504,6 +1511,11 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                     P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
                                     // print(P03DATATABLEVAR.SendEditDataToAPI);
                                     EditDataToAPI();
+                                    initSocketConnection();
+                                    sendDataToServer('CancelJob');
+                                    // await EditDataToAPI();
+                                    // await initSocketConnection();
+                                    // await sendDataToServer('CancelJob');
                                   },
                                 );
                               },
@@ -2420,6 +2432,11 @@ void showAddDialog(BuildContext context) {
                                     P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
                                     // print(P03DATATABLEVAR.SendAddDataToAPI);
                                     AddDataToAPI();
+                                    initSocketConnection();
+                                    sendDataToServer('AddJob');
+                                    // await AddDataToAPI();
+                                    // await initSocketConnection();
+                                    // await sendDataToServer('AddJob');
                                   },
                                 );
                               },
@@ -3228,4 +3245,35 @@ void showChooseSlot(BuildContext context) {
       );
     },
   );
+}
+
+// Future<void> sendDataToServer(dynamic data) async {
+//   if (socket.connected) {
+//     print('Send data to server');
+//     socket.emit('update-data', data);
+//   } else {
+//     print('Socket not connected. Waiting to connect before sending...');
+
+//     final completer = Completer<void>();
+
+//     socket.on('connect', (_) {
+//       if (!completer.isCompleted) {
+//         print('Connected while waiting. Now sending data...');
+//         socket.emit('update-data', data);
+//         completer.complete();
+//       }
+//     });
+
+//     if (socket.disconnected) {
+//       socket.connect();
+//     }
+
+//     await completer.future;
+//   }
+// }
+
+// ฟังก์ชันสำหรับส่งข้อมูลไปยัง server
+void sendDataToServer(dynamic data) {
+  print('Send data to server');
+  socket.emit('update-data', data);
 }

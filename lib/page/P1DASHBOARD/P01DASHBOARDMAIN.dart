@@ -13,9 +13,12 @@ import '../page2.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'P01DASHBOARDVAR.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+late IO.Socket socket;
 late BuildContext P01DASHBOARDMAINcontext;
 Timer? _timer;
+late P01DASHBOARDGETDATA_Bloc dashboardBloc;
 
 class P01DASHBOARDMAIN extends StatefulWidget {
   P01DASHBOARDMAIN({
@@ -34,11 +37,14 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     super.initState();
     context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET2());
     context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+    initSocketConnection();
+    dashboardBloc = context.read<P01DASHBOARDGETDATA_Bloc>();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    socket.dispose();
     super.dispose();
   }
 
@@ -202,7 +208,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     // print(lastMethodSST3);
     // print(lastMethodSST4);
 
-    print(SSTAllData);
+    // print(SSTAllData);
     startChecking(P01DASHBOARDMAINcontext, SSTAllData);
 
     return Scaffold(
@@ -1414,5 +1420,59 @@ void showAlert(BuildContext context, String instrument, String customerName, Str
         );
       },
     );
+  });
+}
+
+// Future<void> initSocketConnection() async {
+//   socket = IO.io('http://127.0.0.1:14001', <String, dynamic>{
+//     'transports': ['websocket'],
+//     'autoConnect': false,
+//   });
+
+//   socket.connect();
+
+//   // รอให้เชื่อมต่อสำเร็จก่อนดำเนินการต่อ
+//   final completer = Completer<void>();
+
+//   socket.on('connect', (_) {
+//     print('Connected to socket.io server: ${socket.id}');
+//     completer.complete(); // แจ้งว่าเชื่อมต่อเสร็จแล้ว
+//   });
+
+//   socket.on('refresh-ui', (data) {
+//     print('Refresh UI with data: $data');
+//     dashboardBloc.add(P01DASHBOARDGETDATA_GET());
+//   });
+
+//   socket.on('disconnect', (_) {
+//     print('Disconnected from socket.io');
+//   });
+
+//   await completer.future; // รอจนกว่าจะเชื่อมต่อเสร็จ
+// }
+
+void initSocketConnection() {
+  socket = IO.io('http://127.0.0.1:14001', <String, dynamic>{
+    'transports': ['websocket'],
+    'autoConnect': false,
+  });
+
+  socket.connect();
+
+  // เมื่อเชื่อมต่อสำเร็จ
+  socket.on('connect', (_) {
+    print('Connected to socket.io server: ${socket.id}');
+  });
+
+  // รับข้อมูลเพื่อรีเฟรช UI
+  socket.on('refresh-ui', (data) {
+    print('Refresh UI with data: $data');
+    // P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+    dashboardBloc.add(P01DASHBOARDGETDATA_GET());
+  });
+
+  // disconnect
+  socket.on('disconnect', (_) {
+    print('Disconnected from socket.io');
   });
 }

@@ -430,10 +430,10 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                                         // ลบออกถ้ายกเลิกเลือก
                                                         selectedTicketIndexes.remove(realIndex);
                                                       }
-                                                      print(selectedTicketIndexes);
+                                                      // print(selectedTicketIndexes);
                                                     });
                                                   }
-                                                  print(index + 1);
+                                                  // print(index + 1);
                                                 },
                                           child: Center(
                                             child: Stack(
@@ -517,9 +517,9 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                                       // ลบออกถ้ายกเลิกเลือก
                                                       selectedTicketIndexes.remove(realIndex);
                                                     }
-                                                    print(selectedTicketIndexes);
+                                                    // print(selectedTicketIndexes);
                                                   });
-                                                  print(index2 + 73);
+                                                  // print(index2 + 73);
                                                 },
                                           child: Center(
                                             child: Text(

@@ -6,8 +6,10 @@ import 'bloc/BlocEvent/LoginEvent.dart';
 import 'bloc/cubit/NotificationEvent.dart';
 import 'bloc/cubit/Rebuild.dart';
 import 'data/global.dart';
+import 'page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import 'page/loginpage.dart';
 import 'widget/appbar/AppBar.dart';
+import 'widget/function/Socket.dart';
 import 'widget/menu/mainmenu.dart';
 import 'widget/notification/noti01.dart';
 
@@ -98,7 +100,7 @@ class MainBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainBodyContext = context;
-
+    initSocketConnection();
     return Scaffold(
         appBar: AppBar(
           shadowColor: Colors.transparent,

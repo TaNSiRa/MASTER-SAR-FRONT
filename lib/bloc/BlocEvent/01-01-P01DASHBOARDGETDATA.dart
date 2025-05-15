@@ -156,39 +156,24 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
 
   Future<void> _P01DASHBOARDGETDATA_GET2(
       List<P01DASHBOARDGETDATAclass> toAdd, Emitter<List<P01DASHBOARDGETDATAclass>> emit) async {
-    FreeLoadingTan(P01DASHBOARDMAINcontext);
+    // FreeLoadingTan(P01DASHBOARDMAINcontext);
     // List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final responseInstrument = await Dio().post(
       "$ToServer/02SALTSPRAY/InstrumentStatus",
       data: {},
-      // options: Options(
-      //   validateStatus: (status) {
-      //     return true;
-      //   },
-      // ),
     );
 
     if (responseInstrument.statusCode == 200) {
       print(responseInstrument.statusCode);
-      // print(response.data);
       var databuff = responseInstrument.data;
-      // print(databuff);
-      // print(databuff[0]['Status']);
-      // print(databuff[1]['Status']);
-      // print(databuff[2]['Status']);
-      // print(databuff[3]['Status']);
       P01DASHBOARDVAR.SST1Staus = databuff[0]['Status'];
       P01DASHBOARDVAR.SST2Staus = databuff[1]['Status'];
       P01DASHBOARDVAR.SST3Staus = databuff[2]['Status'];
       P01DASHBOARDVAR.SST4Staus = databuff[3]['Status'];
-      // print(P01DASHBOARDVAR.SST1Staus);
-      // print(P01DASHBOARDVAR.SST2Staus);
-      // print(P01DASHBOARDVAR.SST3Staus);
-      // print(P01DASHBOARDVAR.SST4Staus);
-      Navigator.pop(P01DASHBOARDMAINcontext);
+      // Navigator.pop(P01DASHBOARDMAINcontext);
     } else {
-      Navigator.pop(P01DASHBOARDMAINcontext);
+      // Navigator.pop(P01DASHBOARDMAINcontext);
       showErrorPopup(P01DASHBOARDMAINcontext, responseInstrument.toString());
     }
   }
