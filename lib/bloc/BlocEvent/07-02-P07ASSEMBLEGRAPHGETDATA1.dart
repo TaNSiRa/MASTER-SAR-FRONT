@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../page/P7ASSEMBLEGRAPH/P07ASSEMBLEGRAPHMAIN.dart';
 import '../../widget/common/Loading.dart';
+import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
 
@@ -19,8 +20,8 @@ class P07ASSEMBLEGRAPHGETDATA1_GET3 extends P07ASSEMBLEGRAPHGETDATA1_Event {}
 
 class P07ASSEMBLEGRAPHGETDATA1_FLUSH extends P07ASSEMBLEGRAPHGETDATA1_Event {}
 
-class P07ASSEMBLEGRAPHGETDATA1_Bloc extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event,
-    List<P07ASSEMBLEGRAPHGETDATA1class>> {
+class P07ASSEMBLEGRAPHGETDATA1_Bloc
+    extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event, List<P07ASSEMBLEGRAPHGETDATA1class>> {
   P07ASSEMBLEGRAPHGETDATA1_Bloc() : super([]) {
     on<P07ASSEMBLEGRAPHGETDATA1_GET>((event, emit) {
       return _P07ASSEMBLEGRAPHGETDATA1_GET([], emit);
@@ -38,8 +39,7 @@ class P07ASSEMBLEGRAPHGETDATA1_Bloc extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event,
   }
 
   Future<void> _P07ASSEMBLEGRAPHGETDATA1_GET(
-      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd,
-      Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
+      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd, Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
     FreeLoadingTan(P07ASSEMBLEGRAPHMAINcontext);
     List<P07ASSEMBLEGRAPHGETDATA1class> output = [];
     //-------------------------------------------------------------------------------------
@@ -299,8 +299,7 @@ class P07ASSEMBLEGRAPHGETDATA1_Bloc extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event,
   }
 
   Future<void> _P07ASSEMBLEGRAPHGETDATA1_GET2(
-      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd,
-      Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
+      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd, Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
     // List<P07ASSEMBLEGRAPHGETDATA1class> output = [];
     //-------------------------------------------------------------------------------------
     // var input = dummydatainput2;
@@ -337,8 +336,7 @@ class P07ASSEMBLEGRAPHGETDATA1_Bloc extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event,
   }
 
   Future<void> _P07ASSEMBLEGRAPHGETDATA1_GET3(
-      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd,
-      Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
+      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd, Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
     // List<P07ASSEMBLEGRAPHGETDATA1class> output = [];
     //-------------------------------------------------------------------------------------
     // List<P07ASSEMBLEGRAPHGETDATA1class> datadummy = [
@@ -371,8 +369,7 @@ class P07ASSEMBLEGRAPHGETDATA1_Bloc extends Bloc<P07ASSEMBLEGRAPHGETDATA1_Event,
   }
 
   Future<void> _P07ASSEMBLEGRAPHGETDATA1_FLUSH(
-      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd,
-      Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
+      List<P07ASSEMBLEGRAPHGETDATA1class> toAdd, Emitter<List<P07ASSEMBLEGRAPHGETDATA1class>> emit) async {
     List<P07ASSEMBLEGRAPHGETDATA1class> output = [];
     emit(output);
   }
@@ -840,13 +837,13 @@ String savenull(input) {
   return output;
 }
 
-String formatDate(String? date) {
-  if (date == null || date.isEmpty) return '';
-  if (date == 'CLOSE LINE') return 'CLOSE LINE';
-  try {
-    DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
-    return DateFormat('dd/MM/yyyy').format(parsedDate);
-  } catch (e) {
-    return '';
-  }
-}
+// String formatDate(String? date) {
+//   if (date == null || date.isEmpty) return '';
+//   if (date == 'CLOSE LINE') return 'CLOSE LINE';
+//   try {
+//     DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+//     return DateFormat('dd/MM/yyyy').format(parsedDate);
+//   } catch (e) {
+//     return '';
+//   }
+// }

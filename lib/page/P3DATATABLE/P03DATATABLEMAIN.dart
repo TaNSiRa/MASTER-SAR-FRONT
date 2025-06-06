@@ -1,21 +1,25 @@
-// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, unrelated_type_equality_checks, use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, unrelated_type_equality_checks, use_build_context_synchronously, deprecated_member_use, avoid_print
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io' as io;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:universal_html/html.dart' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import '../../bloc/BlocEvent/03-01-P03DATATABLEGETDATA.dart';
 import '../../data/global.dart';
+import '../../widget/common/Advancedropdown.dart';
 import '../../widget/common/ComInputTextTan.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
-import '../P1DASHBOARD/P01DASHBOARDMAIN.dart';
-import '../page2.dart';
+import '../../widget/function/ForUseAllPage.dart';
 import 'P03DATATABLEVAR.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
 late BuildContext P03DATATABLEMAINcontext;
 ScrollController _controllerIN01 = ScrollController();
@@ -45,6 +49,8 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
     selectpage = '';
     selectstatus = '';
     selectslot.text = '';
+    PageName = 'Status';
+    print(PageName);
     List<P03DATATABLEGETDATAclass> _datasearch = [];
     _datasearch.addAll(
       _datain.where(
@@ -77,6 +83,15 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
             data.INSTRUMENT.toLowerCase().contains(P03DATATABLEVAR.SEARCH),
       ),
     );
+
+    List<P03DATATABLEGETDATAclass> filteredData = _datasearch.where((data) {
+      if (P03DATATABLEVAR.DropdownInstrument == 'All Instrument' ||
+          P03DATATABLEVAR.DropdownInstrument == '') {
+        return true;
+      } else {
+        return data.INSTRUMENT == P03DATATABLEVAR.DropdownInstrument;
+      }
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -227,16 +242,37 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                               'Refresh',
                               style:
                                   TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            )
+                            ),
                           ],
                         ),
+                      ),
+                      AdvanceDropDown(
+                        hint: "Instrument",
+                        height: 40,
+                        width: 105,
+                        listdropdown: const [
+                          MapEntry("All Instrument", "All Instrument"),
+                          MapEntry("SST No.1", "SST No.1"),
+                          MapEntry("SST No.2", "SST No.2"),
+                          MapEntry("SST No.3", "SST No.3"),
+                          MapEntry("SST No.4", "SST No.4"),
+                        ],
+                        onChangeinside: (d, k) {
+                          setState(() {
+                            P03DATATABLEVAR.DropdownInstrument = d;
+                          });
+                        },
+                        value: P03DATATABLEVAR.DropdownInstrument,
                       ),
                       SizedBox(
                         child: Column(
                           children: [
                             ElevatedButton(
                               onPressed: () async {
-                                await fetchCustomerAndIncharge();
+                                setState(() {
+                                  P03DATATABLEVAR.CustomerIsPM = false;
+                                });
+                                await _fetchCustomerAndIncharge();
                                 showAddDialog(P03DATATABLEMAINcontext);
                               },
                               style: ElevatedButton.styleFrom(
@@ -252,6 +288,32 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                             SizedBox(height: 5),
                             Text(
                               'Add Job',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                exportToExcel(filteredData);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(10),
+                              ),
+                              child: const Icon(
+                                Icons.download,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'Export Excel',
                               style:
                                   TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
                             )
@@ -299,12 +361,16 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                 20: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth20),
                                 21: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth21),
                                 22: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth22),
+                                23: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth23),
+                                24: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth24),
                               },
                               children: [
                                 TableRow(
                                   children: [
                                     TableCell(child: buildHeaderCell('Request No.')),
                                     TableCell(child: buildHeaderCell('Report No.')),
+                                    TableCell(child: buildHeaderCell('Stop')),
+                                    TableCell(child: buildHeaderCell('Bar Status')),
                                     TableCell(child: buildHeaderCell('Section Request')),
                                     TableCell(child: buildHeaderCell('Requester')),
                                     TableCell(child: buildHeaderCell('Received Date\n(dd-MM-yy)')),
@@ -361,9 +427,10 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                     20: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth20),
                                     21: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth21),
                                     22: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth22),
+                                    23: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth23),
+                                    24: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth24),
                                   },
-                                  children: _datasearch.map((item) {
-                                    // int dataCount = _datasearch.indexOf(item) + 1;
+                                  children: filteredData.map((item) {
                                     return TableRow(
                                       children: [
                                         TableCell(
@@ -372,6 +439,11 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                         TableCell(
                                             child:
                                                 buildDataCell(item.REPORTNO, countRowMultiplier(item), item)),
+                                        TableCell(
+                                            child: buildDataCell('Stop', countRowMultiplier(item), item)),
+                                        TableCell(
+                                            child:
+                                                buildDataCell('Bar Status', countRowMultiplier(item), item)),
                                         TableCell(
                                             child:
                                                 buildDataCell(item.SECTION, countRowMultiplier(item), item)),
@@ -596,10 +668,118 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
             style: TextStyle(color: Colors.white),
           ),
           onPressed: () async {
-            await fetchCustomerAndIncharge();
+            await _fetchCustomerAndIncharge();
             P03DATATABLEMAINcontext.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
             showEditDialog(P03DATATABLEMAINcontext, item);
           },
+        ),
+      ),
+    );
+  }
+
+  if (data == 'Stop') {
+    final dateFormat = DateFormat('dd-MM-yy HH:mm');
+
+    List<DateTime> finishDates = [
+      item.FINISHDATE1,
+      item.FINISHDATE2,
+      item.FINISHDATE3,
+      item.FINISHDATE4,
+      item.FINISHDATE5,
+      item.FINISHDATE6,
+      item.FINISHDATE7,
+      item.FINISHDATE8,
+      item.FINISHDATE9,
+      item.FINISHDATE10,
+    ]
+        .where((v) => v != null && v.toString().trim().isNotEmpty)
+        .map((v) {
+          try {
+            return dateFormat.parse(v.toString());
+          } catch (e) {
+            return null; // ถ้า parse ไม่ได้
+          }
+        })
+        .where((v) => v != null)
+        .cast<DateTime>()
+        .toList();
+
+    int total = finishDates.length;
+    int passed = finishDates.where((d) => DateTime.now().isAfter(d)).length;
+    // print(DateTime.now());
+
+    return SizedBox(
+      height: 30.0 * maxRowCount,
+      child: Center(
+        child: Text(
+          '$passed / $total',
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  if (data == 'Bar Status') {
+    final dateFormat = DateFormat('dd-MM-yy HH:mm');
+
+    List<DateTime> finishDates = [
+      item.FINISHDATE1,
+      item.FINISHDATE2,
+      item.FINISHDATE3,
+      item.FINISHDATE4,
+      item.FINISHDATE5,
+      item.FINISHDATE6,
+      item.FINISHDATE7,
+      item.FINISHDATE8,
+      item.FINISHDATE9,
+      item.FINISHDATE10,
+    ]
+        .where((v) => v != null && v.toString().trim().isNotEmpty)
+        .map((v) {
+          try {
+            return dateFormat.parse(v.toString());
+          } catch (e) {
+            return null;
+          }
+        })
+        .where((v) => v != null)
+        .cast<DateTime>()
+        .toList();
+
+    int total = finishDates.length;
+    int passed = finishDates.where((d) => DateTime.now().isAfter(d)).length;
+
+    double progress = total == 0 ? 0 : passed / total;
+    double percent = progress * 100;
+
+    return SizedBox(
+      height: 30.0 * maxRowCount,
+      child: Center(
+        child: LinearPercentIndicator(
+          lineHeight: 15.0,
+          percent: progress.clamp(0.0, 1.0), // กันเกิน 100%
+          backgroundColor: Colors.orange[100]!,
+          progressColor: Colors.green,
+          animation: true,
+          animationDuration: 1000,
+          barRadius: const Radius.circular(10),
+          center: Text(
+            "${percent.toStringAsFixed(1)}%",
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(
+                  color: Colors.black26,
+                  offset: Offset(1, 1),
+                  blurRadius: 2,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -612,7 +792,13 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
         padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-        decoration: (data == 'RECEIVED' || data == 'RESERVED' || data == 'CANCEL' || data == 'COMPLETED')
+        decoration: (data == 'RECEIVED' ||
+                data == 'START' ||
+                data == 'WAIT TRANSFER' ||
+                data == 'TRANSFER' ||
+                data == 'CANCEL' ||
+                data == 'PM' ||
+                data == 'FINISH')
             ? BoxDecoration(
                 color: _getStatusColor(data),
                 borderRadius: BorderRadius.circular(6.0),
@@ -631,7 +817,13 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
           style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w500,
-            color: (data == 'RECEIVED' || data == 'RESERVED' || data == 'CANCEL' || data == 'COMPLETED')
+            color: (data == 'RECEIVED' ||
+                    data == 'START' ||
+                    data == 'WAIT TRANSFER' ||
+                    data == 'TRANSFER' ||
+                    data == 'CANCEL' ||
+                    data == 'PM' ||
+                    data == 'FINISH')
                 ? Colors.white
                 : Colors.black87,
           ),
@@ -696,11 +888,13 @@ Color _getStatusColor(String status) {
   switch (status) {
     case 'RECEIVED':
       return Colors.blue;
-    case 'RESERVED':
+    case 'START':
+      return Colors.pink;
+    case 'WAIT TRANSFER':
       return Colors.orange;
-    case 'CANCEL':
+    case 'CANCEL' || 'PM':
       return Colors.red;
-    case 'COMPLETED':
+    case 'FINISH' || 'TRANSFER':
       return Colors.green;
     default:
       return Colors.grey.shade200;
@@ -1090,7 +1284,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Container(
-          width: 400,
+          width: 600,
           height: 600,
           padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
@@ -1128,6 +1322,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         icon: Icons.assignment,
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: SectionRequestController,
                         focusNode: SectionRequestFocusNode,
                         labelText: "Section Request",
@@ -1138,6 +1333,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: RequesterController,
                         focusNode: RequesterFocusNode,
                         labelText: "Requester",
@@ -1147,6 +1343,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: ReceivedDateController,
                         focusNode: ReceivedDateFocusNode,
                         labelText: "Received Date",
@@ -1159,6 +1356,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: CustomerNameController,
                         focusNode: CustomerNameFocusNode,
                         labelText: "Customer Name",
@@ -1171,6 +1369,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                       for (int i = 0; i < 10; i++)
                         if (partNameControllers[i].text != '')
                           buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: partNameControllers[i],
                             focusNode: partNameFocusNodes[i],
                             labelText: "Part Name ${i + 1}",
@@ -1196,6 +1395,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                       for (int i = 0; i < 10; i++)
                         if (partNoControllers[i].text != '')
                           buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: partNoControllers[i],
                             focusNode: partNoFocusNodes[i],
                             labelText: "Part No ${i + 1}",
@@ -1219,6 +1419,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                             },
                           ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: AmountOfSampleController,
                         focusNode: AmountOfSampleFocusNode,
                         labelText: "Amount of Sample (Pcs)",
@@ -1228,6 +1429,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: TakePhotoController,
                         focusNode: TakePhotoFocusNode,
                         labelText: "Take photo (Pcs)",
@@ -1237,6 +1439,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: StartDateController,
                         focusNode: StartDateFocusNode,
                         labelText: "Start Date",
@@ -1285,6 +1488,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                 children: [
                                   Expanded(
                                     child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
                                       controller: timeControllers[i],
                                       focusNode: timeFocusNodes[i],
                                       labelText: "Time ${i + 1} (Hrs.)",
@@ -1326,6 +1530,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
                                       controller: finishDateControllers[i],
                                       focusNode: finishDateFocusNodes[i],
                                       labelText: "Finish Date ${i + 1}",
@@ -1344,6 +1549,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                 children: [
                                   Expanded(
                                     child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
                                       controller: tempDateControllers[i],
                                       focusNode: tempDateFocusNodes[i],
                                       labelText: "Temp Date ${i + 1}",
@@ -1359,6 +1565,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
                                       controller: dueDateControllers[i],
                                       focusNode: dueDateFocusNodes[i],
                                       labelText: "Due Date ${i + 1}",
@@ -1375,7 +1582,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                               ),
                             ],
                           ),
-                      buildCustomField(
+                      buildCustomFieldforEditData(
                         controller: InstrumentController,
                         focusNode: InstrumentFocusNode,
                         labelText: "Instrument",
@@ -1386,6 +1593,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: MethodController,
                         focusNode: MethodFocusNode,
                         labelText: "Method",
@@ -1396,6 +1604,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: InchargeController,
                         focusNode: InchargeFocusNode,
                         labelText: "Incharge",
@@ -1406,6 +1615,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: ApprovedDateController,
                         focusNode: ApprovedDateFocusNode,
                         labelText: "Approved Date",
@@ -1418,6 +1628,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: ApprovedByController,
                         focusNode: ApprovedByFocusNode,
                         labelText: "Approved By",
@@ -1438,6 +1649,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         },
                       ),
                       buildCustomField(
+                        context: P03DATATABLEMAINcontext,
                         controller: RemarkController,
                         focusNode: RemarkFocusNode,
                         labelText: "Remark",
@@ -1450,105 +1662,206 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                         mainAxisAlignment: MainAxisAlignment.center,
                         spacing: 10,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await showEditConfirmationDialog(
-                                  context: context,
-                                  onConfirm: () async {
-                                    updateMultipleDatesAll();
-                                    P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                    // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                    EditDataToAPI();
-                                    initSocketConnection();
-                                    sendDataToServer('EditJob');
-                                    // await EditDataToAPI();
-                                    // await initSocketConnection();
-                                    // await sendDataToServer('EditJob');
-                                  },
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.amber,
-                                shadowColor: Colors.amberAccent,
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(color: Colors.amber, width: 2),
+                          if (item.STATUS == 'RECEIVED')
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await showStartConfirmationDialog(
+                                    context: context,
+                                    onConfirm: () async {
+                                      updateMultipleDatesAll();
+                                      P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                      // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                      _StatJobToAPI();
+                                      // initSocketConnection();
+                                      // sendDataToServer('EditJob');
+                                      // await EditDataToAPI();
+                                      // await initSocketConnection();
+                                      // await sendDataToServer('EditJob');
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.pink,
+                                  shadowColor: Colors.pinkAccent,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.pink, width: 2),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: 5,
-                                children: const [
-                                  Text(
-                                    'ยืนยันการแก้ไข',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 5,
+                                  children: const [
+                                    Text(
+                                      'START JOB',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.edit_note_rounded,
-                                    color: Colors.amber,
-                                  ),
-                                ],
+                                    Icon(
+                                      Icons.start_rounded,
+                                      color: Colors.pink,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                await showCancelConfirmationDialog(
-                                  context: context,
-                                  onConfirm: () async {
-                                    item.STATUS = 'CANCEL';
-                                    updateMultipleDatesAll();
-                                    P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                    // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                    EditDataToAPI();
-                                    initSocketConnection();
-                                    sendDataToServer('CancelJob');
-                                    // await EditDataToAPI();
-                                    // await initSocketConnection();
-                                    // await sendDataToServer('CancelJob');
-                                  },
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.red,
-                                shadowColor: Colors.redAccent,
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(color: Colors.red, width: 2),
+                          if (item.STATUS == 'START')
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await showEditConfirmationDialog(
+                                    context: context,
+                                    onConfirm: () async {
+                                      updateMultipleDatesAll();
+                                      P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                      // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                      _EditDataToAPI();
+                                      // initSocketConnection();
+                                      // sendDataToServer('EditJob');
+                                      // await EditDataToAPI();
+                                      // await initSocketConnection();
+                                      // await sendDataToServer('EditJob');
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.amber,
+                                  shadowColor: Colors.amberAccent,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.amber, width: 2),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: 5,
-                                children: const [
-                                  Text(
-                                    'ยกเลิกงาน',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 5,
+                                  children: const [
+                                    Text(
+                                      'ยืนยันการแก้ไข',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.cancel,
-                                    color: Colors.red,
-                                  ),
-                                ],
+                                    Icon(
+                                      Icons.edit_note_rounded,
+                                      color: Colors.amber,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                          if (item.STATUS == 'START')
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await showCancelConfirmationDialog(
+                                    context: context,
+                                    onConfirm: () async {
+                                      updateMultipleDatesAll();
+                                      P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                      // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                      _CancelJobToAPI();
+                                      // initSocketConnection();
+                                      // sendDataToServer('CancelJob');
+                                      // await EditDataToAPI();
+                                      // await initSocketConnection();
+                                      // await sendDataToServer('CancelJob');
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.red,
+                                  shadowColor: Colors.redAccent,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.red, width: 2),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 5,
+                                  children: const [
+                                    Text(
+                                      'ยกเลิกงาน',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.cancel,
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (item.STATUS == 'START')
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await showFinishConfirmationDialog(
+                                    context: context,
+                                    onConfirm: () async {
+                                      updateMultipleDatesAll();
+                                      P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                      // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                      _FinishJobToAPI();
+                                      // initSocketConnection();
+                                      // sendDataToServer('FinishJob');
+                                      // await EditDataToAPI();
+                                      // await initSocketConnection();
+                                      // await sendDataToServer('CancelJob');
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.green,
+                                  shadowColor: Colors.greenAccent,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.green, width: 2),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 5,
+                                  children: const [
+                                    Text(
+                                      'Finish Job',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.done_outline_rounded,
+                                      color: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ],
@@ -1671,7 +1984,6 @@ void showAddDialog(BuildContext context) {
   TextEditingController PartNo10Controller = TextEditingController();
   TextEditingController AmountOfSampleController = TextEditingController();
   TextEditingController TakePhotoController = TextEditingController();
-  TextEditingController StartDateController = TextEditingController();
   TextEditingController Time1Controller = TextEditingController();
   TextEditingController Time2Controller = TextEditingController();
   TextEditingController Time3Controller = TextEditingController();
@@ -1717,7 +2029,7 @@ void showAddDialog(BuildContext context) {
   TextEditingController InchargeController = TextEditingController();
   TextEditingController ApprovedDateController = TextEditingController();
   TextEditingController ApprovedByController = TextEditingController();
-  TextEditingController StatusController = TextEditingController();
+  TextEditingController StatusController = TextEditingController(text: 'RECEIVED');
   // TextEditingController CheckBoxController = TextEditingController(text: selectslot);
   // TextEditingController RemarkController = TextEditingController();
 
@@ -1930,52 +2242,7 @@ void showAddDialog(BuildContext context) {
                             height: 10,
                           ),
                           buildCustomField(
-                            controller: RequestNoController,
-                            focusNode: RequestNoFocusNode,
-                            labelText: "Request No.",
-                            icon: Icons.assignment,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.REQUESTNO = value;
-                            },
-                          ),
-                          buildCustomField(
-                            controller: ReportNoController,
-                            focusNode: ReportNoFocusNode,
-                            labelText: "Report No.",
-                            icon: Icons.assignment,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.REPORTNO = value;
-                            },
-                          ),
-                          buildCustomField(
-                            controller: SectionRequestController,
-                            focusNode: SectionRequestFocusNode,
-                            labelText: "Section Request",
-                            icon: Icons.account_tree,
-                            dropdownItems: ['QC HP', 'QC BP', 'MKT ES1'],
-                            onChanged: (value) {
-                              P03DATATABLEVAR.SECTION = value;
-                            },
-                          ),
-                          buildCustomField(
-                            controller: RequesterController,
-                            focusNode: RequesterFocusNode,
-                            labelText: "Requester",
-                            icon: Icons.person,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.REQUESTER = value;
-                            },
-                          ),
-                          buildCustomField(
-                            controller: ReceivedDateController,
-                            focusNode: ReceivedDateFocusNode,
-                            labelText: "Received Date",
-                            icon: Icons.calendar_month_rounded,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.RECEIVEDDATE = convertStringToDateTime(value).toString();
-                            },
-                          ),
-                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: CustomerNameController,
                             focusNode: CustomerNameFocusNode,
                             labelText: "Customer Name",
@@ -1983,91 +2250,56 @@ void showAddDialog(BuildContext context) {
                             dropdownItems: P03DATATABLEVAR.dropdownCustomer,
                             onChanged: (value) {
                               P03DATATABLEVAR.CUSTOMERNAME = value;
+                              setState(() {
+                                if (P03DATATABLEVAR.CUSTOMERNAME == 'PM') {
+                                  P03DATATABLEVAR.CustomerIsPM = true;
+                                  StatusController.text = 'PM';
+                                } else {
+                                  P03DATATABLEVAR.CustomerIsPM = false;
+                                }
+                              });
                             },
                           ),
-                          for (int i = 0; i < _visiblePartNameCount + 1 && i < 10; i++)
-                            buildCustomField(
-                              controller: partNameControllers[i],
-                              focusNode: partNameFocusNodes[i],
-                              labelText: "Part Name ${i + 1}",
-                              icon: Icons.settings,
-                              onChanged: (value) {
-                                partNameVAR[i] = value;
-                                P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
-                                P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
-                                P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
-                                P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
-                                P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
-                                P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
-                                P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
-                                P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
-                                P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
-                                P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
-                              },
-                            ),
-                          if (_visiblePartNameCount < 9)
-                            buildAddPartNameButton(
-                              visibleCount: _visiblePartNameCount,
-                              onPressed: () {
-                                setState(() {
-                                  _visiblePartNameCount++;
-                                });
-                              },
-                            ),
-                          for (int i = 0; i < _visiblePartNoCount + 1 && i < 10; i++)
-                            buildCustomField(
-                              controller: partNoControllers[i],
-                              focusNode: partNoFocusNodes[i],
-                              labelText: "Part No ${i + 1}",
-                              icon: Icons.settings,
-                              onChanged: (value) {
-                                partNoVAR[i] = value;
-                                P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
-                                P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
-                                P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
-                                P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
-                                P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
-                                P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
-                                P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
-                                P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
-                                P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
-                                P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
-                              },
-                            ),
-                          if (_visiblePartNoCount < 9)
-                            buildAddPartNameButton(
-                              visibleCount: _visiblePartNoCount,
-                              onPressed: () {
-                                setState(() {
-                                  _visiblePartNoCount++;
-                                });
-                              },
-                            ),
                           buildCustomField(
-                            controller: AmountOfSampleController,
-                            focusNode: AmountOfSampleFocusNode,
-                            labelText: "Amount of Sample (Pcs)",
-                            icon: Icons.science,
+                            context: P03DATATABLEMAINcontext,
+                            controller: InstrumentController,
+                            focusNode: InstrumentFocusNode,
+                            labelText: "Instrument",
+                            icon: Icons.analytics_outlined,
+                            dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
                             onChanged: (value) {
-                              P03DATATABLEVAR.AMOUNTSAMPLE = int.parse(value);
+                              P03DATATABLEVAR.INSTRUMENT = value;
+                              setState(() {});
                             },
                           ),
+                          if (InstrumentController.text != '')
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: selectslot,
+                              focusNode: CheckBoxFocusNode,
+                              labelText: "Select Slot",
+                              icon: Icons.add_box_rounded,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.CHECKBOX = value;
+                                StartDateController.text = StartDateControllerGlobal.text;
+                                setState(() {});
+                                print(StartDateController.text);
+                              },
+                              ontap: () {
+                                P03DATATABLEVAR.STATUS = StatusController.text;
+                                selectstatus = StatusController.text;
+                                selectpage = 'Salt Spray Tester : ${P03DATATABLEVAR.INSTRUMENT}';
+                                showChooseSlot(context);
+                                setState(() {});
+                              },
+                            ),
                           buildCustomField(
-                            controller: TakePhotoController,
-                            focusNode: TakePhotoFocusNode,
-                            labelText: "Take photo (Pcs)",
-                            icon: Icons.photo_camera,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.TAKEPHOTO = int.parse(value);
-                            },
-                          ),
-                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: StartDateController,
                             focusNode: StartDateFocusNode,
                             labelText: "Start Date",
                             icon: Icons.calendar_month_rounded,
                             onChanged: (value) async {
-                              P03DATATABLEVAR.STARTDATE = convertStringToDateTime(value).toString();
                               for (int i = 0; i < 10; i++) {
                                 calculateFinishDate(
                                   startDateController: StartDateController,
@@ -2076,7 +2308,9 @@ void showAddDialog(BuildContext context) {
                                 );
                                 DateTime? FinishDateToDateTime =
                                     convertStringToDateTime(finishDateControllers[i].text);
-                                if (FinishDateToDateTime != '' && FinishDateToDateTime != null) {
+                                if (FinishDateToDateTime != '' &&
+                                    FinishDateToDateTime != null &&
+                                    P03DATATABLEVAR.CustomerIsPM == false) {
                                   String CalTemp = await calculateRepDue(
                                     startDate: DateTime(FinishDateToDateTime.year, FinishDateToDateTime.month,
                                         FinishDateToDateTime.day),
@@ -2095,7 +2329,6 @@ void showAddDialog(BuildContext context) {
                                   convertStringToDateTime(finishDateControllers[0].text).toString();
                               P03DATATABLEVAR.FINISHDATE2 =
                                   convertStringToDateTime(finishDateControllers[1].text).toString();
-
                               P03DATATABLEVAR.FINISHDATE3 =
                                   convertStringToDateTime(finishDateControllers[2].text).toString();
                               P03DATATABLEVAR.FINISHDATE4 =
@@ -2112,122 +2345,116 @@ void showAddDialog(BuildContext context) {
                                   convertStringToDateTime(finishDateControllers[8].text).toString();
                               P03DATATABLEVAR.FINISHDATE10 =
                                   convertStringToDateTime(finishDateControllers[9].text).toString();
-                              P03DATATABLEVAR.TEMPDATE1 =
-                                  convertStringToDateTime(tempDateControllers[0].text).toString();
-                              P03DATATABLEVAR.TEMPDATE2 =
-                                  convertStringToDateTime(tempDateControllers[1].text).toString();
-                              P03DATATABLEVAR.TEMPDATE3 =
-                                  convertStringToDateTime(tempDateControllers[2].text).toString();
-                              P03DATATABLEVAR.TEMPDATE4 =
-                                  convertStringToDateTime(tempDateControllers[3].text).toString();
-                              P03DATATABLEVAR.TEMPDATE5 =
-                                  convertStringToDateTime(tempDateControllers[4].text).toString();
-                              P03DATATABLEVAR.TEMPDATE6 =
-                                  convertStringToDateTime(tempDateControllers[5].text).toString();
-                              P03DATATABLEVAR.TEMPDATE7 =
-                                  convertStringToDateTime(tempDateControllers[6].text).toString();
-                              P03DATATABLEVAR.TEMPDATE8 =
-                                  convertStringToDateTime(tempDateControllers[7].text).toString();
-                              P03DATATABLEVAR.TEMPDATE9 =
-                                  convertStringToDateTime(tempDateControllers[8].text).toString();
-                              P03DATATABLEVAR.TEMPDATE10 =
-                                  convertStringToDateTime(tempDateControllers[9].text).toString();
-                              P03DATATABLEVAR.DUEDATE1 =
-                                  convertStringToDateTime(dueDateControllers[0].text).toString();
-                              P03DATATABLEVAR.DUEDATE2 =
-                                  convertStringToDateTime(dueDateControllers[1].text).toString();
-                              P03DATATABLEVAR.DUEDATE3 =
-                                  convertStringToDateTime(dueDateControllers[2].text).toString();
-                              P03DATATABLEVAR.DUEDATE4 =
-                                  convertStringToDateTime(dueDateControllers[3].text).toString();
-                              P03DATATABLEVAR.DUEDATE5 =
-                                  convertStringToDateTime(dueDateControllers[4].text).toString();
-                              P03DATATABLEVAR.DUEDATE6 =
-                                  convertStringToDateTime(dueDateControllers[5].text).toString();
-                              P03DATATABLEVAR.DUEDATE7 =
-                                  convertStringToDateTime(dueDateControllers[6].text).toString();
-                              P03DATATABLEVAR.DUEDATE8 =
-                                  convertStringToDateTime(dueDateControllers[7].text).toString();
-                              P03DATATABLEVAR.DUEDATE9 =
-                                  convertStringToDateTime(dueDateControllers[8].text).toString();
-                              P03DATATABLEVAR.DUEDATE10 =
-                                  convertStringToDateTime(dueDateControllers[9].text).toString();
+                              if (P03DATATABLEVAR.CustomerIsPM == false) {
+                                P03DATATABLEVAR.TEMPDATE1 =
+                                    convertStringToDateTime(tempDateControllers[0].text).toString();
+                                P03DATATABLEVAR.TEMPDATE2 =
+                                    convertStringToDateTime(tempDateControllers[1].text).toString();
+                                P03DATATABLEVAR.TEMPDATE3 =
+                                    convertStringToDateTime(tempDateControllers[2].text).toString();
+                                P03DATATABLEVAR.TEMPDATE4 =
+                                    convertStringToDateTime(tempDateControllers[3].text).toString();
+                                P03DATATABLEVAR.TEMPDATE5 =
+                                    convertStringToDateTime(tempDateControllers[4].text).toString();
+                                P03DATATABLEVAR.TEMPDATE6 =
+                                    convertStringToDateTime(tempDateControllers[5].text).toString();
+                                P03DATATABLEVAR.TEMPDATE7 =
+                                    convertStringToDateTime(tempDateControllers[6].text).toString();
+                                P03DATATABLEVAR.TEMPDATE8 =
+                                    convertStringToDateTime(tempDateControllers[7].text).toString();
+                                P03DATATABLEVAR.TEMPDATE9 =
+                                    convertStringToDateTime(tempDateControllers[8].text).toString();
+                                P03DATATABLEVAR.TEMPDATE10 =
+                                    convertStringToDateTime(tempDateControllers[9].text).toString();
+                                P03DATATABLEVAR.DUEDATE1 =
+                                    convertStringToDateTime(dueDateControllers[0].text).toString();
+                                P03DATATABLEVAR.DUEDATE2 =
+                                    convertStringToDateTime(dueDateControllers[1].text).toString();
+                                P03DATATABLEVAR.DUEDATE3 =
+                                    convertStringToDateTime(dueDateControllers[2].text).toString();
+                                P03DATATABLEVAR.DUEDATE4 =
+                                    convertStringToDateTime(dueDateControllers[3].text).toString();
+                                P03DATATABLEVAR.DUEDATE5 =
+                                    convertStringToDateTime(dueDateControllers[4].text).toString();
+                                P03DATATABLEVAR.DUEDATE6 =
+                                    convertStringToDateTime(dueDateControllers[5].text).toString();
+                                P03DATATABLEVAR.DUEDATE7 =
+                                    convertStringToDateTime(dueDateControllers[6].text).toString();
+                                P03DATATABLEVAR.DUEDATE8 =
+                                    convertStringToDateTime(dueDateControllers[7].text).toString();
+                                P03DATATABLEVAR.DUEDATE9 =
+                                    convertStringToDateTime(dueDateControllers[8].text).toString();
+                                P03DATATABLEVAR.DUEDATE10 =
+                                    convertStringToDateTime(dueDateControllers[9].text).toString();
+                              }
                               setState(() {});
                             },
                           ),
-                          if (StartDateController.text != '') ...[
-                            for (int i = 0; i < _visibleTimeCount + 1 && i < 10; i++)
-                              Column(
-                                spacing: 10,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: buildCustomField(
-                                          controller: timeControllers[i],
-                                          focusNode: timeFocusNodes[i],
-                                          labelText: "Time ${i + 1} (Hrs.)",
-                                          icon: Icons.timer_sharp,
-                                          onChanged: (value) async {
-                                            EditTextController(
-                                              controller: timeControllers[i],
-                                              value: value,
-                                            );
-                                            P03DATATABLEVAR.TIME1 =
-                                                int.tryParse(timeControllers[0].text) ?? 0;
-                                            P03DATATABLEVAR.TIME2 =
-                                                int.tryParse(timeControllers[1].text) ?? 0;
-                                            P03DATATABLEVAR.TIME3 =
-                                                int.tryParse(timeControllers[2].text) ?? 0;
-                                            P03DATATABLEVAR.TIME4 =
-                                                int.tryParse(timeControllers[3].text) ?? 0;
-                                            P03DATATABLEVAR.TIME5 =
-                                                int.tryParse(timeControllers[4].text) ?? 0;
-                                            P03DATATABLEVAR.TIME6 =
-                                                int.tryParse(timeControllers[5].text) ?? 0;
-                                            P03DATATABLEVAR.TIME7 =
-                                                int.tryParse(timeControllers[6].text) ?? 0;
-                                            P03DATATABLEVAR.TIME8 =
-                                                int.tryParse(timeControllers[7].text) ?? 0;
-                                            P03DATATABLEVAR.TIME9 =
-                                                int.tryParse(timeControllers[8].text) ?? 0;
-                                            P03DATATABLEVAR.TIME10 =
-                                                int.tryParse(timeControllers[9].text) ?? 0;
-                                            calculateFinishDate(
-                                              startDateController: StartDateController,
-                                              timeController: timeControllers[i],
-                                              finishDateController: finishDateControllers[i],
-                                            );
-                                            P03DATATABLEVAR.FINISHDATE1 =
-                                                convertStringToDateTime(finishDateControllers[0].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE2 =
-                                                convertStringToDateTime(finishDateControllers[1].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE3 =
-                                                convertStringToDateTime(finishDateControllers[2].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE4 =
-                                                convertStringToDateTime(finishDateControllers[3].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE5 =
-                                                convertStringToDateTime(finishDateControllers[4].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE6 =
-                                                convertStringToDateTime(finishDateControllers[5].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE7 =
-                                                convertStringToDateTime(finishDateControllers[6].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE8 =
-                                                convertStringToDateTime(finishDateControllers[7].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE9 =
-                                                convertStringToDateTime(finishDateControllers[8].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.FINISHDATE10 =
-                                                convertStringToDateTime(finishDateControllers[9].text)
-                                                    .toString();
+                          // if (StartDateController.text != '') ...[
+                          for (int i = 0; i < _visibleTimeCount + 1 && i < 10; i++)
+                            Column(
+                              spacing: 10,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: timeControllers[i],
+                                        focusNode: timeFocusNodes[i],
+                                        labelText: "Time ${i + 1} (Hrs.)",
+                                        icon: Icons.timer_sharp,
+                                        onChanged: (value) async {
+                                          EditTextController(
+                                            controller: timeControllers[i],
+                                            value: value,
+                                          );
+                                          P03DATATABLEVAR.TIME1 = int.tryParse(timeControllers[0].text) ?? 0;
+                                          P03DATATABLEVAR.TIME2 = int.tryParse(timeControllers[1].text) ?? 0;
+                                          P03DATATABLEVAR.TIME3 = int.tryParse(timeControllers[2].text) ?? 0;
+                                          P03DATATABLEVAR.TIME4 = int.tryParse(timeControllers[3].text) ?? 0;
+                                          P03DATATABLEVAR.TIME5 = int.tryParse(timeControllers[4].text) ?? 0;
+                                          P03DATATABLEVAR.TIME6 = int.tryParse(timeControllers[5].text) ?? 0;
+                                          P03DATATABLEVAR.TIME7 = int.tryParse(timeControllers[6].text) ?? 0;
+                                          P03DATATABLEVAR.TIME8 = int.tryParse(timeControllers[7].text) ?? 0;
+                                          P03DATATABLEVAR.TIME9 = int.tryParse(timeControllers[8].text) ?? 0;
+                                          P03DATATABLEVAR.TIME10 = int.tryParse(timeControllers[9].text) ?? 0;
+                                          calculateFinishDate(
+                                            startDateController: StartDateController,
+                                            timeController: timeControllers[i],
+                                            finishDateController: finishDateControllers[i],
+                                          );
+                                          P03DATATABLEVAR.FINISHDATE1 =
+                                              convertStringToDateTime(finishDateControllers[0].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE2 =
+                                              convertStringToDateTime(finishDateControllers[1].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE3 =
+                                              convertStringToDateTime(finishDateControllers[2].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE4 =
+                                              convertStringToDateTime(finishDateControllers[3].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE5 =
+                                              convertStringToDateTime(finishDateControllers[4].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE6 =
+                                              convertStringToDateTime(finishDateControllers[5].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE7 =
+                                              convertStringToDateTime(finishDateControllers[6].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE8 =
+                                              convertStringToDateTime(finishDateControllers[7].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE9 =
+                                              convertStringToDateTime(finishDateControllers[8].text)
+                                                  .toString();
+                                          P03DATATABLEVAR.FINISHDATE10 =
+                                              convertStringToDateTime(finishDateControllers[9].text)
+                                                  .toString();
+                                          if (P03DATATABLEVAR.CustomerIsPM == false) {
                                             await calculateAndSetTempDate(
                                               finishDateController: finishDateControllers[i],
                                               DateController: tempDateControllers[i],
@@ -2298,24 +2525,28 @@ void showAddDialog(BuildContext context) {
                                             P03DATATABLEVAR.DUEDATE10 =
                                                 convertStringToDateTime(dueDateControllers[9].text)
                                                     .toString();
-                                          },
-                                        ),
+                                          }
+                                        },
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: buildCustomField(
-                                          controller: finishDateControllers[i],
-                                          focusNode: finishDateFocusNodes[i],
-                                          labelText: "Finish Date ${i + 1}",
-                                          icon: Icons.calendar_month_rounded,
-                                        ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: finishDateControllers[i],
+                                        focusNode: finishDateFocusNodes[i],
+                                        labelText: "Finish Date ${i + 1}",
+                                        icon: Icons.calendar_month_rounded,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
+                                if (P03DATATABLEVAR.CustomerIsPM == false)
                                   Row(
                                     children: [
                                       Expanded(
                                         child: buildCustomField(
+                                          context: P03DATATABLEMAINcontext,
                                           controller: tempDateControllers[i],
                                           focusNode: tempDateFocusNodes[i],
                                           labelText: "Temp Date ${i + 1}",
@@ -2325,6 +2556,7 @@ void showAddDialog(BuildContext context) {
                                       const SizedBox(width: 10),
                                       Expanded(
                                         child: buildCustomField(
+                                          context: P03DATATABLEMAINcontext,
                                           controller: dueDateControllers[i],
                                           focusNode: dueDateFocusNodes[i],
                                           labelText: "Due Date ${i + 1}",
@@ -2333,50 +2565,177 @@ void showAddDialog(BuildContext context) {
                                       ),
                                     ],
                                   ),
-                                ],
+                              ],
+                            ),
+                          if (_visibleTimeCount < 9 && P03DATATABLEVAR.CustomerIsPM == false)
+                            buildAddPartNameButton(
+                              visibleCount: _visibleTimeCount,
+                              onPressed: () {
+                                setState(() {
+                                  _visibleTimeCount++;
+                                });
+                              },
+                            ),
+                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
+                            controller: RequestNoController,
+                            focusNode: RequestNoFocusNode,
+                            labelText: "Request No.",
+                            icon: Icons.assignment,
+                            onChanged: (value) {
+                              P03DATATABLEVAR.REQUESTNO = value;
+                              P03DATATABLEVAR.REPORTNO = value;
+                              ReportNoController.text = value;
+                            },
+                          ),
+                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
+                            controller: ReportNoController,
+                            focusNode: ReportNoFocusNode,
+                            labelText: "Report No.",
+                            icon: Icons.assignment,
+                          ),
+                          if (P03DATATABLEVAR.CustomerIsPM == false) ...[
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: SectionRequestController,
+                              focusNode: SectionRequestFocusNode,
+                              labelText: "Section Request",
+                              icon: Icons.account_tree,
+                              dropdownItems: ['QC HP', 'QC BP', 'MKT ES1'],
+                              onChanged: (value) {
+                                P03DATATABLEVAR.SECTION = value;
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: RequesterController,
+                              focusNode: RequesterFocusNode,
+                              labelText: "Requester",
+                              icon: Icons.person,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.REQUESTER = value;
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: ReceivedDateController,
+                              focusNode: ReceivedDateFocusNode,
+                              labelText: "Received Date",
+                              icon: Icons.calendar_month_rounded,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.RECEIVEDDATE = convertStringToDateTime(value).toString();
+                              },
+                            ),
+
+                            for (int i = 0; i < _visiblePartNameCount + 1 && i < 10; i++)
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: partNameControllers[i],
+                                focusNode: partNameFocusNodes[i],
+                                labelText: "Part Name ${i + 1}",
+                                icon: Icons.settings,
+                                onChanged: (value) {
+                                  partNameVAR[i] = value;
+                                  P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
+                                  P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
+                                  P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
+                                  P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
+                                  P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
+                                  P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
+                                  P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
+                                  P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
+                                  P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
+                                  P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
+                                },
                               ),
-                            if (_visibleTimeCount < 9)
+                            if (_visiblePartNameCount < 9)
                               buildAddPartNameButton(
-                                visibleCount: _visibleTimeCount,
+                                visibleCount: _visiblePartNameCount,
                                 onPressed: () {
                                   setState(() {
-                                    _visibleTimeCount++;
+                                    _visiblePartNameCount++;
                                   });
                                 },
                               ),
+                            for (int i = 0; i < _visiblePartNoCount + 1 && i < 10; i++)
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: partNoControllers[i],
+                                focusNode: partNoFocusNodes[i],
+                                labelText: "Part No ${i + 1}",
+                                icon: Icons.settings,
+                                onChanged: (value) {
+                                  partNoVAR[i] = value;
+                                  P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
+                                  P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
+                                  P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
+                                  P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
+                                  P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
+                                  P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
+                                  P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
+                                  P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
+                                  P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
+                                  P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
+                                },
+                              ),
+                            if (_visiblePartNoCount < 9)
+                              buildAddPartNameButton(
+                                visibleCount: _visiblePartNoCount,
+                                onPressed: () {
+                                  setState(() {
+                                    _visiblePartNoCount++;
+                                  });
+                                },
+                              ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: AmountOfSampleController,
+                              focusNode: AmountOfSampleFocusNode,
+                              labelText: "Amount of Sample (Pcs)",
+                              icon: Icons.science,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.AMOUNTSAMPLE = int.parse(value);
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: TakePhotoController,
+                              focusNode: TakePhotoFocusNode,
+                              labelText: "Take photo (Pcs)",
+                              icon: Icons.photo_camera,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.TAKEPHOTO = int.parse(value);
+                              },
+                            ),
+
+                            // ],
+
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: MethodController,
+                              focusNode: MethodFocusNode,
+                              labelText: "Method",
+                              icon: Icons.precision_manufacturing,
+                              dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
+                              onChanged: (value) {
+                                P03DATATABLEVAR.METHOD = value;
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: InchargeController,
+                              focusNode: InchargeFocusNode,
+                              labelText: "Incharge",
+                              icon: Icons.person,
+                              dropdownItems: P03DATATABLEVAR.dropdownIncharge,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.INCHARGE = value;
+                              },
+                            ),
                           ],
                           buildCustomField(
-                            controller: InstrumentController,
-                            focusNode: InstrumentFocusNode,
-                            labelText: "Instrument",
-                            icon: Icons.analytics_outlined,
-                            dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
-                            onChanged: (value) {
-                              P03DATATABLEVAR.INSTRUMENT = value;
-                              setState(() {});
-                            },
-                          ),
-                          buildCustomField(
-                            controller: MethodController,
-                            focusNode: MethodFocusNode,
-                            labelText: "Method",
-                            icon: Icons.precision_manufacturing,
-                            dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
-                            onChanged: (value) {
-                              P03DATATABLEVAR.METHOD = value;
-                            },
-                          ),
-                          buildCustomField(
-                            controller: InchargeController,
-                            focusNode: InchargeFocusNode,
-                            labelText: "Incharge",
-                            icon: Icons.person,
-                            dropdownItems: P03DATATABLEVAR.dropdownIncharge,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.INCHARGE = value;
-                            },
-                          ),
-                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: ApprovedDateController,
                             focusNode: ApprovedDateFocusNode,
                             labelText: "Approved Date",
@@ -2386,6 +2745,7 @@ void showAddDialog(BuildContext context) {
                             },
                           ),
                           buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: ApprovedByController,
                             focusNode: ApprovedByFocusNode,
                             labelText: "Approved By",
@@ -2396,49 +2756,35 @@ void showAddDialog(BuildContext context) {
                             },
                           ),
                           if (InstrumentController.text != '')
-                            buildCustomField(
+                            buildCustomFieldforEditData(
                               controller: StatusController,
                               focusNode: StatusFocusNode,
                               labelText: "Status",
                               icon: Icons.info,
-                              dropdownItems: ['RECEIVED', 'RESERVED'],
                               onChanged: (value) {
                                 P03DATATABLEVAR.STATUS = value;
-                                selectpage = 'Salt Spray Tester : ${P03DATATABLEVAR.INSTRUMENT}';
-                                selectstatus = value;
-                                showChooseSlot(context);
-                                setState(() {});
-                                // print(selectpage);
-                                // print(selectstatus);
                               },
                             ),
-                          if (StatusController.text != '')
-                            buildCustomFieldforEditData(
-                              controller: selectslot,
-                              focusNode: CheckBoxFocusNode,
-                              labelText: "Select Slot",
-                              icon: Icons.add_box_rounded,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.CHECKBOX = value;
-                              },
-                            ),
+                          // if (StatusController.text != '')
+
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                               onPressed: () async {
-                                await showAddConfirmationDialog(
-                                  context: context,
-                                  onConfirm: () async {
-                                    P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
-                                    // print(P03DATATABLEVAR.SendAddDataToAPI);
-                                    AddDataToAPI();
-                                    initSocketConnection();
-                                    sendDataToServer('AddJob');
-                                    // await AddDataToAPI();
-                                    // await initSocketConnection();
-                                    // await sendDataToServer('AddJob');
-                                  },
-                                );
+                                CheckSlotAndTimeOverlabToAPI(context);
+                                // await showAddConfirmationDialog(
+                                //   context: context,
+                                //   onConfirm: () async {
+                                //     P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
+                                //     // print(P03DATATABLEVAR.SendAddDataToAPI);
+                                //     AddDataToAPI();
+                                //     // initSocketConnection();
+                                //     // sendDataToServer('AddJob');
+                                //     // await AddDataToAPI();
+                                //     // await initSocketConnection();
+                                //     // await sendDataToServer('AddJob');
+                                //   },
+                                // );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -2484,389 +2830,7 @@ void showAddDialog(BuildContext context) {
   );
 }
 
-Widget buildCustomField({
-  required TextEditingController controller,
-  required FocusNode focusNode,
-  required String labelText,
-  required IconData icon,
-  void Function(String)? onChanged,
-  void Function(String)? onSubmitted,
-  List<String>? dropdownItems,
-}) {
-  // ถ้าเป็น Section Request ให้แสดง Dropdown
-  if ((labelText == "Section Request" ||
-          labelText == "Customer Name" ||
-          labelText == "Instrument" ||
-          labelText == "Method" ||
-          labelText == "Incharge" ||
-          labelText == "Approved By" ||
-          labelText == "Status") &&
-      dropdownItems != null) {
-    return DropdownSearch<String>(
-      items: dropdownItems,
-      selectedItem: controller.text.isNotEmpty ? controller.text : null,
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.blue),
-          labelText: labelText,
-          labelStyle: buildTextStyle(),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-      ),
-      popupProps: PopupProps.menu(
-        showSearchBox: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-        ),
-        fit: FlexFit.loose,
-      ),
-      dropdownBuilder: (context, selectedItem) {
-        return Text(
-          selectedItem ?? '',
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 14),
-        );
-      },
-      onChanged: (value) {
-        if (value != null) {
-          controller.text = value;
-          if (onChanged != null) onChanged(value);
-        }
-      },
-    );
-  }
-
-  if (labelText == "Received Date" || labelText == "Approved Date") {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-            context: P03DATATABLEMAINcontext,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-          );
-          if (pickedDate != null) {
-            String formattedDate =
-                "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year.toString().substring(2)}";
-            controller.text = formattedDate;
-            onChanged?.call(formattedDate);
-          }
-        },
-        child: AbsorbPointer(
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: Colors.blue),
-              labelText: labelText,
-              labelStyle: buildTextStyle(),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-              filled: true,
-              fillColor: Colors.white,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  if (labelText == "Start Date") {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-            context: P03DATATABLEMAINcontext,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-          );
-
-          if (pickedDate != null) {
-            TimeOfDay? pickedTime = await showTimePicker(
-              context: P03DATATABLEMAINcontext,
-              initialTime: TimeOfDay.now(),
-              initialEntryMode: TimePickerEntryMode.input,
-              builder: (context, child) {
-                return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-                  child: child!,
-                );
-              },
-            );
-
-            if (pickedTime != null) {
-              final DateTime fullDateTime = DateTime(
-                pickedDate.year,
-                pickedDate.month,
-                pickedDate.day,
-                pickedTime.hour,
-                pickedTime.minute,
-              );
-
-              String formattedDateTime = "${fullDateTime.day.toString().padLeft(2, '0')}-"
-                  "${fullDateTime.month.toString().padLeft(2, '0')}-"
-                  "${fullDateTime.year.toString().substring(2)} "
-                  "${fullDateTime.hour.toString().padLeft(2, '0')}:"
-                  "${fullDateTime.minute.toString().padLeft(2, '0')}";
-
-              controller.text = formattedDateTime;
-              onChanged?.call(formattedDateTime);
-            }
-          }
-        },
-        child: AbsorbPointer(
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: Colors.blue),
-              labelText: labelText,
-              labelStyle: buildTextStyle(),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-              filled: true,
-              fillColor: Colors.white,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  if (labelText == "Finish Date 1" ||
-      labelText == "Finish Date 2" ||
-      labelText == "Finish Date 3" ||
-      labelText == "Finish Date 4" ||
-      labelText == "Finish Date 5" ||
-      labelText == "Finish Date 6" ||
-      labelText == "Finish Date 7" ||
-      labelText == "Finish Date 8" ||
-      labelText == "Finish Date 9" ||
-      labelText == "Finish Date 10" ||
-      labelText == "Temp Date 1" ||
-      labelText == "Temp Date 2" ||
-      labelText == "Temp Date 3" ||
-      labelText == "Temp Date 4" ||
-      labelText == "Temp Date 5" ||
-      labelText == "Temp Date 6" ||
-      labelText == "Temp Date 7" ||
-      labelText == "Temp Date 8" ||
-      labelText == "Temp Date 9" ||
-      labelText == "Temp Date 10" ||
-      labelText == "Due Date 1" ||
-      labelText == "Due Date 2" ||
-      labelText == "Due Date 3" ||
-      labelText == "Due Date 4" ||
-      labelText == "Due Date 5" ||
-      labelText == "Due Date 6" ||
-      labelText == "Due Date 7" ||
-      labelText == "Due Date 8" ||
-      labelText == "Due Date 9" ||
-      labelText == "Due Date 10") {
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      readOnly: true,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.grey),
-        labelText: labelText,
-        labelStyle: buildTextStyleGrey(),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-        filled: true,
-        fillColor: Colors.grey[300],
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-      style: const TextStyle(color: Colors.black54),
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-    );
-  }
-  if (labelText == "Time 1 (Hrs.)" ||
-      labelText == "Time 2 (Hrs.)" ||
-      labelText == "Time 3 (Hrs.)" ||
-      labelText == "Time 4 (Hrs.)" ||
-      labelText == "Time 5 (Hrs.)" ||
-      labelText == "Time 6 (Hrs.)" ||
-      labelText == "Time 7 (Hrs.)" ||
-      labelText == "Time 8 (Hrs.)" ||
-      labelText == "Time 9 (Hrs.)" ||
-      labelText == "Time 10 (Hrs.)" ||
-      labelText == "Amount of Sample (Pcs)" ||
-      labelText == "Take photo (Pcs)") {
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      keyboardType: TextInputType.number, // แสดงคีย์บอร์ดตัวเลข
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly, // รับเฉพาะตัวเลขเท่านั้น
-      ],
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.blue),
-        labelText: labelText,
-        labelStyle: buildTextStyle(),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-        filled: true,
-        fillColor: Colors.white,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-    );
-  }
-
-  return TextField(
-    controller: controller,
-    focusNode: focusNode,
-    decoration: InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.blue),
-      labelText: labelText,
-      labelStyle: buildTextStyle(),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      filled: true,
-      fillColor: Colors.white,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
-    onChanged: onChanged,
-    onSubmitted: onSubmitted,
-  );
-}
-
-Widget buildCustomFieldforEditData({
-  required TextEditingController controller,
-  required FocusNode focusNode,
-  required String labelText,
-  required IconData icon,
-  void Function(String)? onChanged,
-  void Function(String)? onSubmitted,
-  List<String>? dropdownItems,
-}) {
-  if ((labelText == "Status") && dropdownItems != null) {
-    return DropdownSearch<String>(
-      items: dropdownItems,
-      enabled: false,
-      selectedItem: controller.text.isNotEmpty ? controller.text : null,
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.grey),
-          labelText: labelText,
-          labelStyle: buildTextStyleGrey(),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-          filled: true,
-          fillColor: Colors.grey[300],
-        ),
-      ),
-      popupProps: PopupProps.menu(
-        showSearchBox: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-        ),
-        fit: FlexFit.loose,
-      ),
-      dropdownBuilder: (context, selectedItem) {
-        return Text(
-          selectedItem ?? '',
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 14),
-        );
-      },
-      onChanged: (value) {
-        if (value != null) {
-          controller.text = value;
-          if (onChanged != null) onChanged(value);
-        }
-      },
-    );
-  }
-
-  return TextField(
-    controller: controller,
-    focusNode: focusNode,
-    readOnly: true,
-    decoration: InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.grey),
-      labelText: labelText,
-      labelStyle: buildTextStyleGrey(),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-      filled: true,
-      fillColor: Colors.grey[300],
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
-    style: const TextStyle(color: Colors.black54),
-    onChanged: onChanged,
-    onSubmitted: onSubmitted,
-  );
-}
-
-void calculateFinishDate({
-  required TextEditingController startDateController,
-  required TextEditingController timeController,
-  required TextEditingController finishDateController,
-}) {
-  try {
-    // print(timeController);
-    // print(timeController.text);
-    if (timeController.text == '') {
-      finishDateController.text = "";
-      return;
-    }
-    DateTime startDate = convertStringToDateTime(startDateController.text)!;
-    int addedHours = int.parse(timeController.text);
-
-    DateTime finishDate = startDate.add(Duration(hours: addedHours));
-    finishDateController.text = formatDate(finishDate.toString());
-    if (finishDateController.text == startDateController.text || addedHours == 0 || addedHours == '') {
-      finishDateController.text = "";
-    }
-  } catch (e) {
-    debugPrint("Error in calculateFinishDate: $e");
-    finishDateController.text = "";
-  }
-}
-
-TextStyle buildTextStyle() {
-  return TextStyle(
-    color: Colors.black,
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-  );
-}
-
-TextStyle buildTextStyleGrey() {
-  return TextStyle(
-    color: Colors.grey,
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-  );
-}
-
-void EditTextController({
-  required TextEditingController controller,
-  required String value,
-}) {
-  final oldValue = controller.value;
-  controller.value = TextEditingValue(
-    text: value,
-    selection: oldValue.selection,
-  );
-}
-
-Future<void> fetchCustomerAndIncharge() async {
+Future<void> _fetchCustomerAndIncharge() async {
   try {
     FreeLoadingTan(P03DATATABLEMAINcontext);
     final responseCustomer = await Dio().post(
@@ -2874,7 +2838,7 @@ Future<void> fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -2894,7 +2858,7 @@ Future<void> fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -2921,7 +2885,7 @@ Future<void> fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -2944,7 +2908,7 @@ Future<void> fetchCustomerAndIncharge() async {
   }
 }
 
-Future<void> EditDataToAPI() async {
+Future<void> _EditDataToAPI() async {
   try {
     FreeLoadingTan(P03DATATABLEMAINcontext);
     final response = await Dio().post(
@@ -2954,7 +2918,7 @@ Future<void> EditDataToAPI() async {
       },
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -2962,6 +2926,98 @@ Future<void> EditDataToAPI() async {
     if (response.statusCode == 200) {
       P03DATATABLEMAINcontext.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
       // Navigator.pop(P03DATATABLEMAINcontext);
+      Navigator.pop(P03DATATABLEMAINcontext);
+    } else {
+      Navigator.pop(P03DATATABLEMAINcontext);
+      showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(P03DATATABLEMAINcontext, e.toString());
+  } finally {
+    Navigator.pop(P03DATATABLEMAINcontext);
+  }
+}
+
+Future<void> _StatJobToAPI() async {
+  try {
+    FreeLoadingTan(P03DATATABLEMAINcontext);
+    final response = await Dio().post(
+      "$ToServer/02SALTSPRAY/StartJob",
+      data: {
+        'dataRow': P03DATATABLEVAR.SendEditDataToAPI,
+      },
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      P03DATATABLEMAINcontext.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
+      // Navigator.pop(P03DATATABLEMAINcontext);
+      Navigator.pop(P03DATATABLEMAINcontext);
+    } else {
+      Navigator.pop(P03DATATABLEMAINcontext);
+      showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(P03DATATABLEMAINcontext, e.toString());
+  } finally {
+    Navigator.pop(P03DATATABLEMAINcontext);
+  }
+}
+
+Future<void> _CancelJobToAPI() async {
+  try {
+    FreeLoadingTan(P03DATATABLEMAINcontext);
+    final response = await Dio().post(
+      "$ToServer/02SALTSPRAY/CancelJob",
+      data: {
+        'dataRow': P03DATATABLEVAR.SendEditDataToAPI,
+      },
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      P03DATATABLEMAINcontext.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
+      // Navigator.pop(P03DATATABLEMAINcontext);
+      Navigator.pop(P03DATATABLEMAINcontext);
+    } else {
+      Navigator.pop(P03DATATABLEMAINcontext);
+      showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(P03DATATABLEMAINcontext, e.toString());
+  } finally {
+    Navigator.pop(P03DATATABLEMAINcontext);
+  }
+}
+
+Future<void> _FinishJobToAPI() async {
+  try {
+    FreeLoadingTan(P03DATATABLEMAINcontext);
+    final response = await Dio().post(
+      "$ToServer/02SALTSPRAY/FinishJob",
+      data: {
+        'dataRow': P03DATATABLEVAR.SendEditDataToAPI,
+      },
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      P03DATATABLEMAINcontext.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
       Navigator.pop(P03DATATABLEMAINcontext);
     } else {
       Navigator.pop(P03DATATABLEMAINcontext);
@@ -2985,7 +3041,7 @@ Future<void> AddDataToAPI() async {
       },
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -3006,50 +3062,132 @@ Future<void> AddDataToAPI() async {
   }
 }
 
-Future<void> showEditConfirmationDialog({
-  required BuildContext context,
-  required VoidCallback onConfirm,
-}) async {
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        title: Row(
-          children: const [
-            Icon(Icons.edit_note_rounded, color: Colors.amber),
-            SizedBox(width: 8),
-            Text('ยืนยันการแก้ไข?'),
+Future<void> CheckSlotAndTimeOverlabToAPI(BuildContext context) async {
+  try {
+    FreeLoadingTan(P03DATATABLEMAINcontext);
+    P03DATATABLEVAR.STARTDATE = convertStringToDateTime(StartDateController.text).toString();
+    DateTime? startDate = DateTime.tryParse(P03DATATABLEVAR.STARTDATE);
+
+    DateTime? finishDate;
+    List<String?> finishDates = [
+      P03DATATABLEVAR.FINISHDATE1,
+      P03DATATABLEVAR.FINISHDATE2,
+      P03DATATABLEVAR.FINISHDATE3,
+      P03DATATABLEVAR.FINISHDATE4,
+      P03DATATABLEVAR.FINISHDATE5,
+      P03DATATABLEVAR.FINISHDATE6,
+      P03DATATABLEVAR.FINISHDATE7,
+      P03DATATABLEVAR.FINISHDATE8,
+      P03DATATABLEVAR.FINISHDATE9,
+      P03DATATABLEVAR.FINISHDATE10,
+    ];
+
+    for (var dateStr in finishDates.reversed) {
+      if (dateStr == null || dateStr.trim().isEmpty) {
+        continue;
+      }
+
+      finishDate = DateTime.tryParse(dateStr.trim());
+
+      if (finishDate != null) break;
+    }
+
+    print(startDate);
+    print(finishDate);
+
+    if (startDate == null ||
+        finishDate == null ||
+        P03DATATABLEVAR.CHECKBOX == '' ||
+        P03DATATABLEVAR.INSTRUMENT == '') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('วันที่เริ่มต้น ,สิ้นสุด ,Slot หรือ Instrument ไม่ถูกต้อง'),
+      ));
+      return;
+    }
+
+    final response = await Dio().post(
+      "$ToServer/02SALTSPRAY/CheckSlotAndTimeOverlab",
+      data: {
+        "startDate": startDate.toIso8601String(),
+        "finishDate": finishDate.toIso8601String(),
+        "checkBox": P03DATATABLEVAR.CHECKBOX,
+        "Instrument": P03DATATABLEVAR.INSTRUMENT,
+      },
+    );
+
+    if (response.statusCode == 200 && response.data['isOverlap'] == false) {
+      // print("ไม่ซ้อนกัน");
+      await showAddConfirmationDialog(
+        context: context,
+        onConfirm: () async {
+          P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
+          AddDataToAPI();
+        },
+      );
+    } else {
+      // print("ซ้อนกัน");
+      // print(response.data['overlappedRequests']);
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: const [
+              Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+              SizedBox(width: 8),
+              Text(
+                "ไม่สามารถจองได้",
+                style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "ช่วงเวลาและช่อง ${P03DATATABLEVAR.CHECKBOX} นี้มีการจองแล้ว กรุณาเลือกเวลาใหม่",
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "รายการที่ทับซ้อน:",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SizedBox(height: 8),
+                ...List<Widget>.from(
+                  (response.data['overlappedRequests'] as List<dynamic>).map(
+                    (req) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        children: [
+                          Icon(Icons.circle, size: 6, color: Colors.redAccent),
+                          SizedBox(width: 6),
+                          Expanded(child: Text(req.toString(), style: TextStyle(fontSize: 14))),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("ตกลง", style: TextStyle(color: Colors.blue)),
+            ),
           ],
         ),
-        content: const Text(
-          'คุณต้องการที่จะแก้ไขข้อมูลหรือไม่?',
-          style: TextStyle(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('ยกเลิก', style: TextStyle(color: Colors.red)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // ปิด dialog ก่อน
-              onConfirm(); // เรียก function ที่ส่งมา
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
-            ),
-            child: const Text('ยืนยัน', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       );
-    },
-  );
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(P03DATATABLEMAINcontext, e.toString());
+  } finally {
+    Navigator.pop(P03DATATABLEMAINcontext);
+  }
 }
 
 Future<void> showCancelConfirmationDialog({
@@ -3098,118 +3236,6 @@ Future<void> showCancelConfirmationDialog({
   );
 }
 
-Future<void> showAddConfirmationDialog({
-  required BuildContext context,
-  required VoidCallback onConfirm,
-}) async {
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        title: Row(
-          children: const [
-            Icon(Icons.note_add_rounded, color: Colors.green),
-            SizedBox(width: 8),
-            Text('ยืนยันการเพิ่มงาน?'),
-          ],
-        ),
-        content: const Text(
-          'คุณต้องการที่จะเพิ่มงานนี้หรือไม่?',
-          style: TextStyle(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('ยกเลิก', style: TextStyle(color: Colors.green)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // ปิด dialog ก่อน
-              onConfirm(); // เรียก function ที่ส่งมา
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-            ),
-            child: const Text('ยืนยัน', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-void updateMultipleDates(Map<TextEditingController, void Function(String)> updates) {
-  updates.forEach((controller, setValue) {
-    DateTime? date = convertStringToDateTime(controller.text);
-    if (date != null) {
-      setValue(date.toString());
-    } else {
-      print("Invalid date: ${controller.text}");
-    }
-  });
-}
-
-Future<String> calculateRepDue({
-  required DateTime? startDate,
-  required int addDays,
-}) async {
-  if (startDate == null) return '';
-  List<String> holidays = P03DATATABLEVAR.holidays;
-  // เริ่มต้นวันที่ใหม่โดยเซ็ตเวลาเป็น 00:00:00
-  DateTime currentDate = DateTime(startDate.year, startDate.month, startDate.day);
-  int addedDays = 0;
-  // print('currentDate $currentDate');
-  // แปลง holidays ให้เป็น Set ของ yyyy-MM-dd
-  final Set<String> holidaySet =
-      holidays.map((h) => DateFormat('yyyy-MM-dd').format(DateTime.parse(h))).toSet();
-  // print('holidaySet $holidaySet');
-  while (addedDays < addDays) {
-    final currentDateStr = DateFormat('yyyy-MM-dd').format(currentDate);
-    // print('currentDateStr $currentDateStr');
-    if (!holidaySet.contains(currentDateStr)) {
-      addedDays++;
-    }
-
-    if (addedDays < addDays) {
-      currentDate = currentDate.add(Duration(days: 1));
-    }
-  }
-
-  // ข้ามวันหยุดถ้าวันที่ได้ตรงกับวันหยุด
-  while (holidaySet.contains(DateFormat('yyyy-MM-dd').format(currentDate))) {
-    currentDate = currentDate.add(Duration(days: 1));
-  }
-
-  return DateFormat('dd-MM-yy').format(currentDate);
-}
-
-Future<void> calculateAndSetTempDate({
-  required TextEditingController finishDateController,
-  required TextEditingController DateController,
-  required int addDays,
-}) async {
-  if (finishDateController.text == '') {
-    DateController.text = "";
-    return;
-  }
-  DateTime? finishDate = convertStringToDateTime(finishDateController.text);
-
-  if (finishDate != null) {
-    String result = await calculateRepDue(
-      startDate: DateTime(finishDate.year, finishDate.month, finishDate.day),
-      addDays: addDays,
-    );
-
-    DateController.text = result;
-  }
-}
-
 Widget buildAddPartNameButton({
   required int visibleCount,
   required VoidCallback onPressed,
@@ -3228,52 +3254,231 @@ Widget buildAddPartNameButton({
   );
 }
 
-void showChooseSlot(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: Container(
-          height: 800,
-          width: 1700,
-          color: Colors.white,
-          child: Page2(),
-        ),
-      );
-    },
-  );
-}
+Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
+  final workbook = xlsio.Workbook();
+  final sheet = workbook.worksheets[0];
+  sheet.name = 'SALT SPRAY';
 
-// Future<void> sendDataToServer(dynamic data) async {
-//   if (socket.connected) {
-//     print('Send data to server');
-//     socket.emit('update-data', data);
-//   } else {
-//     print('Socket not connected. Waiting to connect before sending...');
+  // ✅ Header Row
+  sheet.importList([
+    'Request No.',
+    'Report No.',
+    'Section Request',
+    'Requester',
+    'Received Date (dd-MM-yy)',
+    'Customer Name',
+    'Part Name',
+    'Part No.',
+    'Amount of sample (Pcs)',
+    'Take Photo (Pcs)',
+    'Start Date (dd-MM-yy)',
+    'Time (Hrs.)',
+    'Finish Date (dd-MM-yy)',
+    'Temp Report Date (dd-MM-yy)',
+    'Due Date (dd-MM-yy)',
+    'Instrument',
+    'Method',
+    'Person incharge',
+    'Approved Date',
+    'Approved By',
+    'Status',
+    'Remark',
+  ], 1, 1, false);
 
-//     final completer = Completer<void>();
+  // ✅ Fill data rows
+  int currentRow = 2;
+  final centerStyleHeader = workbook.styles.add('centerStyleHeader');
+  centerStyleHeader.hAlign = xlsio.HAlignType.center;
+  centerStyleHeader.vAlign = xlsio.VAlignType.center;
+  centerStyleHeader.bold = true;
+  final centerStyleData = workbook.styles.add('centerStyleData');
+  centerStyleData.hAlign = xlsio.HAlignType.center;
+  centerStyleData.vAlign = xlsio.VAlignType.center;
+  final headerRange = sheet.getRangeByIndex(1, 1, 1, 22);
+  headerRange.cellStyle = centerStyleHeader;
 
-//     socket.on('connect', (_) {
-//       if (!completer.isCompleted) {
-//         print('Connected while waiting. Now sending data...');
-//         socket.emit('update-data', data);
-//         completer.complete();
-//       }
-//     });
+  for (var item in filteredData) {
+    // ✅ สร้าง list ของแต่ละ field ที่มีหลายค่า
+    List<String> partNames = [];
+    List<String> partNos = [];
+    List<String> times = [];
+    List<String> finishDates = [];
+    List<String> tempDates = [];
+    List<String> dueDates = [];
+    List<String> partNamesBloc = [
+      item.PARTNAME1,
+      item.PARTNAME2,
+      item.PARTNAME3,
+      item.PARTNAME4,
+      item.PARTNAME5,
+      item.PARTNAME6,
+      item.PARTNAME7,
+      item.PARTNAME8,
+      item.PARTNAME9,
+      item.PARTNAME10
+    ];
+    List<String> partNosBloc = [
+      item.PARTNO1,
+      item.PARTNO2,
+      item.PARTNO3,
+      item.PARTNO4,
+      item.PARTNO5,
+      item.PARTNO6,
+      item.PARTNO7,
+      item.PARTNO8,
+      item.PARTNO9,
+      item.PARTNO10
+    ];
+    List<String> timesBloc = [
+      item.PARTNO1,
+      item.PARTNO2,
+      item.PARTNO3,
+      item.PARTNO4,
+      item.PARTNO5,
+      item.PARTNO6,
+      item.PARTNO7,
+      item.PARTNO8,
+      item.PARTNO9,
+      item.PARTNO10
+    ];
+    List<String> finishDatesBloc = [
+      item.FINISHDATE1,
+      item.FINISHDATE2,
+      item.FINISHDATE3,
+      item.FINISHDATE4,
+      item.FINISHDATE5,
+      item.FINISHDATE6,
+      item.FINISHDATE7,
+      item.FINISHDATE8,
+      item.FINISHDATE9,
+      item.FINISHDATE10
+    ];
+    List<String> tempDatesBloc = [
+      item.TEMPDATE1,
+      item.TEMPDATE2,
+      item.TEMPDATE3,
+      item.TEMPDATE4,
+      item.TEMPDATE5,
+      item.TEMPDATE6,
+      item.TEMPDATE7,
+      item.TEMPDATE8,
+      item.TEMPDATE9,
+      item.TEMPDATE10
+    ];
+    List<String> dueDatesBloc = [
+      item.DUEDATE1,
+      item.DUEDATE2,
+      item.DUEDATE3,
+      item.DUEDATE4,
+      item.DUEDATE5,
+      item.DUEDATE6,
+      item.DUEDATE7,
+      item.DUEDATE8,
+      item.DUEDATE9,
+      item.DUEDATE10
+    ];
 
-//     if (socket.disconnected) {
-//       socket.connect();
-//     }
+    for (int i = 0; i <= 9; i++) {
+      final name = partNamesBloc[i];
+      final no = partNosBloc[i];
+      final time = timesBloc[i];
+      final finish = finishDatesBloc[i];
+      final temp = tempDatesBloc[i];
+      final due = dueDatesBloc[i];
 
-//     await completer.future;
-//   }
-// }
+      if (name.toString().trim().isNotEmpty) partNames.add(name);
+      if (no.toString().trim().isNotEmpty) partNos.add(no);
+      if (time.toString().trim().isNotEmpty) times.add(time);
+      if (finish.toString().trim().isNotEmpty) finishDates.add(finish);
+      if (temp.toString().trim().isNotEmpty) tempDates.add(temp);
+      if (due.toString().trim().isNotEmpty) dueDates.add(due);
+    }
 
-// ฟังก์ชันสำหรับส่งข้อมูลไปยัง server
-void sendDataToServer(dynamic data) {
-  print('Send data to server');
-  socket.emit('update-data', data);
+    // ✅ หา row ที่มากสุด เพื่อ merge
+    int maxRows = [
+      partNames.length,
+      partNos.length,
+      times.length,
+      finishDates.length,
+      tempDates.length,
+      dueDates.length
+    ].reduce((a, b) => a > b ? a : b);
+    maxRows = maxRows == 0 ? 1 : maxRows;
+
+    for (int i = 0; i < maxRows; i++) {
+      // ✅ ใส่ข้อมูลที่แตกเป็น row
+      sheet.getRangeByIndex(currentRow + i, 7)
+        ..setText(i < partNames.length ? partNames[i] : '')
+        ..cellStyle = centerStyleData;
+      sheet.getRangeByIndex(currentRow + i, 8)
+        ..setText(i < partNos.length ? partNos[i] : '')
+        ..cellStyle = centerStyleData;
+      sheet.getRangeByIndex(currentRow + i, 12)
+        ..setText(i < times.length ? times[i] : '')
+        ..cellStyle = centerStyleData;
+      sheet.getRangeByIndex(currentRow + i, 13)
+        ..setText(i < finishDates.length ? finishDates[i] : '')
+        ..cellStyle = centerStyleData;
+      sheet.getRangeByIndex(currentRow + i, 14)
+        ..setText(i < tempDates.length ? tempDates[i] : '')
+        ..cellStyle = centerStyleData;
+      sheet.getRangeByIndex(currentRow + i, 15)
+        ..setText(i < dueDates.length ? dueDates[i] : '')
+        ..cellStyle = centerStyleData;
+    }
+
+    // ✅ Merge column อื่นๆ
+    void mergeAndSet(int col, dynamic value) {
+      sheet.getRangeByIndex(currentRow, col, currentRow + maxRows - 1, col).merge();
+      sheet.getRangeByIndex(currentRow, col)
+        ..setText(value?.toString() ?? '')
+        ..cellStyle = centerStyleData;
+    }
+
+    mergeAndSet(1, item.REQUESTNO);
+    mergeAndSet(2, item.REPORTNO);
+    mergeAndSet(3, item.SECTION);
+    mergeAndSet(4, item.REQUESTER);
+    mergeAndSet(5, item.RECEIVEDDATE);
+    mergeAndSet(6, item.CUSTOMERNAME);
+    mergeAndSet(9, item.AMOUNTSAMPLE);
+    mergeAndSet(10, item.TAKEPHOTO);
+    mergeAndSet(11, item.STARTDATE);
+    mergeAndSet(16, item.INSTRUMENT);
+    mergeAndSet(17, item.METHOD);
+    mergeAndSet(18, item.INCHARGE);
+    mergeAndSet(19, item.APPROVEDDATE);
+    mergeAndSet(20, item.APPROVEDBY);
+    mergeAndSet(21, item.STATUS);
+    mergeAndSet(22, item.REMARK);
+
+    currentRow += maxRows;
+  }
+
+  for (int col = 1; col <= 22; col++) {
+    sheet.autoFitColumn(col);
+  }
+
+  // Export...
+  final List<int> bytes = workbook.saveAsStream();
+  workbook.dispose();
+
+  if (kIsWeb) {
+    // ✅ Web: trigger download
+    final blob = html.Blob([bytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute("download", "SaltSprayExport.xlsx")
+      ..click();
+    html.Url.revokeObjectUrl(url);
+  } else {
+    // ✅ Android / iOS: save to local storage
+    if (await Permission.storage.request().isGranted) {
+      final directory = await getExternalStorageDirectory();
+      final path = '${directory!.path}/SaltSprayExport.xlsx';
+      final file = io.File(path);
+      await file.writeAsBytes(bytes, flush: true);
+      print('Saved to $path');
+    }
+  }
 }

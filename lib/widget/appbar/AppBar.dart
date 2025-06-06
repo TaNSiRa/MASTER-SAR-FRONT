@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/BlocEvent/LoginEvent.dart';
 import '../../data/global.dart';
 import '../../mainBody.dart';
+import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 // import 'package:tpk_login_arsa_01/script/bloc/login/login_bloc.dart';
 // import 'package:tpk_login_arsa_01/script/bloc/login/login_event.dart';
 
@@ -156,6 +157,7 @@ class Icon_profile extends StatelessWidget {
     return new InkWell(
       onTap: () {
         LoginContext.read<Login_Bloc>().add(Logout());
+        timer?.cancel();
       },
       child: Icon(
         Icons.logout,

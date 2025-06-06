@@ -5,6 +5,10 @@ String token = '';
 String selectpage = '';
 String selectstatus = '';
 TextEditingController selectslot = TextEditingController();
+TextEditingController StartDateControllerGlobal = TextEditingController();
+TextEditingController StartDateController = TextEditingController();
+DateTime StartDateToDateTimeGlobal = DateTime.now();
+FocusNode StartDateFocusNodeGlobal = FocusNode();
 // Widget CuPage = const Page0();
 int CuPageLV = 0;
 
@@ -25,3 +29,4 @@ class logindata {
 String PageName = '';
 String serverG = 'http://172.23.10.51:15152/';
 String ToServer = 'http://127.0.0.1:14001';
+List<String> holidays = [];

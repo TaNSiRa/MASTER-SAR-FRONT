@@ -9,6 +9,7 @@ import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import '../../page/P1DASHBOARD/P01DASHBOARDVAR.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
+import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
 
@@ -159,23 +160,23 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
     // FreeLoadingTan(P01DASHBOARDMAINcontext);
     // List<P01DASHBOARDGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    final responseInstrument = await Dio().post(
-      "$ToServer/02SALTSPRAY/InstrumentStatus",
-      data: {},
-    );
+    // final responseInstrument = await Dio().post(
+    //   "$ToServer/02SALTSPRAY/InstrumentStatus",
+    //   data: {},
+    // );
 
-    if (responseInstrument.statusCode == 200) {
-      print(responseInstrument.statusCode);
-      var databuff = responseInstrument.data;
-      P01DASHBOARDVAR.SST1Staus = databuff[0]['Status'];
-      P01DASHBOARDVAR.SST2Staus = databuff[1]['Status'];
-      P01DASHBOARDVAR.SST3Staus = databuff[2]['Status'];
-      P01DASHBOARDVAR.SST4Staus = databuff[3]['Status'];
-      // Navigator.pop(P01DASHBOARDMAINcontext);
-    } else {
-      // Navigator.pop(P01DASHBOARDMAINcontext);
-      showErrorPopup(P01DASHBOARDMAINcontext, responseInstrument.toString());
-    }
+    // if (responseInstrument.statusCode == 200) {
+    //   print(responseInstrument.statusCode);
+    //   var databuff = responseInstrument.data;
+    //   P01DASHBOARDVAR.SST1Staus = databuff[0]['Status'];
+    //   P01DASHBOARDVAR.SST2Staus = databuff[1]['Status'];
+    //   P01DASHBOARDVAR.SST3Staus = databuff[2]['Status'];
+    //   P01DASHBOARDVAR.SST4Staus = databuff[3]['Status'];
+    //   // Navigator.pop(P01DASHBOARDMAINcontext);
+    // } else {
+    //   // Navigator.pop(P01DASHBOARDMAINcontext);
+    //   showErrorPopup(P01DASHBOARDMAINcontext, responseInstrument.toString());
+    // }
   }
 
   Future<void> _P01DASHBOARDGETDATA_GET3(
@@ -376,47 +377,194 @@ class P01DASHBOARDGETDATAclass {
   String STATUS;
   String REMARK;
   String CHECKBOX;
+  Map<String, dynamic> toJson() {
+    return {
+      'REQUESTNO': REQUESTNO,
+      'REPORTNO': REPORTNO,
+      'SECTION': SECTION,
+      'REQUESTER': REQUESTER,
+      'RECEIVEDDATE': RECEIVEDDATE,
+      'CUSTOMERNAME': CUSTOMERNAME,
+      'PARTNAME1': PARTNAME1,
+      'PARTNO1': PARTNO1,
+      'PARTNAME2': PARTNAME2,
+      'PARTNO2': PARTNO2,
+      'PARTNAME3': PARTNAME3,
+      'PARTNO3': PARTNO3,
+      'PARTNAME4': PARTNAME4,
+      'PARTNO4': PARTNO4,
+      'PARTNAME5': PARTNAME5,
+      'PARTNO5': PARTNO5,
+      'PARTNAME6': PARTNAME6,
+      'PARTNO6': PARTNO6,
+      'PARTNAME7': PARTNAME7,
+      'PARTNO7': PARTNO7,
+      'PARTNAME8': PARTNAME8,
+      'PARTNO8': PARTNO8,
+      'PARTNAME9': PARTNAME9,
+      'PARTNO9': PARTNO9,
+      'PARTNAME10': PARTNAME10,
+      'PARTNO10': PARTNO10,
+      'AMOUNTSAMPLE': AMOUNTSAMPLE,
+      'TAKEPHOTO': TAKEPHOTO,
+      'STARTDATE': STARTDATE,
+      'TIME1': TIME1,
+      'FINISHDATE1': FINISHDATE1,
+      'TEMPDATE1': TEMPDATE1,
+      'DUEDATE1': DUEDATE1,
+      'TIME2': TIME2,
+      'FINISHDATE2': FINISHDATE2,
+      'TEMPDATE2': TEMPDATE2,
+      'DUEDATE2': DUEDATE2,
+      'TIME3': TIME3,
+      'FINISHDATE3': FINISHDATE3,
+      'TEMPDATE3': TEMPDATE3,
+      'DUEDATE3': DUEDATE3,
+      'TIME4': TIME4,
+      'FINISHDATE4': FINISHDATE4,
+      'TEMPDATE4': TEMPDATE4,
+      'DUEDATE4': DUEDATE4,
+      'TIME5': TIME5,
+      'FINISHDATE5': FINISHDATE5,
+      'TEMPDATE5': TEMPDATE5,
+      'DUEDATE5': DUEDATE5,
+      'TIME6': TIME6,
+      'FINISHDATE6': FINISHDATE6,
+      'TEMPDATE6': TEMPDATE6,
+      'DUEDATE6': DUEDATE6,
+      'TIME7': TIME7,
+      'FINISHDATE7': FINISHDATE7,
+      'TEMPDATE7': TEMPDATE7,
+      'DUEDATE7': DUEDATE7,
+      'TIME8': TIME8,
+      'FINISHDATE8': FINISHDATE8,
+      'TEMPDATE8': TEMPDATE8,
+      'DUEDATE8': DUEDATE8,
+      'TIME9': TIME9,
+      'FINISHDATE9': FINISHDATE9,
+      'TEMPDATE9': TEMPDATE9,
+      'DUEDATE9': DUEDATE9,
+      'TIME10': TIME10,
+      'FINISHDATE10': FINISHDATE10,
+      'TEMPDATE10': TEMPDATE10,
+      'DUEDATE10': DUEDATE10,
+      'INSTRUMENT': INSTRUMENT,
+      'METHOD': METHOD,
+      'INCHARGE': INCHARGE,
+      'APPROVEDDATE': APPROVEDDATE,
+      'APPROVEDBY': APPROVEDBY,
+      'STATUS': STATUS,
+      'REMARK': REMARK,
+      'CHECKBOX': CHECKBOX,
+    };
+  }
 }
 
-String savenull(input) {
-  String output = '';
-  if (input != null) {
-    output = input.toString();
-  }
-  return output;
+Map<String, dynamic> toJsonAddDate() {
+  return {
+    'REQUESTNO': P01DASHBOARDVAR.REQUESTNO,
+    'REPORTNO': P01DASHBOARDVAR.REPORTNO,
+    'SECTION': P01DASHBOARDVAR.SECTION,
+    'REQUESTER': P01DASHBOARDVAR.REQUESTER,
+    'RECEIVEDDATE': P01DASHBOARDVAR.RECEIVEDDATE,
+    'CUSTOMERNAME': P01DASHBOARDVAR.CUSTOMERNAME,
+    'PARTNAME1': P01DASHBOARDVAR.PARTNAME1,
+    'PARTNO1': P01DASHBOARDVAR.PARTNO1,
+    'PARTNAME2': P01DASHBOARDVAR.PARTNAME2,
+    'PARTNO2': P01DASHBOARDVAR.PARTNO2,
+    'PARTNAME3': P01DASHBOARDVAR.PARTNAME3,
+    'PARTNO3': P01DASHBOARDVAR.PARTNO3,
+    'PARTNAME4': P01DASHBOARDVAR.PARTNAME4,
+    'PARTNO4': P01DASHBOARDVAR.PARTNO4,
+    'PARTNAME5': P01DASHBOARDVAR.PARTNAME5,
+    'PARTNO5': P01DASHBOARDVAR.PARTNO5,
+    'PARTNAME6': P01DASHBOARDVAR.PARTNAME6,
+    'PARTNO6': P01DASHBOARDVAR.PARTNO6,
+    'PARTNAME7': P01DASHBOARDVAR.PARTNAME7,
+    'PARTNO7': P01DASHBOARDVAR.PARTNO7,
+    'PARTNAME8': P01DASHBOARDVAR.PARTNAME8,
+    'PARTNO8': P01DASHBOARDVAR.PARTNO8,
+    'PARTNAME9': P01DASHBOARDVAR.PARTNAME9,
+    'PARTNO9': P01DASHBOARDVAR.PARTNO9,
+    'PARTNAME10': P01DASHBOARDVAR.PARTNAME10,
+    'PARTNO10': P01DASHBOARDVAR.PARTNO10,
+    'AMOUNTSAMPLE': P01DASHBOARDVAR.AMOUNTSAMPLE,
+    'TAKEPHOTO': P01DASHBOARDVAR.TAKEPHOTO,
+    'STARTDATE': P01DASHBOARDVAR.STARTDATE,
+    'TIME1': P01DASHBOARDVAR.TIME1,
+    'FINISHDATE1': P01DASHBOARDVAR.FINISHDATE1,
+    'TEMPDATE1': P01DASHBOARDVAR.TEMPDATE1,
+    'DUEDATE1': P01DASHBOARDVAR.DUEDATE1,
+    'TIME2': P01DASHBOARDVAR.TIME2,
+    'FINISHDATE2': P01DASHBOARDVAR.FINISHDATE2,
+    'TEMPDATE2': P01DASHBOARDVAR.TEMPDATE2,
+    'DUEDATE2': P01DASHBOARDVAR.DUEDATE2,
+    'TIME3': P01DASHBOARDVAR.TIME3,
+    'FINISHDATE3': P01DASHBOARDVAR.FINISHDATE3,
+    'TEMPDATE3': P01DASHBOARDVAR.TEMPDATE3,
+    'DUEDATE3': P01DASHBOARDVAR.DUEDATE3,
+    'TIME4': P01DASHBOARDVAR.TIME4,
+    'FINISHDATE4': P01DASHBOARDVAR.FINISHDATE4,
+    'TEMPDATE4': P01DASHBOARDVAR.TEMPDATE4,
+    'DUEDATE4': P01DASHBOARDVAR.DUEDATE4,
+    'TIME5': P01DASHBOARDVAR.TIME5,
+    'FINISHDATE5': P01DASHBOARDVAR.FINISHDATE5,
+    'TEMPDATE5': P01DASHBOARDVAR.TEMPDATE5,
+    'DUEDATE5': P01DASHBOARDVAR.DUEDATE5,
+    'TIME6': P01DASHBOARDVAR.TIME6,
+    'FINISHDATE6': P01DASHBOARDVAR.FINISHDATE6,
+    'TEMPDATE6': P01DASHBOARDVAR.TEMPDATE6,
+    'DUEDATE6': P01DASHBOARDVAR.DUEDATE6,
+    'TIME7': P01DASHBOARDVAR.TIME7,
+    'FINISHDATE7': P01DASHBOARDVAR.FINISHDATE7,
+    'TEMPDATE7': P01DASHBOARDVAR.TEMPDATE7,
+    'DUEDATE7': P01DASHBOARDVAR.DUEDATE7,
+    'TIME8': P01DASHBOARDVAR.TIME8,
+    'FINISHDATE8': P01DASHBOARDVAR.FINISHDATE8,
+    'TEMPDATE8': P01DASHBOARDVAR.TEMPDATE8,
+    'DUEDATE8': P01DASHBOARDVAR.DUEDATE8,
+    'TIME9': P01DASHBOARDVAR.TIME9,
+    'FINISHDATE9': P01DASHBOARDVAR.FINISHDATE9,
+    'TEMPDATE9': P01DASHBOARDVAR.TEMPDATE9,
+    'DUEDATE9': P01DASHBOARDVAR.DUEDATE9,
+    'TIME10': P01DASHBOARDVAR.TIME10,
+    'FINISHDATE10': P01DASHBOARDVAR.FINISHDATE10,
+    'TEMPDATE10': P01DASHBOARDVAR.TEMPDATE10,
+    'DUEDATE10': P01DASHBOARDVAR.DUEDATE10,
+    'INSTRUMENT': P01DASHBOARDVAR.INSTRUMENT,
+    'METHOD': P01DASHBOARDVAR.METHOD,
+    'INCHARGE': P01DASHBOARDVAR.INCHARGE,
+    'APPROVEDDATE': P01DASHBOARDVAR.APPROVEDDATE,
+    'APPROVEDBY': P01DASHBOARDVAR.APPROVEDBY,
+    'STATUS': P01DASHBOARDVAR.STATUS,
+    'REMARK': P01DASHBOARDVAR.REMARK,
+    'CHECKBOX': P01DASHBOARDVAR.CHECKBOX,
+  };
 }
 
-int savenullint(input) {
-  int output = 0;
-  if (input != null) {
-    output = input;
-  }
-  return output;
-}
+// String formatDate(String? date) {
+//   if (date == null || date.isEmpty) return '';
+//   try {
+//     DateTime parsedDate = DateTime.parse(date);
+//     if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
+//       return DateFormat('dd-MM-yy').format(parsedDate);
+//     } else {
+//       return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
+//     }
+//   } catch (e) {
+//     return '';
+//   }
+// }
 
-String formatDate(String? date) {
-  if (date == null || date.isEmpty) return '';
-  try {
-    DateTime parsedDate = DateTime.parse(date);
-    if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
-      return DateFormat('dd-MM-yy').format(parsedDate);
-    } else {
-      return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
-    }
-  } catch (e) {
-    return '';
-  }
-}
-
-DateTime? convertStringToDateTime(String input) {
-  try {
-    if (input == '') {
-      return null;
-    }
-    final formatter = input.contains(' ') ? DateFormat("dd-MM-yy HH:mm") : DateFormat("dd-MM-yy");
-    return formatter.parseStrict(input);
-  } catch (e) {
-    print("Error parsing date: $e");
-    return null;
-  }
-}
+// DateTime? convertStringToDateTime(String input) {
+//   try {
+//     if (input == '') {
+//       return null;
+//     }
+//     final formatter = input.contains(' ') ? DateFormat("dd-MM-yy HH:mm") : DateFormat("dd-MM-yy");
+//     return formatter.parseStrict(input);
+//   } catch (e) {
+//     print("Error parsing date: $e");
+//     return null;
+//   }
+// }

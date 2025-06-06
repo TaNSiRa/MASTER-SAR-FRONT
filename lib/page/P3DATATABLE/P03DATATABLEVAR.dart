@@ -9,9 +9,9 @@ class P03DATATABLEVAR {
   static double FixedColumnWidth2 = 100;
   static double FixedColumnWidth3 = 100;
   static double FixedColumnWidth4 = 100;
-  static double FixedColumnWidth5 = 250;
+  static double FixedColumnWidth5 = 100;
   static double FixedColumnWidth6 = 100;
-  static double FixedColumnWidth7 = 100;
+  static double FixedColumnWidth7 = 250;
   static double FixedColumnWidth8 = 100;
   static double FixedColumnWidth9 = 100;
   static double FixedColumnWidth10 = 100;
@@ -27,6 +27,8 @@ class P03DATATABLEVAR {
   static double FixedColumnWidth20 = 100;
   static double FixedColumnWidth21 = 100;
   static double FixedColumnWidth22 = 100;
+  static double FixedColumnWidth23 = 100;
+  static double FixedColumnWidth24 = 100;
   static List<String> dropdownCustomer = [];
   static List<String> dropdownIncharge = [];
   static List<String> dropdownApprover = [];
@@ -112,4 +114,6 @@ class P03DATATABLEVAR {
   static String REMARK = '';
   static String CHECKBOX = '';
   static String SendAddDataToAPI = '';
+  static String DropdownInstrument = '';
+  static bool CustomerIsPM = false;
 }

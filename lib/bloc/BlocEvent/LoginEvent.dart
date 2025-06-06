@@ -83,15 +83,11 @@ class Login_Bloc extends Bloc<LoginEvent, String> {
     });
 
     if (token != '') {
-      BlocProvider.of<BlocNotification>(contextGB).UpdateNotification(
-          "Good to see you, ${USERDATA.NAME}!",
-          "Let's check on your progress today.",
-          enumNotificationlist.Success);
+      BlocProvider.of<BlocNotification>(contextGB).UpdateNotification("Good to see you, ${USERDATA.NAME}!",
+          "Let's check on your progress today.", enumNotificationlist.Success);
     } else {
-      BlocProvider.of<BlocNotification>(contextGB).UpdateNotification(
-          "Oops!",
-          "The username or password you entered is incorrect. Please try again.",
-          enumNotificationlist.Error);
+      BlocProvider.of<BlocNotification>(contextGB).UpdateNotification("Oops!",
+          "The username or password you entered is incorrect. Please try again.", enumNotificationlist.Error);
     }
 
     emit(token);
@@ -135,9 +131,7 @@ class Login_Bloc extends Bloc<LoginEvent, String> {
 
     if (token == '') {
       BlocProvider.of<BlocNotification>(contextGB).UpdateNotification(
-          "You have been logged out successfully.",
-          "See you next time!",
-          enumNotificationlist.Success);
+          "You have been logged out successfully.", "See you next time!", enumNotificationlist.Success);
     }
 
     emit('');

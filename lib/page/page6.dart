@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/BlocEvent/06-01-P06TABLEREPORTOVERDUEGETDATA.dart';
-import 'P6TABLEREPORTOVERDUE/P06TABLEREPORTOVERDUEMAIN.dart';
+import '../bloc/BlocEvent/06-01-P06EDITCUSTOMERGETDATA.dart';
+import 'P6EDITCUSTOMER/P06EDITCUSTOMERMAIN.dart';
 
 //---------------------------------------------------------
 
@@ -22,9 +22,8 @@ class Page6blockget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => P06TABLEREPORTOVERDUEGETDATA_Bloc(),
-        child: BlocBuilder<P06TABLEREPORTOVERDUEGETDATA_Bloc,
-            List<P06TABLEREPORTOVERDUEGETDATAclass>>(
+        create: (_) => P06EDITCUSTOMERGETDATA_Bloc(),
+        child: BlocBuilder<P06EDITCUSTOMERGETDATA_Bloc, List<P06EDITCUSTOMERGETDATAclass>>(
           builder: (context, data) {
             return Page6Body(
               data: data,
@@ -39,10 +38,10 @@ class Page6Body extends StatelessWidget {
     super.key,
     this.data,
   });
-  List<P06TABLEREPORTOVERDUEGETDATAclass>? data;
+  List<P06EDITCUSTOMERGETDATAclass>? data;
   @override
   Widget build(BuildContext context) {
-    return P06TABLEREPORTOVERDUEMAIN(
+    return P06EDITCUSTOMERMAIN(
       data: data,
     );
   }

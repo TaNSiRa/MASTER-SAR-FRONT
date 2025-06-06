@@ -22,13 +22,11 @@ Future<void> main() async {
   // SecurityContext.defaultContext
   //     .setTrustedCertificatesBytes(data.buffer.asInt8List());
 
-  Bloc.observer = AppBlocObserver();
-  WidgetsFlutterBinding.ensureInitialized();
-  HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: kIsWeb
-        ? HydratedStorage.webStorageDirectory
-        : await getTemporaryDirectory(),
-  );
+  // Bloc.observer = AppBlocObserver();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // HydratedBloc.storage = await HydratedStorage.build(
+  //   storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getTemporaryDirectory(),
+  // );
   runApp(const MyApp());
 }
 

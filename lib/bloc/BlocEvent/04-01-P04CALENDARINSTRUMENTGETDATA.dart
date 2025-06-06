@@ -1,59 +1,60 @@
-// ignore_for_file: camel_case_types, non_constant_identifier_names, avoid_print, use_build_context_synchronously, file_names
+// ignore_for_file: camel_case_types, non_constant_identifier_names, use_build_context_synchronously, avoid_print, file_names
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../data/global.dart';
-import '../../page/P3DATATABLE/P03DATATABLEMAIN.dart';
-import '../../page/P3DATATABLE/P03DATATABLEVAR.dart';
+import '../../page/P4CALENDARINSTRUMENT/P04CALENDARINSTRUMENTMAIN.dart';
+import '../../page/P4CALENDARINSTRUMENT/P04CALENDARINSTRUMENTVAR.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
 import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
 
-abstract class P03DATATABLEGETDATA_Event {}
+abstract class P04CALENDARINSTRUMENTGETDATA_Event {}
 
-class P03DATATABLEGETDATA_GET extends P03DATATABLEGETDATA_Event {}
+class P04CALENDARINSTRUMENTGETDATA_GET extends P04CALENDARINSTRUMENTGETDATA_Event {}
 
-class P03DATATABLEGETDATA_GET2 extends P03DATATABLEGETDATA_Event {}
+class P04CALENDARINSTRUMENTGETDATA_GET2 extends P04CALENDARINSTRUMENTGETDATA_Event {}
 
-class P03DATATABLEGETDATA_GET3 extends P03DATATABLEGETDATA_Event {}
+class P04CALENDARINSTRUMENTGETDATA_GET3 extends P04CALENDARINSTRUMENTGETDATA_Event {}
 
-class P03DATATABLEGETDATA_FLUSH extends P03DATATABLEGETDATA_Event {}
+class P04CALENDARINSTRUMENTGETDATA_FLUSH extends P04CALENDARINSTRUMENTGETDATA_Event {}
 
-class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03DATATABLEGETDATAclass>> {
-  P03DATATABLEGETDATA_Bloc() : super([]) {
-    on<P03DATATABLEGETDATA_GET>((event, emit) {
-      return _P03DATATABLEGETDATA_GET([], emit);
+class P04CALENDARINSTRUMENTGETDATA_Bloc
+    extends Bloc<P04CALENDARINSTRUMENTGETDATA_Event, List<P04CALENDARINSTRUMENTGETDATAclass>> {
+  P04CALENDARINSTRUMENTGETDATA_Bloc() : super([]) {
+    on<P04CALENDARINSTRUMENTGETDATA_GET>((event, emit) {
+      return _P04CALENDARINSTRUMENTGETDATA_GET([], emit);
     });
 
-    on<P03DATATABLEGETDATA_GET2>((event, emit) {
-      return _P03DATATABLEGETDATA_GET2([], emit);
+    on<P04CALENDARINSTRUMENTGETDATA_GET2>((event, emit) {
+      return _P04CALENDARINSTRUMENTGETDATA_GET2([], emit);
     });
-    on<P03DATATABLEGETDATA_GET3>((event, emit) {
-      return _P03DATATABLEGETDATA_GET3([], emit);
+    on<P04CALENDARINSTRUMENTGETDATA_GET3>((event, emit) {
+      return _P04CALENDARINSTRUMENTGETDATA_GET3([], emit);
     });
-    on<P03DATATABLEGETDATA_FLUSH>((event, emit) {
-      return _P03DATATABLEGETDATA_FLUSH([], emit);
+    on<P04CALENDARINSTRUMENTGETDATA_FLUSH>((event, emit) {
+      return _P04CALENDARINSTRUMENTGETDATA_FLUSH([], emit);
     });
   }
 
-  Future<void> _P03DATATABLEGETDATA_GET(
-      List<P03DATATABLEGETDATAclass> toAdd, Emitter<List<P03DATATABLEGETDATAclass>> emit) async {
-    FreeLoadingTan(P03DATATABLEMAINcontext);
-    List<P03DATATABLEGETDATAclass> output = [];
+  Future<void> _P04CALENDARINSTRUMENTGETDATA_GET(List<P04CALENDARINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P04CALENDARINSTRUMENTGETDATAclass>> emit) async {
+    // FreeLoadingTan(P04CALENDARINSTRUMENTMAINcontext);
+    List<P04CALENDARINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
     final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/DataforTableStatus",
+      "$ToServer/02SALTSPRAY/CalendarInMonth",
       data: {
-        // 'TYPE': P03DATATABLEVAR.DropDownType.toString(),
-        // 'YEAR': P03DATATABLEVAR.DropDownYear.toString(),
+        "month": P04CALENDARINSTRUMENTVAR.dateTimeSelect.month.toString(),
+        "year": P04CALENDARINSTRUMENTVAR.dateTimeSelect.year.toString(),
       },
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
       ),
     );
@@ -65,8 +66,8 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
       input = databuff;
       // var input = dummyAchievedCust;
       // print(input);
-      List<P03DATATABLEGETDATAclass> outputdata = input.map((data) {
-        return P03DATATABLEGETDATAclass(
+      List<P04CALENDARINSTRUMENTGETDATAclass> outputdata = input.map((data) {
+        return P04CALENDARINSTRUMENTGETDATAclass(
           REQUESTNO: savenull(data['Request_No']),
           REPORTNO: savenull(data['Report_No']),
           SECTION: savenull(data['Section']),
@@ -146,49 +147,79 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
           CHECKBOX: savenull(data['CheckBox']),
         );
       }).toList();
-      Navigator.pop(P03DATATABLEMAINcontext);
+      // Navigator.pop(P01DASHBOARDMAINcontext);
 
       output = outputdata;
       emit(output);
     } else {
-      Navigator.pop(P03DATATABLEMAINcontext);
-      showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+      // Navigator.pop(P01DASHBOARDMAINcontext);
+      showErrorPopup(P04CALENDARINSTRUMENTMAINcontext, response.toString());
       output = [];
       emit(output);
     }
   }
 
-  Future<void> _P03DATATABLEGETDATA_GET2(
-      List<P03DATATABLEGETDATAclass> toAdd, Emitter<List<P03DATATABLEGETDATAclass>> emit) async {
-    FreeLoadingTan(P03DATATABLEMAINcontext);
-    List<P03DATATABLEGETDATAclass> output = [];
+  Future<void> _P04CALENDARINSTRUMENTGETDATA_GET2(List<P04CALENDARINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P04CALENDARINSTRUMENTGETDATAclass>> emit) async {
+    // List<P04CALENDARINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
+    // var input = dummydatainput2;
+
+    // List<P04CALENDARINSTRUMENTGETDATAclass> outputdata = input
+    //     .where((data) =>
+    //         data['location'] == 'ESIE1' &&
+    //         data['plant'] == 'YES' &&
+    //         data['step01'] == 'YES')
+    //     .map((data) {
+    //   return P04CALENDARINSTRUMENTGETDATAclass(
+    //     PLANT: savenull(data['plant']),
+    //     ORDER: savenull(data['order']),
+    //     MAT: savenull(data['mat']),
+    //     LOCATION: savenull(data['location']),
+    //     LOT: savenull(data['lot']),
+    //     CUSTOMER: savenull(data['customer']),
+    //     PARTNO: savenull(data['partno']),
+    //     PARTNAME: savenull(data['partname']),
+    //     STEP01: savenull(data['step1']),
+    //     STEP02: savenull(data['step2']),
+    //     STEP03: savenull(data['step3']),
+    //     STEP04: savenull(data['step4']),
+    //     STEP05: savenull(data['step5']),
+    //     STEP06: savenull(data['step6']),
+    //     STEP07: savenull(data['step7']),
+    //     STEP08: savenull(data['step8']),
+    //     STEP09: savenull(data['step9']),
+    //   );
+    // }).toList();
+
+    // output = outputdata;
+    // emit(output);
   }
 
-  Future<void> _P03DATATABLEGETDATA_GET3(
-      List<P03DATATABLEGETDATAclass> toAdd, Emitter<List<P03DATATABLEGETDATAclass>> emit) async {
-    // List<P03DATATABLEGETDATAclass> output = [];
+  Future<void> _P04CALENDARINSTRUMENTGETDATA_GET3(List<P04CALENDARINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P04CALENDARINSTRUMENTGETDATAclass>> emit) async {
+    // List<P04CALENDARINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    // List<P03DATATABLEGETDATAclass> datadummy = [
-    //   P03DATATABLEGETDATAclass(
+    // List<P04CALENDARINSTRUMENTGETDATAclass> datadummy = [
+    //   P04CALENDARINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:1234",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //   ),
-    //   P03DATATABLEGETDATAclass(
+    //   P04CALENDARINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:5555",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //     STEP03: "YES",
     //     STEP04: "YES",
     //   ),
-    //   P03DATATABLEGETDATAclass(
+    //   P04CALENDARINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:5556",
     //     STEP01: "YES",
     //     STEP02: "YES",
     //   ),
-    //   P03DATATABLEGETDATAclass(
+    //   P04CALENDARINSTRUMENTGETDATAclass(
     //     PLANT: "PH PO:9999",
     //   ),
     // ];
@@ -198,15 +229,15 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
     // emit(output);
   }
 
-  Future<void> _P03DATATABLEGETDATA_FLUSH(
-      List<P03DATATABLEGETDATAclass> toAdd, Emitter<List<P03DATATABLEGETDATAclass>> emit) async {
-    List<P03DATATABLEGETDATAclass> output = [];
+  Future<void> _P04CALENDARINSTRUMENTGETDATA_FLUSH(List<P04CALENDARINSTRUMENTGETDATAclass> toAdd,
+      Emitter<List<P04CALENDARINSTRUMENTGETDATAclass>> emit) async {
+    List<P04CALENDARINSTRUMENTGETDATAclass> output = [];
     emit(output);
   }
 }
 
-class P03DATATABLEGETDATAclass {
-  P03DATATABLEGETDATAclass({
+class P04CALENDARINSTRUMENTGETDATAclass {
+  P04CALENDARINSTRUMENTGETDATAclass({
     this.REQUESTNO = '',
     this.REPORTNO = '',
     this.SECTION = '',
@@ -446,88 +477,6 @@ class P03DATATABLEGETDATAclass {
   }
 }
 
-Map<String, dynamic> toJsonAddDate() {
-  return {
-    'REQUESTNO': P03DATATABLEVAR.REQUESTNO,
-    'REPORTNO': P03DATATABLEVAR.REPORTNO,
-    'SECTION': P03DATATABLEVAR.SECTION,
-    'REQUESTER': P03DATATABLEVAR.REQUESTER,
-    'RECEIVEDDATE': P03DATATABLEVAR.RECEIVEDDATE,
-    'CUSTOMERNAME': P03DATATABLEVAR.CUSTOMERNAME,
-    'PARTNAME1': P03DATATABLEVAR.PARTNAME1,
-    'PARTNO1': P03DATATABLEVAR.PARTNO1,
-    'PARTNAME2': P03DATATABLEVAR.PARTNAME2,
-    'PARTNO2': P03DATATABLEVAR.PARTNO2,
-    'PARTNAME3': P03DATATABLEVAR.PARTNAME3,
-    'PARTNO3': P03DATATABLEVAR.PARTNO3,
-    'PARTNAME4': P03DATATABLEVAR.PARTNAME4,
-    'PARTNO4': P03DATATABLEVAR.PARTNO4,
-    'PARTNAME5': P03DATATABLEVAR.PARTNAME5,
-    'PARTNO5': P03DATATABLEVAR.PARTNO5,
-    'PARTNAME6': P03DATATABLEVAR.PARTNAME6,
-    'PARTNO6': P03DATATABLEVAR.PARTNO6,
-    'PARTNAME7': P03DATATABLEVAR.PARTNAME7,
-    'PARTNO7': P03DATATABLEVAR.PARTNO7,
-    'PARTNAME8': P03DATATABLEVAR.PARTNAME8,
-    'PARTNO8': P03DATATABLEVAR.PARTNO8,
-    'PARTNAME9': P03DATATABLEVAR.PARTNAME9,
-    'PARTNO9': P03DATATABLEVAR.PARTNO9,
-    'PARTNAME10': P03DATATABLEVAR.PARTNAME10,
-    'PARTNO10': P03DATATABLEVAR.PARTNO10,
-    'AMOUNTSAMPLE': P03DATATABLEVAR.AMOUNTSAMPLE,
-    'TAKEPHOTO': P03DATATABLEVAR.TAKEPHOTO,
-    'STARTDATE': P03DATATABLEVAR.STARTDATE,
-    'TIME1': P03DATATABLEVAR.TIME1,
-    'FINISHDATE1': P03DATATABLEVAR.FINISHDATE1,
-    'TEMPDATE1': P03DATATABLEVAR.TEMPDATE1,
-    'DUEDATE1': P03DATATABLEVAR.DUEDATE1,
-    'TIME2': P03DATATABLEVAR.TIME2,
-    'FINISHDATE2': P03DATATABLEVAR.FINISHDATE2,
-    'TEMPDATE2': P03DATATABLEVAR.TEMPDATE2,
-    'DUEDATE2': P03DATATABLEVAR.DUEDATE2,
-    'TIME3': P03DATATABLEVAR.TIME3,
-    'FINISHDATE3': P03DATATABLEVAR.FINISHDATE3,
-    'TEMPDATE3': P03DATATABLEVAR.TEMPDATE3,
-    'DUEDATE3': P03DATATABLEVAR.DUEDATE3,
-    'TIME4': P03DATATABLEVAR.TIME4,
-    'FINISHDATE4': P03DATATABLEVAR.FINISHDATE4,
-    'TEMPDATE4': P03DATATABLEVAR.TEMPDATE4,
-    'DUEDATE4': P03DATATABLEVAR.DUEDATE4,
-    'TIME5': P03DATATABLEVAR.TIME5,
-    'FINISHDATE5': P03DATATABLEVAR.FINISHDATE5,
-    'TEMPDATE5': P03DATATABLEVAR.TEMPDATE5,
-    'DUEDATE5': P03DATATABLEVAR.DUEDATE5,
-    'TIME6': P03DATATABLEVAR.TIME6,
-    'FINISHDATE6': P03DATATABLEVAR.FINISHDATE6,
-    'TEMPDATE6': P03DATATABLEVAR.TEMPDATE6,
-    'DUEDATE6': P03DATATABLEVAR.DUEDATE6,
-    'TIME7': P03DATATABLEVAR.TIME7,
-    'FINISHDATE7': P03DATATABLEVAR.FINISHDATE7,
-    'TEMPDATE7': P03DATATABLEVAR.TEMPDATE7,
-    'DUEDATE7': P03DATATABLEVAR.DUEDATE7,
-    'TIME8': P03DATATABLEVAR.TIME8,
-    'FINISHDATE8': P03DATATABLEVAR.FINISHDATE8,
-    'TEMPDATE8': P03DATATABLEVAR.TEMPDATE8,
-    'DUEDATE8': P03DATATABLEVAR.DUEDATE8,
-    'TIME9': P03DATATABLEVAR.TIME9,
-    'FINISHDATE9': P03DATATABLEVAR.FINISHDATE9,
-    'TEMPDATE9': P03DATATABLEVAR.TEMPDATE9,
-    'DUEDATE9': P03DATATABLEVAR.DUEDATE9,
-    'TIME10': P03DATATABLEVAR.TIME10,
-    'FINISHDATE10': P03DATATABLEVAR.FINISHDATE10,
-    'TEMPDATE10': P03DATATABLEVAR.TEMPDATE10,
-    'DUEDATE10': P03DATATABLEVAR.DUEDATE10,
-    'INSTRUMENT': P03DATATABLEVAR.INSTRUMENT,
-    'METHOD': P03DATATABLEVAR.METHOD,
-    'INCHARGE': P03DATATABLEVAR.INCHARGE,
-    'APPROVEDDATE': P03DATATABLEVAR.APPROVEDDATE,
-    'APPROVEDBY': P03DATATABLEVAR.APPROVEDBY,
-    'STATUS': P03DATATABLEVAR.STATUS,
-    'REMARK': P03DATATABLEVAR.REMARK,
-    'CHECKBOX': P03DATATABLEVAR.CHECKBOX,
-  };
-}
-
 String savenull(input) {
   String output = '';
   if (input != null) {
@@ -536,37 +485,13 @@ String savenull(input) {
   return output;
 }
 
-int savenullint(input) {
-  int output = 0;
-  if (input != null) {
-    output = input;
-  }
-  return output;
-}
-
 // String formatDate(String? date) {
 //   if (date == null || date.isEmpty) return '';
+//   if (date == 'CLOSE LINE') return 'CLOSE LINE';
 //   try {
-//     DateTime parsedDate = DateTime.parse(date);
-//     if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
-//       return DateFormat('dd-MM-yy').format(parsedDate);
-//     } else {
-//       return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
-//     }
+//     DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+//     return DateFormat('dd/MM/yyyy').format(parsedDate);
 //   } catch (e) {
 //     return '';
-//   }
-// }
-
-// DateTime? convertStringToDateTime(String input) {
-//   try {
-//     if (input == '') {
-//       return null;
-//     }
-//     final formatter = input.contains(' ') ? DateFormat("dd-MM-yy HH:mm") : DateFormat("dd-MM-yy");
-//     return formatter.parseStrict(input);
-//   } catch (e) {
-//     print("Error parsing date: $e");
-//     return null;
 //   }
 // }

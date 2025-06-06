@@ -1,1 +1,3 @@
-class P02INSIDEINSTRUMENTVAR {}
+class P02INSIDEINSTRUMENTVAR {
+  static bool isCheckedSelectAllSlot = false;
+}

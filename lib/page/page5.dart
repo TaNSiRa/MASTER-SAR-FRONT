@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/BlocEvent/05-01-P05TABLESERVICEGETDATA.dart';
-import 'P5TABLESERVICE/P05TABLESERVICEMAIN.dart';
+import '../bloc/BlocEvent/05-01-P05CALENDARJOBGETDATA.dart';
+import 'P5CALENDARJOB/P05CALENDARJOBMAIN.dart';
 
 //---------------------------------------------------------
 
@@ -22,9 +22,8 @@ class Page5blockget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => P05TABLESERVICEGETDATA_Bloc(),
-        child: BlocBuilder<P05TABLESERVICEGETDATA_Bloc,
-            List<P05TABLESERVICEGETDATAclass>>(
+        create: (_) => P05CALENDARJOBGETDATA_Bloc(),
+        child: BlocBuilder<P05CALENDARJOBGETDATA_Bloc, List<P05CALENDARJOBGETDATAclass>>(
           builder: (context, data) {
             return Page5Body(
               data: data,
@@ -39,13 +38,13 @@ class Page5blockget extends StatelessWidget {
 //     super.key,
 //     this.data,
 //   });
-//   List<P05TABLESERVICEGETDATAclass>? data;
+//   List<P05CALENDARJOBGETDATAclass>? data;
 //   @override
 //   Widget build(BuildContext context) {
 //     return BlocProvider(
-//         create: (_) => P05TABLESERVICEGETDATA1_Bloc(),
-//         child: BlocBuilder<P05TABLESERVICEGETDATA1_Bloc,
-//             List<P05TABLESERVICEGETDATA1class>>(
+//         create: (_) => P05CALENDARJOBGETDATA1_Bloc(),
+//         child: BlocBuilder<P05CALENDARJOBGETDATA1_Bloc,
+//             List<P05CALENDARJOBGETDATA1class>>(
 //           builder: (context, data1) {
 //             return Page5Body(
 //               data: data,
@@ -62,11 +61,11 @@ class Page5Body extends StatelessWidget {
     this.data,
     // this.data1,
   });
-  List<P05TABLESERVICEGETDATAclass>? data;
-  // List<P05TABLESERVICEGETDATA1class>? data1;
+  List<P05CALENDARJOBGETDATAclass>? data;
+  // List<P05CALENDARJOBGETDATA1class>? data1;
   @override
   Widget build(BuildContext context) {
-    return P05TABLESERVICEMAIN(
+    return P05CALENDARJOBMAIN(
       data: data,
       // data1: data1,
     );

@@ -8,6 +8,7 @@ import '../../data/global.dart';
 import '../../page/P2INSIDEINSTRUMENT/P02INSIDEINSTRUMENTMAIN.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/common/Loading.dart';
+import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
 
@@ -389,6 +390,87 @@ class P02INSIDEINSTRUMENTGETDATAclass {
   String STATUS;
   String REMARK;
   String CHECKBOX;
+  Map<String, dynamic> toJson() {
+    return {
+      'REQUESTNO': REQUESTNO,
+      'REPORTNO': REPORTNO,
+      'SECTION': SECTION,
+      'REQUESTER': REQUESTER,
+      'RECEIVEDDATE': RECEIVEDDATE,
+      'CUSTOMERNAME': CUSTOMERNAME,
+      'PARTNAME1': PARTNAME1,
+      'PARTNO1': PARTNO1,
+      'PARTNAME2': PARTNAME2,
+      'PARTNO2': PARTNO2,
+      'PARTNAME3': PARTNAME3,
+      'PARTNO3': PARTNO3,
+      'PARTNAME4': PARTNAME4,
+      'PARTNO4': PARTNO4,
+      'PARTNAME5': PARTNAME5,
+      'PARTNO5': PARTNO5,
+      'PARTNAME6': PARTNAME6,
+      'PARTNO6': PARTNO6,
+      'PARTNAME7': PARTNAME7,
+      'PARTNO7': PARTNO7,
+      'PARTNAME8': PARTNAME8,
+      'PARTNO8': PARTNO8,
+      'PARTNAME9': PARTNAME9,
+      'PARTNO9': PARTNO9,
+      'PARTNAME10': PARTNAME10,
+      'PARTNO10': PARTNO10,
+      'AMOUNTSAMPLE': AMOUNTSAMPLE,
+      'TAKEPHOTO': TAKEPHOTO,
+      'STARTDATE': STARTDATE,
+      'TIME1': TIME1,
+      'FINISHDATE1': FINISHDATE1,
+      'TEMPDATE1': TEMPDATE1,
+      'DUEDATE1': DUEDATE1,
+      'TIME2': TIME2,
+      'FINISHDATE2': FINISHDATE2,
+      'TEMPDATE2': TEMPDATE2,
+      'DUEDATE2': DUEDATE2,
+      'TIME3': TIME3,
+      'FINISHDATE3': FINISHDATE3,
+      'TEMPDATE3': TEMPDATE3,
+      'DUEDATE3': DUEDATE3,
+      'TIME4': TIME4,
+      'FINISHDATE4': FINISHDATE4,
+      'TEMPDATE4': TEMPDATE4,
+      'DUEDATE4': DUEDATE4,
+      'TIME5': TIME5,
+      'FINISHDATE5': FINISHDATE5,
+      'TEMPDATE5': TEMPDATE5,
+      'DUEDATE5': DUEDATE5,
+      'TIME6': TIME6,
+      'FINISHDATE6': FINISHDATE6,
+      'TEMPDATE6': TEMPDATE6,
+      'DUEDATE6': DUEDATE6,
+      'TIME7': TIME7,
+      'FINISHDATE7': FINISHDATE7,
+      'TEMPDATE7': TEMPDATE7,
+      'DUEDATE7': DUEDATE7,
+      'TIME8': TIME8,
+      'FINISHDATE8': FINISHDATE8,
+      'TEMPDATE8': TEMPDATE8,
+      'DUEDATE8': DUEDATE8,
+      'TIME9': TIME9,
+      'FINISHDATE9': FINISHDATE9,
+      'TEMPDATE9': TEMPDATE9,
+      'DUEDATE9': DUEDATE9,
+      'TIME10': TIME10,
+      'FINISHDATE10': FINISHDATE10,
+      'TEMPDATE10': TEMPDATE10,
+      'DUEDATE10': DUEDATE10,
+      'INSTRUMENT': INSTRUMENT,
+      'METHOD': METHOD,
+      'INCHARGE': INCHARGE,
+      'APPROVEDDATE': APPROVEDDATE,
+      'APPROVEDBY': APPROVEDBY,
+      'STATUS': STATUS,
+      'REMARK': REMARK,
+      'CHECKBOX': CHECKBOX,
+    };
+  }
 }
 
 String savenull(input) {
@@ -407,14 +489,14 @@ int savenullint(input) {
   return output;
 }
 
-String formatDate(String? date) {
-  if (date == null || date.isEmpty) return '';
-  if (date == 'CLOSE LINE') return 'CLOSE LINE';
-  try {
-    // print(date);
-    DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
-    return DateFormat('dd/MM/yyyy').format(parsedDate);
-  } catch (e) {
-    return '';
-  }
-}
+// String formatDate(String? date) {
+//   if (date == null || date.isEmpty) return '';
+//   if (date == 'CLOSE LINE') return 'CLOSE LINE';
+//   try {
+//     // print(date);
+//     DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+//     return DateFormat('dd/MM/yyyy').format(parsedDate);
+//   } catch (e) {
+//     return '';
+//   }
+// }

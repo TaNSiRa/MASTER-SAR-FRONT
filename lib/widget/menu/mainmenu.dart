@@ -95,21 +95,21 @@ class Data_Menu_mainmenu extends StatelessWidget {
           page: Page3(),
           Lv: 1,
         ),
-        // menu_normal(
-        //   name: "Customer Service",
-        //   page: Page1(),
-        //   Lv: 1,
-        // ),
-        // menu_normal(
-        //   name: "Report Over KPI",
-        //   page: Page2(),
-        //   Lv: 1,
-        // ),
-        // menu_normal(
-        //   name: "Achieved Customer",
-        //   page: Page3(),
-        //   Lv: 1,
-        // ),
+        menu_normal(
+          name: "CALENDAR INS.",
+          page: Page4(),
+          Lv: 1,
+        ),
+        menu_normal(
+          name: "CALENDAR JOB",
+          page: Page5(),
+          Lv: 1,
+        ),
+        menu_normal(
+          name: "EDIT CUSTOMER",
+          page: Page6(),
+          Lv: 1,
+        ),
         // menu_normal(
         //   name: "Sample time",
         //   page: Page4(),

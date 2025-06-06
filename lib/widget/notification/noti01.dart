@@ -21,8 +21,7 @@ class BlocBuilderNotification extends StatelessWidget {
 }
 
 class ComNotification extends StatefulWidget {
-  const ComNotification({Key? key, required this.notificationState})
-      : super(key: key);
+  const ComNotification({Key? key, required this.notificationState}) : super(key: key);
   final NotificationState notificationState;
   @override
   _ComNotificationState createState() => _ComNotificationState();
@@ -40,14 +39,11 @@ class _ComNotificationState extends State<ComNotification> {
     TapClose() {
       _showItem.clear();
       // print(_showItem);
-      BlocProvider.of<BlocNotification>(context)
-          .UpdateNotification("", "", enumNotificationlist.none);
+      BlocProvider.of<BlocNotification>(context).UpdateNotification("", "", enumNotificationlist.none);
     }
 
-    if (widget.notificationState.notificationType !=
-        enumNotificationlist.none) {
-      if (widget.notificationState.notificationType ==
-          enumNotificationlist.Error) {
+    if (widget.notificationState.notificationType != enumNotificationlist.none) {
+      if (widget.notificationState.notificationType == enumNotificationlist.Error) {
         _showItem.add(AnimatedContainer(
             duration: Duration(milliseconds: 1500),
             width: loginWidth,
@@ -59,13 +55,11 @@ class _ComNotificationState extends State<ComNotification> {
             child: Box_notification_Error(
               title_notification: widget.notificationState
                   .sHead, //! oopรับค่า title ไปแสดง _notificationState.sTextCode 'Error'<---
-              subtitles_notification:
-                  widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
+              subtitles_notification: widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
               Close_Func: TapClose,
             )));
       }
-      if (widget.notificationState.notificationType ==
-          enumNotificationlist.Success) {
+      if (widget.notificationState.notificationType == enumNotificationlist.Success) {
         _showItem.add(
           AnimatedContainer(
             duration: Duration(milliseconds: 1500),
@@ -78,15 +72,13 @@ class _ComNotificationState extends State<ComNotification> {
             child: Box_notification_seccession(
               title_notification: widget.notificationState
                   .sHead, //! oopรับค่า title ไปแสดง _notificationState.sTextCode  'Success'<---
-              subtitles_notification:
-                  widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
+              subtitles_notification: widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
               Close_Func: TapClose,
             ),
           ),
         );
       }
-      if (widget.notificationState.notificationType ==
-          enumNotificationlist.Information) {
+      if (widget.notificationState.notificationType == enumNotificationlist.Information) {
         _showItem.add(AnimatedContainer(
             duration: Duration(milliseconds: 1500),
             width: loginWidth,
@@ -96,13 +88,11 @@ class _ComNotificationState extends State<ComNotification> {
             child: Box_notification_info(
               title_notification: widget.notificationState
                   .sHead, //! oopรับค่า title ไปแสดง _notificationState.sTextCode  'Information'<---
-              subtitles_notification:
-                  widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
+              subtitles_notification: widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
               Close_Func: TapClose,
             )));
       }
-      if (widget.notificationState.notificationType ==
-          enumNotificationlist.Warning) {
+      if (widget.notificationState.notificationType == enumNotificationlist.Warning) {
         _showItem.add(
           AnimatedContainer(
             duration: Duration(milliseconds: 1500),
@@ -115,8 +105,7 @@ class _ComNotificationState extends State<ComNotification> {
             child: Box_notification_Warning(
               title_notification: widget.notificationState
                   .sHead, //! oopรับค่า title ไปแสดง _notificationState.sTextCode  'Warning' <---
-              subtitles_notification:
-                  widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
+              subtitles_notification: widget.notificationState.sBody, //! oopรับค่า subtitle ไปแสดง
               Close_Func: TapClose,
             ),
           ),
@@ -167,8 +156,7 @@ class _Box_notification_ErrorState extends State<Box_notification_Error> {
   Widget build(BuildContext context) {
     String _title_notification = widget.title_notification;
     String _subtitles_notification = widget.subtitles_notification;
-    AssetImage _icon_path_notification =
-        AssetImage("assets/icons/icon-error@3x.png");
+    AssetImage _icon_path_notification = AssetImage("assets/icons/icon-error@3x.png");
 
     // Function _closeBox =widget.closeBox;
 
@@ -189,14 +177,10 @@ class _Box_notification_ErrorState extends State<Box_notification_Error> {
       fontFamily: 'Mitr',
     );
     //----------------------------------------------------------------
-    Image _ShowIconStatus = Image(
-        image: _icon_path_notification,
-        width: 24.0,
-        height: 24.0,
-        fit: BoxFit.fill);
+    Image _ShowIconStatus =
+        Image(image: _icon_path_notification, width: 24.0, height: 24.0, fit: BoxFit.fill);
     //----------------------------------------------------------------
-    Text _ShowMsg_status_notification =
-        Text(_title_notification, style: costomtext_title); //!msgstatus
+    Text _ShowMsg_status_notification = Text(_title_notification, style: costomtext_title); //!msgstatus
     //----------------------------------------------------------------
     SizedBox _ShowMsg_Expand = SizedBox(
       child: SizedBox(
@@ -251,8 +235,7 @@ class _Box_notification_ErrorState extends State<Box_notification_Error> {
             left: 44.0,
             child: _ShowMsg_status_notification,
           ),
-          Positioned(
-              top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
+          Positioned(top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
           // Positioned(
           //   left: 300.0,
           //   bottom: 52,
@@ -279,18 +262,15 @@ class Box_notification_seccession extends StatefulWidget {
   String subtitles_notification;
 
   @override
-  _Box_notification_seccessionState createState() =>
-      _Box_notification_seccessionState();
+  _Box_notification_seccessionState createState() => _Box_notification_seccessionState();
 }
 
-class _Box_notification_seccessionState
-    extends State<Box_notification_seccession> {
+class _Box_notification_seccessionState extends State<Box_notification_seccession> {
   @override
   Widget build(BuildContext context) {
     String _title_notification = widget.title_notification;
     String _subtitles_notification = widget.subtitles_notification;
-    AssetImage _icon_path_notification =
-        AssetImage("assets/icons/icon-correct@2x-green.png");
+    AssetImage _icon_path_notification = AssetImage("assets/icons/icon-correct@2x-green.png");
 
     // Function _closeBox =widget.closeBox;
 
@@ -311,14 +291,10 @@ class _Box_notification_seccessionState
       fontFamily: 'Mitr',
     );
     //----------------------------------------------------------------
-    Image _ShowIconStatus = Image(
-        image: _icon_path_notification,
-        width: 24.0,
-        height: 24.0,
-        fit: BoxFit.fill);
+    Image _ShowIconStatus =
+        Image(image: _icon_path_notification, width: 24.0, height: 24.0, fit: BoxFit.fill);
     //----------------------------------------------------------------
-    Text _ShowMsg_status_notification =
-        Text(_title_notification, style: costomtext_title); //!msgstatus
+    Text _ShowMsg_status_notification = Text(_title_notification, style: costomtext_title); //!msgstatus
     //----------------------------------------------------------------
     SizedBox _ShowMsg_Expand = SizedBox(
       child: SizedBox(
@@ -376,8 +352,7 @@ class _Box_notification_seccessionState
             left: 44.0,
             child: _ShowMsg_status_notification,
           ),
-          Positioned(
-              top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
+          Positioned(top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
           // Positioned(
           //   left: 300.0,
           //   bottom: 52,
@@ -401,8 +376,7 @@ class Box_notification_Warning extends StatefulWidget {
   String title_notification;
   String subtitles_notification;
   @override
-  _Box_notification_WarningState createState() =>
-      _Box_notification_WarningState();
+  _Box_notification_WarningState createState() => _Box_notification_WarningState();
 }
 
 class _Box_notification_WarningState extends State<Box_notification_Warning> {
@@ -410,8 +384,7 @@ class _Box_notification_WarningState extends State<Box_notification_Warning> {
   Widget build(BuildContext context) {
     String _title_notification = widget.title_notification;
     String _subtitles_notification = widget.subtitles_notification;
-    AssetImage _icon_path_notification =
-        AssetImage("assets/icons/icon-caution@3x.png");
+    AssetImage _icon_path_notification = AssetImage("assets/icons/icon-caution@3x.png");
 
     // Function _closeBox =widget.closeBox;
 
@@ -432,14 +405,10 @@ class _Box_notification_WarningState extends State<Box_notification_Warning> {
       fontFamily: 'Mitr',
     );
     //----------------------------------------------------------------
-    Image _ShowIconStatus = Image(
-        image: _icon_path_notification,
-        width: 24.0,
-        height: 24.0,
-        fit: BoxFit.fill);
+    Image _ShowIconStatus =
+        Image(image: _icon_path_notification, width: 24.0, height: 24.0, fit: BoxFit.fill);
     //----------------------------------------------------------------
-    Text _ShowMsg_status_notification =
-        Text(_title_notification, style: costomtext_title); //!msgstatus
+    Text _ShowMsg_status_notification = Text(_title_notification, style: costomtext_title); //!msgstatus
     //----------------------------------------------------------------
     SizedBox _ShowMsg_Expand = SizedBox(
       child: SizedBox(
@@ -494,8 +463,7 @@ class _Box_notification_WarningState extends State<Box_notification_Warning> {
             left: 44.0,
             child: _ShowMsg_status_notification,
           ),
-          Positioned(
-              top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
+          Positioned(top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
           // Positioned(
           //   left: 300.0,
           //   bottom: 52,
@@ -530,8 +498,7 @@ class _Box_notification_infoState extends State<Box_notification_info> {
   Widget build(BuildContext context) {
     String _title_notification = widget.title_notification;
     String _subtitles_notification = widget.subtitles_notification;
-    AssetImage _icon_path_notification =
-        AssetImage("assets/icons/icon-info@3x.png");
+    AssetImage _icon_path_notification = AssetImage("assets/icons/icon-info@3x.png");
     // Function _closeBox =widget.closeBox;
 
     //----------------------------------------------------------------
@@ -551,14 +518,10 @@ class _Box_notification_infoState extends State<Box_notification_info> {
       fontFamily: 'Mitr',
     );
     //----------------------------------------------------------------
-    Image _ShowIconStatus = Image(
-        image: _icon_path_notification,
-        width: 24.0,
-        height: 24.0,
-        fit: BoxFit.fill);
+    Image _ShowIconStatus =
+        Image(image: _icon_path_notification, width: 24.0, height: 24.0, fit: BoxFit.fill);
     //----------------------------------------------------------------
-    Text _ShowMsg_status_notification =
-        Text(_title_notification, style: costomtext_title); //!msgstatus
+    Text _ShowMsg_status_notification = Text(_title_notification, style: costomtext_title); //!msgstatus
     //----------------------------------------------------------------
     SizedBox _ShowMsg_Expand = SizedBox(
       child: SizedBox(
@@ -614,8 +577,7 @@ class _Box_notification_infoState extends State<Box_notification_info> {
             left: 44.0,
             child: _ShowMsg_status_notification,
           ),
-          Positioned(
-              top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
+          Positioned(top: 40.0, left: 44.0, right: 8.0, child: _ShowMsg_Expand), //!msg
           // Positioned(
           //   left: 300.0,
           //   bottom: 52,
@@ -627,9 +589,6 @@ class _Box_notification_infoState extends State<Box_notification_info> {
     );
   }
 }
-
-
-
 
 //!Bloc provider and builder
 /*class BlocBuilderNotification extends StatelessWidget {
