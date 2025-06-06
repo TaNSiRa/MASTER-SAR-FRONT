@@ -27,6 +27,7 @@ class logindata {
 }
 
 String PageName = '';
-String serverG = 'http://172.23.10.51:15152/';
-String ToServer = 'http://127.0.0.1:14001';
+// String serverG = 'http://172.23.10.51:15152/';
+// String ToServer = 'http://127.0.0.1:14001';
+String ToServer = 'http://172.23.10.51:14001';
 List<String> holidays = [];
