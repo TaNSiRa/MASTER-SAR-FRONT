@@ -65,7 +65,7 @@ class P05CALENDARJOBGETDATA_Bloc extends Bloc<P05CALENDARJOBGETDATA_Event, List<
       input = databuff;
 
       // var input = dummyServiceTable;
-      // print(input);
+      print(input);
       List<P05CALENDARJOBGETDATAclass> outputdata = input.map((data) {
         return P05CALENDARJOBGETDATAclass(
           REQUESTNO: savenull(data['Request_No']),

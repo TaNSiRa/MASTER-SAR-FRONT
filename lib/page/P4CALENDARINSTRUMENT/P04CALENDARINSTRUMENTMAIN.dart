@@ -189,7 +189,13 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
       DateTime monthStart = DateTime(
           P04CALENDARINSTRUMENTVAR.dateTimeSelect.year, P04CALENDARINSTRUMENTVAR.dateTimeSelect.month, 1);
       DateTime monthEnd = DateTime(
-          P04CALENDARINSTRUMENTVAR.dateTimeSelect.year, P04CALENDARINSTRUMENTVAR.dateTimeSelect.month + 1, 0);
+        P04CALENDARINSTRUMENTVAR.dateTimeSelect.year,
+        P04CALENDARINSTRUMENTVAR.dateTimeSelect.month + 1,
+        0,
+        23,
+        59,
+        59,
+      );
 
       return !(finish.isBefore(monthStart) || start.isAfter(monthEnd));
     }).toList();

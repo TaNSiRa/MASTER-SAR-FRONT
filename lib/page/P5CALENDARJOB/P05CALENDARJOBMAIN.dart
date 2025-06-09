@@ -98,7 +98,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
         });
       }
     }
-
+    print(jobsForDate);
     return jobsForDate;
   }
 
@@ -136,14 +136,22 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
         print("Error parsing date: $e");
         return false;
       }
-
+      // print("start: $start, finish: $finish");
       if (start == null || finish == null) return false;
 
       DateTime monthStart =
           DateTime(P05CALENDARJOBVAR.dateTimeSelect.year, P05CALENDARJOBVAR.dateTimeSelect.month, 1);
-      DateTime monthEnd =
-          DateTime(P05CALENDARJOBVAR.dateTimeSelect.year, P05CALENDARJOBVAR.dateTimeSelect.month + 1, 0);
-
+      DateTime monthEnd = DateTime(
+        P05CALENDARJOBVAR.dateTimeSelect.year,
+        P05CALENDARJOBVAR.dateTimeSelect.month + 1,
+        0,
+        23,
+        59,
+        59,
+      );
+      print(monthStart);
+      print(monthEnd);
+      print('-------------------------------------------');
       return !(finish.isBefore(monthStart) || start.isAfter(monthEnd));
     }).toList();
 
@@ -165,6 +173,9 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
     }
 
     String formattedMonthYear = DateFormat('MMM yyyy').format(P05CALENDARJOBVAR.dateTimeSelect);
+
+    print(_datain.length);
+    print(monthData.length);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFF),
