@@ -898,14 +898,21 @@ Widget _buildFinishDatesInfo(P05CALENDARJOBGETDATAclass job) {
 // ฟังก์ชันสำหรับได้สีพื้นหลังของสถานะ
 Color _getStatusBackgroundColor(String status) {
   switch (status.toUpperCase()) {
+    case 'RECEIVED':
+      // return const Color(0xFF3B82F6).withOpacity(0.1);
+      return Colors.blue.withOpacity(0.1);
     case 'START':
-      return const Color(0xFF3B82F6).withOpacity(0.1);
+      // return const Color(0xFF3B82F6).withOpacity(0.1);
+      return Colors.pink.withOpacity(0.1);
     case 'STOP':
-      return const Color(0xFFF59E0B).withOpacity(0.1);
+      // return const Color(0xFFF59E0B).withOpacity(0.1);
+      return Colors.orange.withOpacity(0.1);
     case 'FINISH':
-      return const Color(0xFF10B981).withOpacity(0.1);
+      // return const Color(0xFF10B981).withOpacity(0.1);
+      return Colors.green.withOpacity(0.1);
     case 'PM':
-      return const Color.fromARGB(255, 185, 16, 16).withOpacity(0.1);
+      // return const Color.fromARGB(255, 185, 16, 16).withOpacity(0.1);
+      return Colors.red.withOpacity(0.1);
     default:
       return const Color(0xFF6B7280).withOpacity(0.1);
   }
@@ -914,14 +921,21 @@ Color _getStatusBackgroundColor(String status) {
 // ฟังก์ชันสำหรับได้สีข้อความของสถานะ
 Color _getStatusTextColor(String status) {
   switch (status.toUpperCase()) {
+    case 'RECEIVED':
+      // return const Color(0xFF3B82F6).withOpacity(0.1);
+      return Colors.blue;
     case 'START':
-      return const Color(0xFF3B82F6);
+      // return const Color(0xFF3B82F6).withOpacity(0.1);
+      return Colors.pink;
     case 'STOP':
-      return const Color(0xFFF59E0B);
+      // return const Color(0xFFF59E0B).withOpacity(0.1);
+      return Colors.orange;
     case 'FINISH':
-      return const Color(0xFF10B981);
+      // return const Color(0xFF10B981).withOpacity(0.1);
+      return Colors.green;
     case 'PM':
-      return const Color.fromARGB(255, 185, 16, 16);
+      // return const Color.fromARGB(255, 185, 16, 16).withOpacity(0.1);
+      return Colors.red;
     default:
       return const Color(0xFF6B7280);
   }
