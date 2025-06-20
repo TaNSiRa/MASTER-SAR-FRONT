@@ -3329,17 +3329,17 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
       item.PARTNO9,
       item.PARTNO10
     ];
-    List<String> timesBloc = [
-      item.PARTNO1,
-      item.PARTNO2,
-      item.PARTNO3,
-      item.PARTNO4,
-      item.PARTNO5,
-      item.PARTNO6,
-      item.PARTNO7,
-      item.PARTNO8,
-      item.PARTNO9,
-      item.PARTNO10
+    List<int> timesBloc = [
+      item.TIME1,
+      item.TIME2,
+      item.TIME3,
+      item.TIME4,
+      item.TIME5,
+      item.TIME6,
+      item.TIME7,
+      item.TIME8,
+      item.TIME9,
+      item.TIME10
     ];
     List<String> finishDatesBloc = [
       item.FINISHDATE1,
@@ -3388,7 +3388,7 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
 
       if (name.toString().trim().isNotEmpty) partNames.add(name);
       if (no.toString().trim().isNotEmpty) partNos.add(no);
-      if (time.toString().trim().isNotEmpty) times.add(time);
+      if (time.toString().trim().isNotEmpty && time != 0) times.add(time.toString());
       if (finish.toString().trim().isNotEmpty) finishDates.add(finish);
       if (temp.toString().trim().isNotEmpty) tempDates.add(temp);
       if (due.toString().trim().isNotEmpty) dueDates.add(due);
