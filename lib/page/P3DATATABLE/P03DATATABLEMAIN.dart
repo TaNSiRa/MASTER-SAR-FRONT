@@ -2892,8 +2892,7 @@ Future<void> _fetchCustomerAndIncharge() async {
 
     if (responseHolidays.statusCode == 200 && responseHolidays.data is List) {
       List data = responseHolidays.data;
-      P03DATATABLEVAR.holidays =
-          data.map((item) => item['HolidayDate'].toString()).where((name) => name.isNotEmpty).toList();
+      holidays = data.map((item) => item['HolidayDate'].toString()).where((name) => name.isNotEmpty).toList();
       // print(P03DATATABLEVAR.holidays);
     } else {
       print("SearchCustomer failed");
