@@ -40,17 +40,18 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
   void initState() {
     super.initState();
     context.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
+    selectpage = '';
+    selectstatus = '';
+    selectslot.text = '';
+    PageName = 'Status';
   }
 
   @override
   Widget build(BuildContext context) {
     P03DATATABLEMAINcontext = context;
     List<P03DATATABLEGETDATAclass> _datain = widget.data ?? [];
-    selectpage = '';
-    selectstatus = '';
-    selectslot.text = '';
-    PageName = 'Status';
-    print(PageName);
+
+    // print(PageName);
     List<P03DATATABLEGETDATAclass> _datasearch = [];
     _datasearch.addAll(
       _datain.where(

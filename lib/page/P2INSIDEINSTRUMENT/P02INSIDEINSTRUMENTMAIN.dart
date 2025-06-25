@@ -344,6 +344,8 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
       selectedDataPM = SST4DataPM;
     }
 
+    // print('selectstatus: $selectstatus');
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -597,6 +599,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                               : () {
                                                   if (index < selectedTickets.length) {
                                                     setState(() {
+                                                      // print('--selectstatus--: $selectstatus');
                                                       selectedTickets[index] = !selectedTickets[index];
                                                       int realIndex = index + 1;
 

@@ -54,6 +54,9 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
       // print('refresh...');
       context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
     });
+    selectpage = '';
+    selectstatus = '';
+    selectslot.text = '';
   }
 
   @override
@@ -127,9 +130,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     List<P01DASHBOARDGETDATAclass> allSST4DataBloc = AllSSTCheckBox.where((item) =>
         item.INSTRUMENT == 'SST No.4' &&
         (item.STATUS == 'START' || item.STATUS == 'WAIT TRANSFER' || item.STATUS == 'RECEIVED')).toList();
-    selectpage = '';
-    selectstatus = '';
-    selectslot.text = '';
+
     // PageName = 'Dashboard';
     SSTAllData.clear();
     List<Map<String, String>> allSST1Data = [];
@@ -3285,6 +3286,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                           ontap: () {
                             P01DASHBOARDVAR.STATUS = StatusController.text;
                             selectstatus = StatusController.text;
+                            // print(selectstatus);
                             selectpage = 'Salt Spray Tester : ${item.INSTRUMENT}';
                             showChooseSlot(context);
                             // setState(() {});
