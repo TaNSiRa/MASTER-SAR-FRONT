@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, camel_case_types, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,7 +8,6 @@ import 'bloc/BlocEvent/LoginEvent.dart';
 import 'bloc/cubit/NotificationEvent.dart';
 import 'bloc/cubit/Rebuild.dart';
 import 'data/global.dart';
-import 'page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import 'page/loginpage.dart';
 import 'widget/appbar/AppBar.dart';
 import 'widget/function/Socket.dart';
@@ -19,18 +20,18 @@ late BuildContext MainBodyContext;
 late BuildContext LoginContext;
 
 class MainBlocRebuild extends StatelessWidget {
-  const MainBlocRebuild({Key? key}) : super(key: key);
+  const MainBlocRebuild({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BlocPageRebuild, bool>(builder: (_, e) {
-      return MainbodyBuffer();
+      return const MainbodyBuffer();
     });
   }
 }
 
 class MainbodyBuffer extends MainBlocRebuild {
-  const MainbodyBuffer({Key? key}) : super(key: key);
+  const MainbodyBuffer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class MainbodyBuffer extends MainBlocRebuild {
 }
 
 class pre_login extends StatefulWidget {
-  const pre_login({Key? key}) : super(key: key);
+  const pre_login({super.key});
 
   @override
   State<pre_login> createState() => _pre_loginState();
@@ -93,8 +94,27 @@ class _pre_loginState extends State<pre_login> {
   }
 }
 
+// class MainBody extends StatelessWidget {
+//   MainBody({Key? key, required this.page}) : super(key: key);
+//   Widget page;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     MainBodyContext = context;
+//     initSocketConnection();
+//     return Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: const Color(0xFF0b1327),
+//           actions: <Widget>[App_Bar()],
+//           // title: Text(PageName),
+//         ),
+//         drawer: MainMenu(),
+//         body: page);
+//   }
+// }
+
 class MainBody extends StatelessWidget {
-  MainBody({Key? key, required this.page}) : super(key: key);
+  MainBody({super.key, required this.page});
   Widget page;
 
   @override
@@ -102,18 +122,36 @@ class MainBody extends StatelessWidget {
     MainBodyContext = context;
     initSocketConnection();
     return Scaffold(
-        appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: const Color(0xFF0b1327),
-          actions: <Widget>[App_Bar()],
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(56),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.fromARGB(255, 201, 201, 211),
+                  Color(0xFF1565C0),
+                  Color.fromARGB(255, 0, 0, 0),
+                ],
+              ),
+            ),
+            child: AppBar(
+              // backgroundColor: const Color(0xFF0b1327),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              actions: <Widget>[App_Bar()],
+              // title: Text(PageName),
+            ),
+          ),
         ),
-        drawer: MainMenu(),
+        drawer: const MainMenu(),
         body: page);
   }
 }
 
 class Loginbody extends StatelessWidget {
-  const Loginbody({Key? key}) : super(key: key);
+  const Loginbody({super.key});
 
   @override
   Widget build(BuildContext context) {

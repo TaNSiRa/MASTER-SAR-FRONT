@@ -154,7 +154,7 @@ Widget buildCustomField({
     );
   }
 
-  if (labelText == "Received Date" || labelText == "Approved Date") {
+  if (labelText == "Sampling Date" || labelText == "Received Date" || labelText == "Approved Date") {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -264,27 +264,84 @@ Widget buildCustomField({
       labelText == "Finish Date 7" ||
       labelText == "Finish Date 8" ||
       labelText == "Finish Date 9" ||
-      labelText == "Finish Date 10" ||
-      labelText == "Temp Date 1" ||
-      labelText == "Temp Date 2" ||
-      labelText == "Temp Date 3" ||
-      labelText == "Temp Date 4" ||
-      labelText == "Temp Date 5" ||
-      labelText == "Temp Date 6" ||
-      labelText == "Temp Date 7" ||
-      labelText == "Temp Date 8" ||
-      labelText == "Temp Date 9" ||
-      labelText == "Temp Date 10" ||
-      labelText == "Due Date 1" ||
-      labelText == "Due Date 2" ||
-      labelText == "Due Date 3" ||
-      labelText == "Due Date 4" ||
-      labelText == "Due Date 5" ||
-      labelText == "Due Date 6" ||
-      labelText == "Due Date 7" ||
-      labelText == "Due Date 8" ||
-      labelText == "Due Date 9" ||
-      labelText == "Due Date 10" ||
+      labelText == "Finish Date 10") {
+    bool isRed = false;
+    try {
+      // print("controller.text: ${controller.text}");
+      DateTime date = DateFormat("dd-MM-yyyy HH:mm").parse(controller.text);
+      final correctedYear = date.year < 100 ? date.year + 2000 : date.year;
+      final correctedDate = DateTime(correctedYear, date.month, date.day, date.hour, date.minute);
+      // print(correctedDate);
+
+      final dateOnlyStr = DateFormat("yyyy-MM-dd").format(correctedDate);
+      final holidayDatesOnly = holidays
+          .map((e) {
+            try {
+              return DateFormat("yyyy-MM-dd").format(DateTime.parse(e));
+            } catch (_) {
+              return null;
+            }
+          })
+          .whereType<String>()
+          .toList();
+
+      final startTime = DateTime(correctedDate.year, correctedDate.month, correctedDate.day, 8, 30);
+      final endTime = DateTime(correctedDate.year, correctedDate.month, correctedDate.day, 17, 10);
+
+      final isNotInWorkingHours = !(correctedDate.isAfter(startTime) && correctedDate.isBefore(endTime));
+      final isHoliday = holidayDatesOnly.contains(dateOnlyStr);
+
+      if (isNotInWorkingHours || isHoliday) {
+        // print("❌ วันที่อยู่นอกช่วงเวลาหรือเป็นวันหยุด");
+        isRed = true;
+      } else {
+        // print("✅ วันที่อยู่ในเวลาทำการและไม่ใช่วันหยุด");
+        isRed = false;
+      }
+    } catch (e) {
+      //
+    }
+    return TextField(
+      controller: controller,
+      focusNode: focusNode,
+      readOnly: true,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.grey),
+        labelText: labelText,
+        labelStyle: buildTextStyleGrey(),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        filled: true,
+        fillColor: Colors.grey[300],
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      style: TextStyle(color: isRed ? Colors.red : Colors.black54),
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+    );
+  }
+
+  if (labelText == "Temp Report" ||
+      labelText == "Temp Report 1" ||
+      labelText == "Temp Report 2" ||
+      labelText == "Temp Report 3" ||
+      labelText == "Temp Report 4" ||
+      labelText == "Temp Report 5" ||
+      labelText == "Temp Report 6" ||
+      labelText == "Temp Report 7" ||
+      labelText == "Temp Report 8" ||
+      labelText == "Temp Report 9" ||
+      labelText == "Temp Report 10" ||
+      labelText == "Due Report" ||
+      labelText == "Due Report 1" ||
+      labelText == "Due Report 2" ||
+      labelText == "Due Report 3" ||
+      labelText == "Due Report 4" ||
+      labelText == "Due Report 5" ||
+      labelText == "Due Report 6" ||
+      labelText == "Due Report 7" ||
+      labelText == "Due Report 8" ||
+      labelText == "Due Report 9" ||
+      labelText == "Due Report 10" ||
       labelText == 'Report No.') {
     return TextField(
       controller: controller,
@@ -304,6 +361,7 @@ Widget buildCustomField({
       onSubmitted: onSubmitted,
     );
   }
+
   if (labelText == "Time 1 (Hrs.)" ||
       labelText == "Time 2 (Hrs.)" ||
       labelText == "Time 3 (Hrs.)" ||
@@ -387,11 +445,11 @@ void EditTextController({
   );
 }
 
-void calculateFinishDate({
+Future<void> calculateFinishDate({
   required TextEditingController startDateController,
   required TextEditingController timeController,
   required TextEditingController finishDateController,
-}) {
+}) async {
   try {
     // print(timeController);
     // print(timeController.text);
@@ -417,11 +475,11 @@ String formatDate(String? date) {
   if (date == null || date.isEmpty) return '';
   try {
     DateTime parsedDate = DateTime.parse(date);
-    if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
-      return DateFormat('dd-MM-yy').format(parsedDate);
-    } else {
-      return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
-    }
+    // if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
+    //   return DateFormat('dd-MM-yy').format(parsedDate);
+    // } else {
+    return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
+    // }
   } catch (e) {
     return '';
   }

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, deprecated_member_use, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, deprecated_member_use, library_private_types_in_public_api, use_build_context_synchronously, avoid_print, unrelated_type_equality_checks, unnecessary_null_comparison
 import 'dart:async';
 import 'dart:convert';
 
@@ -57,6 +57,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     selectpage = '';
     selectstatus = '';
     selectslot.text = '';
+    PageName = 'SALT SPRAY MONITORING SYSTEM';
   }
 
   @override
@@ -1607,53 +1608,55 @@ class _BlinkingStatusButtonState extends State<BlinkingStatusButton> {
 
     return GestureDetector(
       onTap: () async {
-        showChangeStatusDialog(context, (selectedStatus) async {
-          if (selectedStatus == 'Running') {
-            await showInstrumentbreakdownDialog(
-              context: context,
-              onConfirm: () async {
-                setState(() {
-                  _currentStatus = 'Running';
-                });
-                await SendStatusInstrument(widget.instrument ?? '', 'Running');
-                await fetchInstrumentData();
-                await SendStatusJob(widget.instrument ?? '', 'RECEIVED');
-                Navigator.pop(context);
-                widget.onStatusChanged();
-                context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
-              },
-            );
-          } else if (selectedStatus == 'Instrument Breakdown') {
-            await showInstrumentbreakdownDialog(
-              context: context,
-              onConfirm: () async {
-                setState(() {
-                  _currentStatus = 'Instrument Breakdown';
-                });
-                await SendStatusInstrument(widget.instrument ?? '', 'Instrument Breakdown');
-                await fetchInstrumentData();
-                await SendStatusJob(widget.instrument ?? '', 'WAIT TRANSFER');
-                Navigator.pop(context);
-                widget.onStatusChanged();
-                context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
-              },
-            );
-          } else if (selectedStatus == 'PM') {
-            await showInstrumentbreakdownDialog(
-              context: context,
-              onConfirm: () async {
-                setState(() {
-                  _currentStatus = 'PM';
-                });
-                await SendStatusInstrument(widget.instrument ?? '', 'PM');
-                await fetchInstrumentData();
-                Navigator.pop(context);
-                widget.onStatusChanged();
-                context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
-              },
-            );
-          }
-        });
+        if (USERDATA.UserLV >= 5) {
+          showChangeStatusDialog(context, (selectedStatus) async {
+            if (selectedStatus == 'Running') {
+              await showInstrumentbreakdownDialog(
+                context: context,
+                onConfirm: () async {
+                  setState(() {
+                    _currentStatus = 'Running';
+                  });
+                  await SendStatusInstrument(widget.instrument ?? '', 'Running');
+                  await fetchInstrumentData();
+                  await SendStatusJob(widget.instrument ?? '', 'RECEIVED');
+                  Navigator.pop(context);
+                  widget.onStatusChanged();
+                  context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+                },
+              );
+            } else if (selectedStatus == 'Instrument Breakdown') {
+              await showInstrumentbreakdownDialog(
+                context: context,
+                onConfirm: () async {
+                  setState(() {
+                    _currentStatus = 'Instrument Breakdown';
+                  });
+                  await SendStatusInstrument(widget.instrument ?? '', 'Instrument Breakdown');
+                  await fetchInstrumentData();
+                  await SendStatusJob(widget.instrument ?? '', 'WAIT TRANSFER');
+                  Navigator.pop(context);
+                  widget.onStatusChanged();
+                  context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+                },
+              );
+            } else if (selectedStatus == 'PM') {
+              await showInstrumentbreakdownDialog(
+                context: context,
+                onConfirm: () async {
+                  setState(() {
+                    _currentStatus = 'PM';
+                  });
+                  await SendStatusInstrument(widget.instrument ?? '', 'PM');
+                  await fetchInstrumentData();
+                  Navigator.pop(context);
+                  widget.onStatusChanged();
+                  context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+                },
+              );
+            }
+          });
+        }
       },
       child: Row(
         children: [
@@ -1709,7 +1712,7 @@ class _BlinkingStatusButtonState extends State<BlinkingStatusButton> {
 }
 
 void startChecking(BuildContext context) {
-  print('startChecking...');
+  // print('startChecking...');
   checkForNotification(context);
   timer = Timer.periodic(Duration(seconds: 1), (timer) {
     checkForNotification(context);
@@ -1719,7 +1722,7 @@ void startChecking(BuildContext context) {
 void checkForNotification(BuildContext context) {
   final now = DateTime.now();
   // print(ForAlarm);
-  print('in Checking...');
+  // print('in Checking...');
   for (var item in ForAlarm) {
     // print('repeat...');
     int totalFinishDates = countNonEmptyFinishDates(item);
@@ -2679,46 +2682,47 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
     item.PARTNO10,
   ];
 
-  void updateMultipleDatesAll() {
-    updateMultipleDates({
-      ReceivedDateController: (val) => item.RECEIVEDDATE = val,
-      StartDateController: (val) => item.STARTDATE = val,
-      FinishDate1Controller: (val) => item.FINISHDATE1 = val,
-      FinishDate2Controller: (val) => item.FINISHDATE2 = val,
-      FinishDate3Controller: (val) => item.FINISHDATE3 = val,
-      FinishDate4Controller: (val) => item.FINISHDATE4 = val,
-      FinishDate5Controller: (val) => item.FINISHDATE5 = val,
-      FinishDate6Controller: (val) => item.FINISHDATE6 = val,
-      FinishDate7Controller: (val) => item.FINISHDATE7 = val,
-      FinishDate8Controller: (val) => item.FINISHDATE8 = val,
-      FinishDate9Controller: (val) => item.FINISHDATE9 = val,
-      FinishDate10Controller: (val) => item.FINISHDATE10 = val,
-      TempDate1Controller: (val) => item.TEMPDATE1 = val,
-      TempDate2Controller: (val) => item.TEMPDATE2 = val,
-      TempDate3Controller: (val) => item.TEMPDATE3 = val,
-      TempDate4Controller: (val) => item.TEMPDATE4 = val,
-      TempDate5Controller: (val) => item.TEMPDATE5 = val,
-      TempDate6Controller: (val) => item.TEMPDATE6 = val,
-      TempDate7Controller: (val) => item.TEMPDATE7 = val,
-      TempDate8Controller: (val) => item.TEMPDATE8 = val,
-      TempDate9Controller: (val) => item.TEMPDATE9 = val,
-      TempDate10Controller: (val) => item.TEMPDATE10 = val,
-      DueDate1Controller: (val) => item.DUEDATE1 = val,
-      DueDate2Controller: (val) => item.DUEDATE2 = val,
-      DueDate3Controller: (val) => item.DUEDATE3 = val,
-      DueDate4Controller: (val) => item.DUEDATE4 = val,
-      DueDate5Controller: (val) => item.DUEDATE5 = val,
-      DueDate6Controller: (val) => item.DUEDATE6 = val,
-      DueDate7Controller: (val) => item.DUEDATE7 = val,
-      DueDate8Controller: (val) => item.DUEDATE8 = val,
-      DueDate9Controller: (val) => item.DUEDATE9 = val,
-      DueDate10Controller: (val) => item.DUEDATE10 = val,
-      ApprovedDateController: (val) => item.APPROVEDDATE = val,
-    });
-  }
+  // void updateMultipleDatesAll() {
+  //   updateMultipleDates({
+  //     ReceivedDateController: (val) => item.RECEIVEDDATE = val,
+  //     StartDateController: (val) => item.STARTDATE = val,
+  //     FinishDate1Controller: (val) => item.FINISHDATE1 = val,
+  //     FinishDate2Controller: (val) => item.FINISHDATE2 = val,
+  //     FinishDate3Controller: (val) => item.FINISHDATE3 = val,
+  //     FinishDate4Controller: (val) => item.FINISHDATE4 = val,
+  //     FinishDate5Controller: (val) => item.FINISHDATE5 = val,
+  //     FinishDate6Controller: (val) => item.FINISHDATE6 = val,
+  //     FinishDate7Controller: (val) => item.FINISHDATE7 = val,
+  //     FinishDate8Controller: (val) => item.FINISHDATE8 = val,
+  //     FinishDate9Controller: (val) => item.FINISHDATE9 = val,
+  //     FinishDate10Controller: (val) => item.FINISHDATE10 = val,
+  //     TempDate1Controller: (val) => item.TEMPDATE1 = val,
+  //     TempDate2Controller: (val) => item.TEMPDATE2 = val,
+  //     TempDate3Controller: (val) => item.TEMPDATE3 = val,
+  //     TempDate4Controller: (val) => item.TEMPDATE4 = val,
+  //     TempDate5Controller: (val) => item.TEMPDATE5 = val,
+  //     TempDate6Controller: (val) => item.TEMPDATE6 = val,
+  //     TempDate7Controller: (val) => item.TEMPDATE7 = val,
+  //     TempDate8Controller: (val) => item.TEMPDATE8 = val,
+  //     TempDate9Controller: (val) => item.TEMPDATE9 = val,
+  //     TempDate10Controller: (val) => item.TEMPDATE10 = val,
+  //     DueDate1Controller: (val) => item.DUEDATE1 = val,
+  //     DueDate2Controller: (val) => item.DUEDATE2 = val,
+  //     DueDate3Controller: (val) => item.DUEDATE3 = val,
+  //     DueDate4Controller: (val) => item.DUEDATE4 = val,
+  //     DueDate5Controller: (val) => item.DUEDATE5 = val,
+  //     DueDate6Controller: (val) => item.DUEDATE6 = val,
+  //     DueDate7Controller: (val) => item.DUEDATE7 = val,
+  //     DueDate8Controller: (val) => item.DUEDATE8 = val,
+  //     DueDate9Controller: (val) => item.DUEDATE9 = val,
+  //     DueDate10Controller: (val) => item.DUEDATE10 = val,
+  //     ApprovedDateController: (val) => item.APPROVEDDATE = val,
+  //   });
+  // }
 
   return showDialog<bool>(
     context: context,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return Dialog(
         shape: RoundedRectangleBorder(
@@ -2735,12 +2739,27 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
           child: Column(
             spacing: 10,
             children: [
-              Text(
-                'Transfer: ${item.REQUESTNO}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      'Transfer: ${item.REQUESTNO}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
               ),
               Expanded(
                 child: SingleChildScrollView(

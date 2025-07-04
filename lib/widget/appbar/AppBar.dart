@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, deprecated_member_use, file_names
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -16,7 +18,7 @@ import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 String pageactive = '';
 
 class App_Bar extends StatefulWidget {
-  App_Bar({Key? key}) : super(key: key);
+  const App_Bar({super.key});
 
   @override
   _App_BarState createState() => _App_BarState();
@@ -28,7 +30,8 @@ class _App_BarState extends State<App_Bar> {
     return Container(
       height: 70,
       width: MediaQuery.of(context).size.width,
-      color: Color(0xff0b1327),
+      // color: Color(0xff0b1327),
+      color: Colors.transparent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -37,7 +40,7 @@ class _App_BarState extends State<App_Bar> {
           Spacer(),
           //Text(MediaQuery.of(context).size.width.toString()),
           //Text("  |  <--->  |  " + current_page.toString()),
-          Spacer(),
+          // const Spacer(),
           Pack_topright_bar(),
         ],
       ),
@@ -48,6 +51,8 @@ class _App_BarState extends State<App_Bar> {
 }
 
 class Logo2 extends StatelessWidget {
+  const Logo2({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -63,7 +68,7 @@ class Logo2 extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.menu_rounded,
             size: 30,
             color: Colors.black,
@@ -76,24 +81,21 @@ class Logo2 extends StatelessWidget {
 
 //============================================================
 class Logo1 extends StatelessWidget {
-  const Logo1({Key? key}) : super(key: key);
+  const Logo1({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 25),
-      child: Container(
-        color: Color(0xff0b1327),
-        child: Text(
-          selectpage.isEmpty ? 'SALT SPRAY MONITORING SYSTEM' : selectpage,
-          style: TextStyle(
-            fontFamily: 'Mitr',
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: 0,
-          ),
+      child: Text(
+        PageName,
+        style: const TextStyle(
+          fontFamily: 'Mitr',
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          letterSpacing: 0,
         ),
       ),
     );
@@ -101,18 +103,18 @@ class Logo1 extends StatelessWidget {
 }
 
 class Pack_topright_bar extends StatelessWidget {
+  const Pack_topright_bar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 20),
-      child: Container(
-          // width: 150,
-          child: Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             USERDATA.NAME,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Mitr',
               color: Colors.white,
               fontSize: 16,
@@ -120,27 +122,28 @@ class Pack_topright_bar extends StatelessWidget {
               fontStyle: FontStyle.normal,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
-          Time_(),
-          Icon_bell(),
-          Icon_profile()
+          const Time_(),
+          const Icon_bell(),
+          const LogoTPK(),
+          // Icon_profile()
         ],
-      )),
+      ),
     );
   }
 }
 
 class Icon_bell extends StatelessWidget {
-  const Icon_bell({Key? key}) : super(key: key);
+  const Icon_bell({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       // width: 24,
       // height: 24,
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
       ),
       child: IconButton(
@@ -152,14 +155,16 @@ class Icon_bell extends StatelessWidget {
 }
 
 class Icon_profile extends StatelessWidget {
+  const Icon_profile({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return new InkWell(
+    return InkWell(
       onTap: () {
         LoginContext.read<Login_Bloc>().add(Logout());
         timer?.cancel();
       },
-      child: Icon(
+      child: const Icon(
         Icons.logout,
         size: 24,
         color: Colors.white,
@@ -169,7 +174,7 @@ class Icon_profile extends StatelessWidget {
 }
 
 class Time_ extends StatefulWidget {
-  Time_({Key? key}) : super(key: key);
+  const Time_({super.key});
 
   @override
   _Time_State createState() => _Time_State();
@@ -184,7 +189,7 @@ class _Time_State extends State<Time_> {
         return Center(
           child: Text(
             DateFormat(' hh:mm a').format(DateTime.now()),
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Mitr',
               color: Colors.white,
               fontSize: 16,
@@ -194,6 +199,42 @@ class _Time_State extends State<Time_> {
           ),
         );
       },
+    );
+  }
+}
+
+class LogoTPK extends StatelessWidget {
+  const LogoTPK({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      width: 70,
+      // margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/logo_tpk.png"),
+              fit: BoxFit.fitHeight,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

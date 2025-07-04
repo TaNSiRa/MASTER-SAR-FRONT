@@ -31,8 +31,9 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
     super.initState();
     context.read<P02INSIDEINSTRUMENTGETDATA_Bloc>().add(P02INSIDEINSTRUMENTGETDATA_GET());
     StartDateToDateTimeGlobal = DateTime.now();
-    StartDateControllerGlobal.text = DateFormat('dd-MM-yy HH:mm').format(StartDateToDateTimeGlobal!);
+    StartDateControllerGlobal.text = DateFormat('dd-MM-yy HH:mm').format(StartDateToDateTimeGlobal);
     P02INSIDEINSTRUMENTVAR.isCheckedSelectAllSlot = false;
+    PageName = selectpage;
   }
 
   List<bool> selectedTickets = List.generate(18 * 4, (index) => false);
@@ -52,7 +53,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
     // List<P02INSIDEINSTRUMENTGETDATAclass> AllSSTCheckBox = _datain.toList();
     // print(_datain);
 
-    DateTime checkDate = StartDateToDateTimeGlobal!;
+    DateTime checkDate = StartDateToDateTimeGlobal;
     // print(checkDate);
     List<P02INSIDEINSTRUMENTGETDATAclass> AllSSTCheckBox = _datain.where((data) {
       DateTime? start;
@@ -60,7 +61,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
 
       try {
         // แปลง STARTDATE จาก string
-        start = data.STARTDATE != null ? convertStringToDateTime(data.STARTDATE!) : null;
+        start = data.STARTDATE != null ? convertStringToDateTime(data.STARTDATE) : null;
         // print(data.STARTDATE);
         // หา FINISHDATE สุดท้ายที่ไม่ว่าง
         List<String?> finishDateStrings = [

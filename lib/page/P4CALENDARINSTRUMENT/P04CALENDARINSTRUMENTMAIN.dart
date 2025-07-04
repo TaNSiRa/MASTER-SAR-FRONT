@@ -1,5 +1,4 @@
-// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, avoid_print
-import 'dart:math' as math;
+// ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, avoid_print, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +28,7 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
   void initState() {
     super.initState();
     context.read<P04CALENDARINSTRUMENTGETDATA_Bloc>().add(P04CALENDARINSTRUMENTGETDATA_GET());
+    PageName = 'CALENDAR INSTRUMENT';
   }
 
   // ฟังก์ชันคำนวณเปอร์เซ็นต์ capacity ของแต่ละ instrument ในวันที่กำหนด
@@ -238,142 +238,139 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
           child: Column(
             children: [
               // Header with navigation and month/year selector
-              Container(
-                // margin: const EdgeInsets.only(bottom: 20),
-                child: Row(
-                  children: [
-                    // Previous month button
-                    Container(
-                      height: 48,
-                      width: 48,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+              Row(
+                children: [
+                  // Previous month button
+                  Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF667EEA).withOpacity(0.3),
+                          spreadRadius: 0,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          setState(() {
+                            P04CALENDARINSTRUMENTVAR.dateTimeSelect = DateTime(
+                              P04CALENDARINSTRUMENTVAR.dateTimeSelect.year,
+                              P04CALENDARINSTRUMENTVAR.dateTimeSelect.month - 1,
+                            );
+                            context
+                                .read<P04CALENDARINSTRUMENTGETDATA_Bloc>()
+                                .add(P04CALENDARINSTRUMENTGETDATA_GET());
+                          });
+                        },
+                        child: const Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Month/Year selector
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF667EEA).withOpacity(0.3),
+                            color: Colors.black.withOpacity(0.05),
                             spreadRadius: 0,
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            blurRadius: 20,
+                            offset: const Offset(0, 2),
                           ),
                         ],
+                        border: Border.all(
+                          color: const Color(0xFF667EEA).withOpacity(0.1),
+                          width: 1,
+                        ),
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            setState(() {
-                              P04CALENDARINSTRUMENTVAR.dateTimeSelect = DateTime(
-                                P04CALENDARINSTRUMENTVAR.dateTimeSelect.year,
-                                P04CALENDARINSTRUMENTVAR.dateTimeSelect.month - 1,
-                              );
-                              context
-                                  .read<P04CALENDARINSTRUMENTGETDATA_Bloc>()
-                                  .add(P04CALENDARINSTRUMENTGETDATA_GET());
-                            });
+                            _selectMonthYear(context);
                           },
-                          child: const Icon(
-                            Icons.chevron_left,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Month/Year selector
-                    Expanded(
-                      child: Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              spreadRadius: 0,
-                              blurRadius: 20,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                          border: Border.all(
-                            color: const Color(0xFF667EEA).withOpacity(0.1),
-                            width: 1,
-                          ),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () {
-                              _selectMonthYear(context);
-                            },
-                            child: Center(
-                              child: Text(
-                                formattedMonthYear,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF2D3748),
-                                  letterSpacing: 0.5,
-                                ),
+                          child: Center(
+                            child: Text(
+                              formattedMonthYear,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF2D3748),
+                                letterSpacing: 0.5,
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                  ),
 
-                    // Next month button
-                    Container(
-                      height: 48,
-                      width: 48,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF667EEA).withOpacity(0.3),
-                            spreadRadius: 0,
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                  // Next month button
+                  Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () {
-                            setState(() {
-                              P04CALENDARINSTRUMENTVAR.dateTimeSelect = DateTime(
-                                P04CALENDARINSTRUMENTVAR.dateTimeSelect.year,
-                                P04CALENDARINSTRUMENTVAR.dateTimeSelect.month + 1,
-                              );
-                              context
-                                  .read<P04CALENDARINSTRUMENTGETDATA_Bloc>()
-                                  .add(P04CALENDARINSTRUMENTGETDATA_GET());
-                            });
-                          },
-                          child: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                            size: 24,
-                          ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF667EEA).withOpacity(0.3),
+                          spreadRadius: 0,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          setState(() {
+                            P04CALENDARINSTRUMENTVAR.dateTimeSelect = DateTime(
+                              P04CALENDARINSTRUMENTVAR.dateTimeSelect.year,
+                              P04CALENDARINSTRUMENTVAR.dateTimeSelect.month + 1,
+                            );
+                            context
+                                .read<P04CALENDARINSTRUMENTGETDATA_Bloc>()
+                                .add(P04CALENDARINSTRUMENTGETDATA_GET());
+                          });
+                        },
+                        child: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
 
               // Weekdays header

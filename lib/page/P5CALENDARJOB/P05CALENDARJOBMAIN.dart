@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, use_build_context_synchronously, unnecessary_to_list_in_spreads, avoid_web_libraries_in_flutter, avoid_print, deprecated_member_use
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../bloc/BlocEvent/05-01-P05CALENDARJOBGETDATA.dart';
 import '../../data/global.dart';
+import '../../widget/common/ErrorPopup.dart';
 import '../../widget/function/ForUseAllPage.dart';
 import 'P05CALENDARJOBVAR.dart';
 
@@ -27,6 +29,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
   void initState() {
     super.initState();
     context.read<P05CALENDARJOBGETDATA_Bloc>().add(P05CALENDARJOBGETDATA_GET());
+    PageName = 'CALENDAR JOB';
   }
 
   List<Map<String, dynamic>> getJobsForDate(DateTime targetDate, List<P05CALENDARJOBGETDATAclass> data) {
@@ -98,7 +101,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
         });
       }
     }
-    print(jobsForDate);
+    // print(jobsForDate);
     return jobsForDate;
   }
 
@@ -109,7 +112,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
     List<P05CALENDARJOBGETDATAclass> monthData = _datain.where((data) {
       DateTime? start;
       DateTime? finish;
-
       try {
         start = convertStringToDateTime(data.STARTDATE);
 
@@ -149,11 +151,14 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
         59,
         59,
       );
-      print(monthStart);
-      print(monthEnd);
-      print('-------------------------------------------');
+      // print(monthStart);
+      // print(monthEnd);
+      // print('-------------------------------------------');
       return !(finish.isBefore(monthStart) || start.isAfter(monthEnd));
     }).toList();
+
+    // _fetchHolidays();
+    // print(holidays);
 
     selectpage = '';
     selectstatus = '';
@@ -174,8 +179,52 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
 
     String formattedMonthYear = DateFormat('MMM yyyy').format(P05CALENDARJOBVAR.dateTimeSelect);
 
-    print(_datain.length);
-    print(monthData.length);
+    // print(_datain.length);
+    // print(monthData.length);
+
+    // ฟังก์ชันตรวจสอบว่าเป็นวันหยุดหรือไม่
+    bool isHoliday(DateTime date) {
+      String dateString = DateFormat('yyyy-MM-dd').format(date);
+
+      for (String holiday in holidays) {
+        try {
+          DateTime holidayDate = DateTime.parse(holiday);
+          String holidayDateString = DateFormat('yyyy-MM-dd').format(holidayDate);
+          if (dateString == holidayDateString) {
+            return true;
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+      return false;
+    }
+
+    // ฟังก์ชันเลือกสีพื้นหลังตามประเภทของวัน
+    Color getBackgroundColor(DateTime? date, bool isToday) {
+      if (date == null) return Colors.grey.shade50;
+
+      if (isHoliday(date)) {
+        return const Color(0xFFFFE4E1);
+      } else if (isToday) {
+        return Colors.grey.shade50;
+      } else {
+        return Colors.grey.shade50;
+      }
+    }
+
+    // ฟังก์ชันเลือกสีขอบตามประเภทของวัน
+    Color getBorderColor(DateTime? date, bool isToday) {
+      if (date == null) return Colors.grey.shade200;
+
+      if (isHoliday(date)) {
+        return const Color(0xFFFF6B6B);
+      } else if (isToday) {
+        return const Color(0xFF667EEA);
+      } else {
+        return Colors.grey.shade200;
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFF),
@@ -255,25 +304,51 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                           width: 1,
                         ),
                       ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () {
-                            _selectMonthYear(context);
-                          },
-                          child: Center(
-                            child: Text(
-                              formattedMonthYear,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF2D3748),
-                                letterSpacing: 0.5,
-                              ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(16),
+                                    onTap: () {
+                                      _selectMonthYear(context);
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        formattedMonthYear,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF2D3748),
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    padding: const EdgeInsets.only(right: 12),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildStatusLegend('START', getStatusColor('START')),
+                                        const SizedBox(width: 8),
+                                        _buildStatusLegend('STOP', getStatusColor('STOP')),
+                                        const SizedBox(width: 8),
+                                        _buildStatusLegend('FINISH', getStatusColor('FINISH')),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
@@ -380,11 +455,11 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                       return AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
-                          color: isToday ? const Color(0xFF667EEA) : Colors.grey.shade50,
+                          color: getBackgroundColor(date, isToday),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isToday ? const Color(0xFF667EEA) : Colors.grey.shade200,
-                            width: isToday ? 2 : 1,
+                            color: getBorderColor(date, isToday),
+                            width: (isToday || (date != null && isHoliday(date))) ? 2 : 1,
                           ),
                           boxShadow: isToday
                               ? [
@@ -395,7 +470,16 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                     offset: const Offset(0, 2),
                                   ),
                                 ]
-                              : null,
+                              : (date != null && isHoliday(date))
+                                  ? [
+                                      BoxShadow(
+                                        color: const Color(0xFFFF6B6B).withOpacity(0.2),
+                                        spreadRadius: 0,
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
                         ),
                         child: Stack(
                           children: [
@@ -406,7 +490,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: isToday ? Colors.white.withOpacity(0.2) : Colors.transparent,
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -414,8 +498,39 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
-                                      color: isToday ? Colors.white : const Color(0xFF2D3748),
+                                      color: isToday
+                                          ? const Color(0xFF2D3748)
+                                          : isHoliday(date)
+                                              ? const Color(0xFFD63384)
+                                              : const Color(0xFF2D3748),
                                     ),
+                                  ),
+                                ),
+                              ),
+                            // เพิ่มไอคอนสำหรับวันหยุด
+                            if (date != null && isHoliday(date))
+                              Positioned(
+                                top: 4,
+                                left: 4,
+                                child: Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFF6B6B),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFFFF6B6B).withOpacity(0.3),
+                                        spreadRadius: 0,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.event_busy,
+                                    size: 8,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -431,7 +546,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                       if (jobsForDate.isEmpty) {
                                         return const SizedBox.shrink();
                                       }
-                                      // print(jobsForDate);
+
                                       return MouseRegion(
                                         cursor: SystemMouseCursors.click,
                                         child: GestureDetector(
@@ -455,11 +570,13 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                                           child: Text(
                                                             job['request_no'],
                                                             style: TextStyle(
-                                                              fontSize: 9,
+                                                              fontSize: 14,
                                                               fontWeight: FontWeight.w600,
                                                               color: isToday
-                                                                  ? Colors.white.withOpacity(0.9)
-                                                                  : const Color(0xFF374151),
+                                                                  ? const Color(0xFF374151)
+                                                                  : isHoliday(date)
+                                                                      ? const Color(0xFFD63384)
+                                                                      : const Color(0xFF374151),
                                                             ),
                                                             overflow: TextOverflow.ellipsis,
                                                           ),
@@ -939,4 +1056,69 @@ Color _getStatusTextColor(String status) {
     default:
       return const Color(0xFF6B7280);
   }
+}
+
+Future<void> fetchHolidays() async {
+  try {
+    // FreeLoadingTan(P05CALENDARJOBMAINcontext);
+
+    final responseHolidays = await Dio().post(
+      "$ToServer/02SALTSPRAY/Holidays",
+      data: {},
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (responseHolidays.statusCode == 200 && responseHolidays.data is List) {
+      List data = responseHolidays.data;
+      holidays = data.map((item) => item['HolidayDate'].toString()).where((name) => name.isNotEmpty).toList();
+      // print("Holidays: " + holidays.toString());
+    } else {
+      print("SearchCustomer failed");
+      // showErrorPopup(P03DATATABLEMAINcontext, responseHolidays.toString());
+      // Navigator.pop(P05CALENDARJOBMAINcontext);
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(P05CALENDARJOBMAINcontext, e.toString());
+  } finally {
+    // Navigator.pop(P05CALENDARJOBMAINcontext);
+  }
+}
+
+// เพิ่มฟังก์ชันสำหรับสร้าง Legend
+Widget _buildStatusLegend(String status, Color color) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              spreadRadius: 0,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        status,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF64748B),
+        ),
+      ),
+    ],
+  );
 }

@@ -36,6 +36,7 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
     super.initState();
     context.read<P06EDITCUSTOMERGETDATA_Bloc>().add(P06EDITCUSTOMERGETDATA_GET());
     _searchController.addListener(_filterCustomers);
+    PageName = 'EDIT CUSTOMER';
   }
 
   @override
@@ -312,114 +313,98 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Card(
-                    color: Colors.grey[200],
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Container(
-                      height: 200,
-                      padding: const EdgeInsets.all(16),
-                      width: double.infinity,
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _isEditing ? 'แก้ไขข้อมูลลูกค้า' : 'เพิ่มลูกค้าใหม่',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            // if (_isEditing)
-                            //   Container(
-                            //     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                            //     decoration: BoxDecoration(
-                            //       color: Colors.blue[50],
-                            //       borderRadius: BorderRadius.circular(6),
-                            //       border: Border.all(color: Colors.blue[200]!),
-                            //     ),
-                            //     child: Row(
-                            //       children: [
-                            //         Icon(Icons.info, color: Colors.blue[600], size: 16),
-                            //         SizedBox(width: 8),
-                            //         Text(
-                            //           'กำลังแก้ไขลูกค้า ID: $_selectedCustomerId',
-                            //           style: TextStyle(
-                            //             color: Colors.blue[700],
-                            //             fontSize: 12,
-                            //             fontWeight: FontWeight.w500,
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // if (_isEditing) SizedBox(height: 16),
-                            TextFormField(
-                              controller: _customerNameController,
-                              decoration: InputDecoration(
-                                labelText: 'ชื่อลูกค้า',
-                                hintText: 'กรอกชื่อลูกค้า',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                if (USERDATA.UserLV >= 5) ...[
+                  Expanded(
+                    child: Card(
+                      color: Colors.grey[200],
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        height: 200,
+                        padding: const EdgeInsets.all(16),
+                        width: double.infinity,
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _isEditing ? 'แก้ไขข้อมูลลูกค้า' : 'เพิ่มลูกค้าใหม่',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800],
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide(color: Colors.blue[600]!, width: 2),
-                                ),
-                                prefixIcon: Icon(Icons.business, color: Colors.grey[600]),
-                                fillColor: Colors.white,
                               ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'กรุณากรอกชื่อลูกค้า';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      P06EDITCUSTOMERVAR.CUSTOMER = _customerNameController.text;
-                                      P06EDITCUSTOMERVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
-                                      if (_isEditing) {
-                                        P06EDITCUSTOMERVAR.ID = _selectedCustomerId!;
-                                        _editCustomer();
-                                      } else {
-                                        print('Add Customer');
-                                        _addCustomer();
-                                      }
-                                    },
-                                    icon: Icon(_isEditing ? Icons.save : Icons.add),
-                                    label: Text(_isEditing ? 'บันทึก' : 'เพิ่ม'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[600],
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
+                              const SizedBox(height: 16),
+                              // if (_isEditing)
+                              //   Container(
+                              //     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.blue[50],
+                              //       borderRadius: BorderRadius.circular(6),
+                              //       border: Border.all(color: Colors.blue[200]!),
+                              //     ),
+                              //     child: Row(
+                              //       children: [
+                              //         Icon(Icons.info, color: Colors.blue[600], size: 16),
+                              //         SizedBox(width: 8),
+                              //         Text(
+                              //           'กำลังแก้ไขลูกค้า ID: $_selectedCustomerId',
+                              //           style: TextStyle(
+                              //             color: Colors.blue[700],
+                              //             fontSize: 12,
+                              //             fontWeight: FontWeight.w500,
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // if (_isEditing) SizedBox(height: 16),
+                              TextFormField(
+                                controller: _customerNameController,
+                                decoration: InputDecoration(
+                                  labelText: 'ชื่อลูกค้า',
+                                  hintText: 'กรอกชื่อลูกค้า',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: Colors.blue[600]!, width: 2),
+                                  ),
+                                  prefixIcon: Icon(Icons.business, color: Colors.grey[600]),
+                                  fillColor: Colors.white,
                                 ),
-                                if (_isEditing) ...[
-                                  const SizedBox(width: 12),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'กรุณากรอกชื่อลูกค้า';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                children: [
                                   Expanded(
                                     child: ElevatedButton.icon(
-                                      onPressed: _clearForm,
-                                      icon: const Icon(Icons.clear),
-                                      label: const Text('ยกเลิก'),
+                                      onPressed: () {
+                                        P06EDITCUSTOMERVAR.CUSTOMER = _customerNameController.text;
+                                        P06EDITCUSTOMERVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
+                                        if (_isEditing) {
+                                          P06EDITCUSTOMERVAR.ID = _selectedCustomerId!;
+                                          _editCustomer();
+                                        } else {
+                                          print('Add Customer');
+                                          _addCustomer();
+                                        }
+                                      },
+                                      icon: Icon(_isEditing ? Icons.save : Icons.add),
+                                      label: Text(_isEditing ? 'บันทึก' : 'เพิ่ม'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.grey[600],
+                                        backgroundColor: Colors.green[600],
                                         foregroundColor: Colors.white,
                                         padding: const EdgeInsets.symmetric(vertical: 12),
                                         shape: RoundedRectangleBorder(
@@ -428,15 +413,33 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                                       ),
                                     ),
                                   ),
+                                  if (_isEditing) ...[
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: _clearForm,
+                                        icon: const Icon(Icons.clear),
+                                        label: const Text('ยกเลิก'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.grey[600],
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                ]
               ],
             ),
 
@@ -587,28 +590,30 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.edit,
-                                    color: Colors.blue[600],
-                                    size: 20,
+                                if (USERDATA.UserLV >= 5) ...[
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Colors.blue[600],
+                                      size: 20,
+                                    ),
+                                    onPressed: () => _onEditCustomer(customer),
+                                    tooltip: 'แก้ไข',
                                   ),
-                                  onPressed: () => _onEditCustomer(customer),
-                                  tooltip: 'แก้ไข',
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red[600],
-                                    size: 20,
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red[600],
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      P06EDITCUSTOMERVAR.ID = customer.ID;
+                                      P06EDITCUSTOMERVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
+                                      _deleteCustomer(customer.ID);
+                                    },
+                                    tooltip: 'ลบ',
                                   ),
-                                  onPressed: () {
-                                    P06EDITCUSTOMERVAR.ID = customer.ID;
-                                    P06EDITCUSTOMERVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
-                                    _deleteCustomer(customer.ID);
-                                  },
-                                  tooltip: 'ลบ',
-                                ),
+                                ]
                               ],
                             ),
                             onTap: () => _onEditCustomer(customer),

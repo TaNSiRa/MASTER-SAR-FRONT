@@ -1,3 +1,4 @@
 {
-    "liveServer.settings.port": 7700
+    "liveServer.settings.port": 7700,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

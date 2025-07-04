@@ -3,7 +3,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../data/global.dart';
 import '../../page/P3DATATABLE/P03DATATABLEMAIN.dart';
 import '../../page/P3DATATABLE/P03DATATABLEVAR.dart';
@@ -71,29 +70,70 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
           REPORTNO: savenull(data['Report_No']),
           SECTION: savenull(data['Section']),
           REQUESTER: savenull(data['Requester']),
+          SAMPLINGDATE: formatDate(savenull(data['Sampling_Date'])),
           RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
           CUSTOMERNAME: savenull(data['Customer_Name']),
           PARTNAME1: savenull(data['Part_Name1']),
           PARTNO1: savenull(data['Part_No1']),
+          LOTNO1: savenull(data['Lot_No1']),
+          AMOUNT1: savenull(data['Amount1']),
+          MATERIAL1: savenull(data['Material1']),
+          PROCESS1: savenull(data['Process1']),
           PARTNAME2: savenull(data['Part_Name2']),
           PARTNO2: savenull(data['Part_No2']),
+          LOTNO2: savenull(data['Lot_No2']),
+          AMOUNT2: savenull(data['Amount2']),
+          MATERIAL2: savenull(data['Material2']),
+          PROCESS2: savenull(data['Process2']),
           PARTNAME3: savenull(data['Part_Name3']),
           PARTNO3: savenull(data['Part_No3']),
+          LOTNO3: savenull(data['Lot_No3']),
+          AMOUNT3: savenull(data['Amount3']),
+          MATERIAL3: savenull(data['Material3']),
+          PROCESS3: savenull(data['Process3']),
           PARTNAME4: savenull(data['Part_Name4']),
           PARTNO4: savenull(data['Part_No4']),
+          LOTNO4: savenull(data['Lot_No4']),
+          AMOUNT4: savenull(data['Amount4']),
+          MATERIAL4: savenull(data['Material4']),
+          PROCESS4: savenull(data['Process4']),
           PARTNAME5: savenull(data['Part_Name5']),
           PARTNO5: savenull(data['Part_No5']),
+          LOTNO5: savenull(data['Lot_No5']),
+          AMOUNT5: savenull(data['Amount5']),
+          MATERIAL5: savenull(data['Material5']),
+          PROCESS5: savenull(data['Process5']),
           PARTNAME6: savenull(data['Part_Name6']),
           PARTNO6: savenull(data['Part_No6']),
+          LOTNO6: savenull(data['Lot_No6']),
+          AMOUNT6: savenull(data['Amount6']),
+          MATERIAL6: savenull(data['Material6']),
+          PROCESS6: savenull(data['Process6']),
           PARTNAME7: savenull(data['Part_Name7']),
           PARTNO7: savenull(data['Part_No7']),
+          LOTNO7: savenull(data['Lot_No7']),
+          AMOUNT7: savenull(data['Amount7']),
+          MATERIAL7: savenull(data['Material7']),
+          PROCESS7: savenull(data['Process7']),
           PARTNAME8: savenull(data['Part_Name8']),
           PARTNO8: savenull(data['Part_No8']),
+          LOTNO8: savenull(data['Lot_No8']),
+          AMOUNT8: savenull(data['Amount8']),
+          MATERIAL8: savenull(data['Material8']),
+          PROCESS8: savenull(data['Process8']),
           PARTNAME9: savenull(data['Part_Name9']),
           PARTNO9: savenull(data['Part_No9']),
+          LOTNO9: savenull(data['Lot_No9']),
+          AMOUNT9: savenull(data['Amount9']),
+          MATERIAL9: savenull(data['Material9']),
+          PROCESS9: savenull(data['Process9']),
           PARTNAME10: savenull(data['Part_Name10']),
           PARTNO10: savenull(data['Part_No10']),
-          AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
+          LOTNO10: savenull(data['Lot_No10']),
+          AMOUNT10: savenull(data['Amount10']),
+          MATERIAL10: savenull(data['Material10']),
+          PROCESS10: savenull(data['Process10']),
+          // AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
           TAKEPHOTO: savenullint(data['Take_Photo']),
           STARTDATE: formatDate(savenull(data['Start_Date'])),
           TIME1: savenullint(data['Time1']),
@@ -136,6 +176,8 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
           FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
           TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
           DUEDATE10: formatDate(savenull(data['Due_Date10'])),
+          TEMPDATE0: formatDate(savenull(data['Temp_Date0'])),
+          DUEDATE0: formatDate(savenull(data['Due_Date0'])),
           INSTRUMENT: savenull(data['Instrument']),
           METHOD: savenull(data['Method']),
           INCHARGE: savenull(data['Incharge']),
@@ -161,7 +203,7 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
   Future<void> _P03DATATABLEGETDATA_GET2(
       List<P03DATATABLEGETDATAclass> toAdd, Emitter<List<P03DATATABLEGETDATAclass>> emit) async {
     FreeLoadingTan(P03DATATABLEMAINcontext);
-    List<P03DATATABLEGETDATAclass> output = [];
+    // List<P03DATATABLEGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
   }
 
@@ -211,29 +253,70 @@ class P03DATATABLEGETDATAclass {
     this.REPORTNO = '',
     this.SECTION = '',
     this.REQUESTER = '',
+    this.SAMPLINGDATE = '',
     this.RECEIVEDDATE = '',
     this.CUSTOMERNAME = '',
     this.PARTNAME1 = '',
     this.PARTNO1 = '',
+    this.LOTNO1 = '',
+    this.AMOUNT1 = '',
+    this.MATERIAL1 = '',
+    this.PROCESS1 = '',
     this.PARTNAME2 = '',
     this.PARTNO2 = '',
+    this.LOTNO2 = '',
+    this.AMOUNT2 = '',
+    this.MATERIAL2 = '',
+    this.PROCESS2 = '',
     this.PARTNAME3 = '',
     this.PARTNO3 = '',
+    this.LOTNO3 = '',
+    this.AMOUNT3 = '',
+    this.MATERIAL3 = '',
+    this.PROCESS3 = '',
     this.PARTNAME4 = '',
     this.PARTNO4 = '',
+    this.LOTNO4 = '',
+    this.AMOUNT4 = '',
+    this.MATERIAL4 = '',
+    this.PROCESS4 = '',
     this.PARTNAME5 = '',
     this.PARTNO5 = '',
+    this.LOTNO5 = '',
+    this.AMOUNT5 = '',
+    this.MATERIAL5 = '',
+    this.PROCESS5 = '',
     this.PARTNAME6 = '',
     this.PARTNO6 = '',
+    this.LOTNO6 = '',
+    this.AMOUNT6 = '',
+    this.MATERIAL6 = '',
+    this.PROCESS6 = '',
     this.PARTNAME7 = '',
     this.PARTNO7 = '',
+    this.LOTNO7 = '',
+    this.AMOUNT7 = '',
+    this.MATERIAL7 = '',
+    this.PROCESS7 = '',
     this.PARTNAME8 = '',
     this.PARTNO8 = '',
+    this.LOTNO8 = '',
+    this.AMOUNT8 = '',
+    this.MATERIAL8 = '',
+    this.PROCESS8 = '',
     this.PARTNAME9 = '',
     this.PARTNO9 = '',
+    this.LOTNO9 = '',
+    this.AMOUNT9 = '',
+    this.MATERIAL9 = '',
+    this.PROCESS9 = '',
     this.PARTNAME10 = '',
     this.PARTNO10 = '',
-    this.AMOUNTSAMPLE = 0,
+    this.LOTNO10 = '',
+    this.AMOUNT10 = '',
+    this.MATERIAL10 = '',
+    this.PROCESS10 = '',
+    // this.AMOUNTSAMPLE = 0,
     this.TAKEPHOTO = 0,
     this.STARTDATE = '',
     this.TIME1 = 0,
@@ -276,6 +359,8 @@ class P03DATATABLEGETDATAclass {
     this.FINISHDATE10 = '',
     this.TEMPDATE10 = '',
     this.DUEDATE10 = '',
+    this.TEMPDATE0 = '',
+    this.DUEDATE0 = '',
     this.INSTRUMENT = '',
     this.METHOD = '',
     this.INCHARGE = '',
@@ -290,29 +375,70 @@ class P03DATATABLEGETDATAclass {
   String REPORTNO;
   String SECTION;
   String REQUESTER;
+  String SAMPLINGDATE;
   String RECEIVEDDATE;
   String CUSTOMERNAME;
   String PARTNAME1;
   String PARTNO1;
+  String LOTNO1;
+  String AMOUNT1;
+  String MATERIAL1;
+  String PROCESS1;
   String PARTNAME2;
   String PARTNO2;
+  String LOTNO2;
+  String AMOUNT2;
+  String MATERIAL2;
+  String PROCESS2;
   String PARTNAME3;
   String PARTNO3;
+  String LOTNO3;
+  String AMOUNT3;
+  String MATERIAL3;
+  String PROCESS3;
   String PARTNAME4;
   String PARTNO4;
+  String LOTNO4;
+  String AMOUNT4;
+  String MATERIAL4;
+  String PROCESS4;
   String PARTNAME5;
   String PARTNO5;
+  String LOTNO5;
+  String AMOUNT5;
+  String MATERIAL5;
+  String PROCESS5;
   String PARTNAME6;
   String PARTNO6;
+  String LOTNO6;
+  String AMOUNT6;
+  String MATERIAL6;
+  String PROCESS6;
   String PARTNAME7;
   String PARTNO7;
+  String LOTNO7;
+  String AMOUNT7;
+  String MATERIAL7;
+  String PROCESS7;
   String PARTNAME8;
   String PARTNO8;
+  String LOTNO8;
+  String AMOUNT8;
+  String MATERIAL8;
+  String PROCESS8;
   String PARTNAME9;
   String PARTNO9;
+  String LOTNO9;
+  String AMOUNT9;
+  String MATERIAL9;
+  String PROCESS9;
   String PARTNAME10;
   String PARTNO10;
-  int AMOUNTSAMPLE;
+  String LOTNO10;
+  String AMOUNT10;
+  String MATERIAL10;
+  String PROCESS10;
+  // int AMOUNTSAMPLE;
   int TAKEPHOTO;
   String STARTDATE;
   int TIME1;
@@ -355,6 +481,8 @@ class P03DATATABLEGETDATAclass {
   String FINISHDATE10;
   String TEMPDATE10;
   String DUEDATE10;
+  String TEMPDATE0;
+  String DUEDATE0;
   String INSTRUMENT;
   String METHOD;
   String INCHARGE;
@@ -369,29 +497,70 @@ class P03DATATABLEGETDATAclass {
       'REPORTNO': REPORTNO,
       'SECTION': SECTION,
       'REQUESTER': REQUESTER,
+      'SAMPLINGDATE': SAMPLINGDATE,
       'RECEIVEDDATE': RECEIVEDDATE,
       'CUSTOMERNAME': CUSTOMERNAME,
       'PARTNAME1': PARTNAME1,
       'PARTNO1': PARTNO1,
+      'LOTNO1': LOTNO1,
+      'AMOUNT1': AMOUNT1,
+      'MATERIAL1': MATERIAL1,
+      'PROCESS1': PROCESS1,
       'PARTNAME2': PARTNAME2,
       'PARTNO2': PARTNO2,
+      'LOTNO2': LOTNO2,
+      'AMOUNT2': AMOUNT2,
+      'MATERIAL2': MATERIAL2,
+      'PROCESS2': PROCESS2,
       'PARTNAME3': PARTNAME3,
       'PARTNO3': PARTNO3,
+      'LOTNO3': LOTNO3,
+      'AMOUNT3': AMOUNT3,
+      'MATERIAL3': MATERIAL3,
+      'PROCESS3': PROCESS3,
       'PARTNAME4': PARTNAME4,
       'PARTNO4': PARTNO4,
+      'LOTNO4': LOTNO4,
+      'AMOUNT4': AMOUNT4,
+      'MATERIAL4': MATERIAL4,
+      'PROCESS4': PROCESS4,
       'PARTNAME5': PARTNAME5,
       'PARTNO5': PARTNO5,
+      'LOTNO5': LOTNO5,
+      'AMOUNT5': AMOUNT5,
+      'MATERIAL5': MATERIAL5,
+      'PROCESS5': PROCESS5,
       'PARTNAME6': PARTNAME6,
       'PARTNO6': PARTNO6,
+      'LOTNO6': LOTNO6,
+      'AMOUNT6': AMOUNT6,
+      'MATERIAL6': MATERIAL6,
+      'PROCESS6': PROCESS6,
       'PARTNAME7': PARTNAME7,
       'PARTNO7': PARTNO7,
+      'LOTNO7': LOTNO7,
+      'AMOUNT7': AMOUNT7,
+      'MATERIAL7': MATERIAL7,
+      'PROCESS7': PROCESS7,
       'PARTNAME8': PARTNAME8,
       'PARTNO8': PARTNO8,
+      'LOTNO8': LOTNO8,
+      'AMOUNT8': AMOUNT8,
+      'MATERIAL8': MATERIAL8,
+      'PROCESS8': PROCESS8,
       'PARTNAME9': PARTNAME9,
       'PARTNO9': PARTNO9,
+      'LOTNO9': LOTNO9,
+      'AMOUNT9': AMOUNT9,
+      'MATERIAL9': MATERIAL9,
+      'PROCESS9': PROCESS9,
       'PARTNAME10': PARTNAME10,
       'PARTNO10': PARTNO10,
-      'AMOUNTSAMPLE': AMOUNTSAMPLE,
+      'LOTNO10': LOTNO10,
+      'AMOUNT10': AMOUNT10,
+      'MATERIAL10': MATERIAL10,
+      'PROCESS10': PROCESS10,
+      // 'AMOUNTSAMPLE': AMOUNTSAMPLE,
       'TAKEPHOTO': TAKEPHOTO,
       'STARTDATE': STARTDATE,
       'TIME1': TIME1,
@@ -434,6 +603,8 @@ class P03DATATABLEGETDATAclass {
       'FINISHDATE10': FINISHDATE10,
       'TEMPDATE10': TEMPDATE10,
       'DUEDATE10': DUEDATE10,
+      'TEMPDATE0': TEMPDATE0,
+      'DUEDATE0': DUEDATE0,
       'INSTRUMENT': INSTRUMENT,
       'METHOD': METHOD,
       'INCHARGE': INCHARGE,
@@ -452,29 +623,70 @@ Map<String, dynamic> toJsonAddDate() {
     'REPORTNO': P03DATATABLEVAR.REPORTNO,
     'SECTION': P03DATATABLEVAR.SECTION,
     'REQUESTER': P03DATATABLEVAR.REQUESTER,
+    'SAMPLINGDATE': P03DATATABLEVAR.SAMPLINGDATE,
     'RECEIVEDDATE': P03DATATABLEVAR.RECEIVEDDATE,
     'CUSTOMERNAME': P03DATATABLEVAR.CUSTOMERNAME,
     'PARTNAME1': P03DATATABLEVAR.PARTNAME1,
     'PARTNO1': P03DATATABLEVAR.PARTNO1,
+    'LOTNO1': P03DATATABLEVAR.LOTNO1,
+    'AMOUNT1': P03DATATABLEVAR.AMOUNT1,
+    'MATERIAL1': P03DATATABLEVAR.MATERIAL1,
+    'PROCESS1': P03DATATABLEVAR.PROCESS1,
     'PARTNAME2': P03DATATABLEVAR.PARTNAME2,
     'PARTNO2': P03DATATABLEVAR.PARTNO2,
+    'LOTNO2': P03DATATABLEVAR.LOTNO2,
+    'AMOUNT2': P03DATATABLEVAR.AMOUNT2,
+    'MATERIAL2': P03DATATABLEVAR.MATERIAL2,
+    'PROCESS2': P03DATATABLEVAR.PROCESS2,
     'PARTNAME3': P03DATATABLEVAR.PARTNAME3,
     'PARTNO3': P03DATATABLEVAR.PARTNO3,
+    'LOTNO3': P03DATATABLEVAR.LOTNO3,
+    'AMOUNT3': P03DATATABLEVAR.AMOUNT3,
+    'MATERIAL3': P03DATATABLEVAR.MATERIAL3,
+    'PROCESS3': P03DATATABLEVAR.PROCESS3,
     'PARTNAME4': P03DATATABLEVAR.PARTNAME4,
     'PARTNO4': P03DATATABLEVAR.PARTNO4,
+    'LOTNO4': P03DATATABLEVAR.LOTNO4,
+    'AMOUNT4': P03DATATABLEVAR.AMOUNT4,
+    'MATERIAL4': P03DATATABLEVAR.MATERIAL4,
+    'PROCESS4': P03DATATABLEVAR.PROCESS4,
     'PARTNAME5': P03DATATABLEVAR.PARTNAME5,
     'PARTNO5': P03DATATABLEVAR.PARTNO5,
+    'LOTNO5': P03DATATABLEVAR.LOTNO5,
+    'AMOUNT5': P03DATATABLEVAR.AMOUNT5,
+    'MATERIAL5': P03DATATABLEVAR.MATERIAL5,
+    'PROCESS5': P03DATATABLEVAR.PROCESS5,
     'PARTNAME6': P03DATATABLEVAR.PARTNAME6,
     'PARTNO6': P03DATATABLEVAR.PARTNO6,
+    'LOTNO6': P03DATATABLEVAR.LOTNO6,
+    'AMOUNT6': P03DATATABLEVAR.AMOUNT6,
+    'MATERIAL6': P03DATATABLEVAR.MATERIAL6,
+    'PROCESS6': P03DATATABLEVAR.PROCESS6,
     'PARTNAME7': P03DATATABLEVAR.PARTNAME7,
     'PARTNO7': P03DATATABLEVAR.PARTNO7,
+    'LOTNO7': P03DATATABLEVAR.LOTNO7,
+    'AMOUNT7': P03DATATABLEVAR.AMOUNT7,
+    'MATERIAL7': P03DATATABLEVAR.MATERIAL7,
+    'PROCESS7': P03DATATABLEVAR.PROCESS7,
     'PARTNAME8': P03DATATABLEVAR.PARTNAME8,
     'PARTNO8': P03DATATABLEVAR.PARTNO8,
+    'LOTNO8': P03DATATABLEVAR.LOTNO8,
+    'AMOUNT8': P03DATATABLEVAR.AMOUNT8,
+    'MATERIAL8': P03DATATABLEVAR.MATERIAL8,
+    'PROCESS8': P03DATATABLEVAR.PROCESS8,
     'PARTNAME9': P03DATATABLEVAR.PARTNAME9,
     'PARTNO9': P03DATATABLEVAR.PARTNO9,
+    'LOTNO9': P03DATATABLEVAR.LOTNO9,
+    'AMOUNT9': P03DATATABLEVAR.AMOUNT9,
+    'MATERIAL9': P03DATATABLEVAR.MATERIAL9,
+    'PROCESS9': P03DATATABLEVAR.PROCESS9,
     'PARTNAME10': P03DATATABLEVAR.PARTNAME10,
     'PARTNO10': P03DATATABLEVAR.PARTNO10,
-    'AMOUNTSAMPLE': P03DATATABLEVAR.AMOUNTSAMPLE,
+    'LOTNO10': P03DATATABLEVAR.LOTNO10,
+    'AMOUNT10': P03DATATABLEVAR.AMOUNT10,
+    'MATERIAL10': P03DATATABLEVAR.MATERIAL10,
+    'PROCESS10': P03DATATABLEVAR.PROCESS10,
+    // 'AMOUNTSAMPLE': P03DATATABLEVAR.AMOUNTSAMPLE,
     'TAKEPHOTO': P03DATATABLEVAR.TAKEPHOTO,
     'STARTDATE': P03DATATABLEVAR.STARTDATE,
     'TIME1': P03DATATABLEVAR.TIME1,
@@ -517,6 +729,8 @@ Map<String, dynamic> toJsonAddDate() {
     'FINISHDATE10': P03DATATABLEVAR.FINISHDATE10,
     'TEMPDATE10': P03DATATABLEVAR.TEMPDATE10,
     'DUEDATE10': P03DATATABLEVAR.DUEDATE10,
+    'TEMPDATE0': P03DATATABLEVAR.TEMPDATE0,
+    'DUEDATE0': P03DATATABLEVAR.DUEDATE0,
     'INSTRUMENT': P03DATATABLEVAR.INSTRUMENT,
     'METHOD': P03DATATABLEVAR.METHOD,
     'INCHARGE': P03DATATABLEVAR.INCHARGE,

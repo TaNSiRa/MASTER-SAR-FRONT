@@ -1,14 +1,11 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, avoid_print, use_build_context_synchronously, file_names
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../data/global.dart';
 import '../../page/P5CALENDARJOB/P05CALENDARJOBMAIN.dart';
 import '../../page/P5CALENDARJOB/P05CALENDARJOBVAR.dart';
 import '../../widget/common/ErrorPopup.dart';
-import '../../widget/common/Loading.dart';
 import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
@@ -65,7 +62,7 @@ class P05CALENDARJOBGETDATA_Bloc extends Bloc<P05CALENDARJOBGETDATA_Event, List<
       input = databuff;
 
       // var input = dummyServiceTable;
-      print(input);
+      // print(input);
       List<P05CALENDARJOBGETDATAclass> outputdata = input.map((data) {
         return P05CALENDARJOBGETDATAclass(
           REQUESTNO: savenull(data['Request_No']),
@@ -148,6 +145,9 @@ class P05CALENDARJOBGETDATA_Bloc extends Bloc<P05CALENDARJOBGETDATA_Event, List<
         );
       }).toList();
       // Navigator.pop(P01DASHBOARDMAINcontext);
+
+      await fetchHolidays();
+      // print(holidays);
 
       output = outputdata;
       emit(output);
