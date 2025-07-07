@@ -214,7 +214,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
     P06EDITCUSTOMERMAINcontext = context;
     List<P06EDITCUSTOMERGETDATAclass> _datain = widget.data ?? [];
 
-    // Initialize filtered data if empty
     if (_filteredData.isEmpty && _datain.isNotEmpty && _searchController.text.isEmpty) {
       _filteredData = _datain;
     } else if (_datain.isNotEmpty) {
@@ -228,10 +227,8 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Form Section
             Row(
               children: [
-                // Search Section
                 Expanded(
                   child: Card(
                     color: Colors.grey[200],
@@ -277,7 +274,7 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                                         : null,
                                   ),
                                   onChanged: (value) {
-                                    setState(() {}); // Refresh UI to show/hide clear button
+                                    setState(() {});
                                   },
                                 ),
                               ),
@@ -442,10 +439,7 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                 ]
               ],
             ),
-
             const SizedBox(height: 24),
-
-            // Customer List Section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -472,7 +466,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
               ],
             ),
             const SizedBox(height: 12),
-
             Expanded(
               child: _filteredData.isEmpty
                   ? Center(
@@ -523,7 +516,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                         final customer = _filteredData[index];
                         final isSelected = customer.ID == _selectedCustomerId;
 
-                        // Highlight search terms
                         String highlightedName = customer.CUSTOMER;
                         String highlightedId = customer.ID.toString();
 
@@ -628,7 +620,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
     );
   }
 
-  // Helper function to highlight search terms
   List<TextSpan> _buildHighlightedText(String text, String searchTerm, Color defaultColor) {
     if (searchTerm.isEmpty) {
       return [TextSpan(text: text, style: TextStyle(color: defaultColor))];
@@ -642,7 +633,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
     int index = lowerText.indexOf(lowerSearchTerm);
 
     while (index != -1) {
-      // Add text before the match
       if (index > start) {
         spans.add(TextSpan(
           text: text.substring(start, index),
@@ -650,7 +640,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
         ));
       }
 
-      // Add highlighted match
       spans.add(TextSpan(
         text: text.substring(index, index + searchTerm.length),
         style: TextStyle(
@@ -664,7 +653,6 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
       index = lowerText.indexOf(lowerSearchTerm, start);
     }
 
-    // Add remaining text
     if (start < text.length) {
       spans.add(TextSpan(
         text: text.substring(start),

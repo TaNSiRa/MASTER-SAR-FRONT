@@ -60,10 +60,9 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
       DateTime? finish;
 
       try {
-        // แปลง STARTDATE จาก string
         start = data.STARTDATE != null ? convertStringToDateTime(data.STARTDATE) : null;
         // print(data.STARTDATE);
-        // หา FINISHDATE สุดท้ายที่ไม่ว่าง
+
         List<String?> finishDateStrings = [
           data.FINISHDATE1,
           data.FINISHDATE2,
@@ -91,7 +90,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
 
       if (start == null || finish == null) return false;
       // print(!checkDate.isBefore(start) && !checkDate.isAfter(finish));
-      // เช็คว่า checkDate อยู่ในช่วง start ถึง finish
+
       return !checkDate.isBefore(start) && !checkDate.isAfter(finish);
     }).toList();
 
@@ -401,12 +400,10 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-
-                                  // ข้อมูล selectedDataSTART อยู่ใน Expanded + SingleChildScrollView
                                   Expanded(
                                     child: SingleChildScrollView(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start, // ให้ข้อความชิดซ้าย
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: (selectedDataPM.isNotEmpty
                                                 ? selectedDataPM
                                                 : selectedDataWAITTRANSFER.isNotEmpty
@@ -567,21 +564,20 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                       bool isRedDisabled = UseBoxSTART.contains(index + 1);
                                       bool isOrangeDisabled = UseBoxWAITTRANSFER.contains(index + 1);
                                       bool isGreyDisabled = UseBoxPM.contains(index + 1);
-                                      bool isBlueDisabled =
-                                          UseBoxRECEIVED.contains(index + 1); // เช็คว่ามีในลิสต์ไหม
-                                      bool isBlackDisabled = [1, 5, 9, 36, 40, 44, 48, 52, 61, 65, 69]
-                                          .contains(index + 1); // เช็ค index ที่กำหนด
+                                      bool isBlueDisabled = UseBoxRECEIVED.contains(index + 1);
+                                      bool isBlackDisabled =
+                                          [1, 5, 9, 36, 40, 44, 48, 52, 61, 65, 69].contains(index + 1);
                                       return Container(
                                         margin: const EdgeInsets.all(2.0),
                                         decoration: BoxDecoration(
                                           color: isBlackDisabled
-                                              ? Colors.black // สีดำถ้าเป็น index ที่กำหนด
+                                              ? Colors.black
                                               : (isGreyDisabled
                                                   ? Colors.blueGrey
                                                   : isOrangeDisabled
                                                       ? Colors.orange
                                                       : isRedDisabled
-                                                          ? Colors.red // สีแดงถ้ามีใน UseBoxSTART
+                                                          ? Colors.red
                                                           : isBlueDisabled
                                                               ? Colors.blue[200]
                                                               : (index < selectedTickets.length &&
@@ -605,12 +601,10 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                                       int realIndex = index + 1;
 
                                                       if (selectedTickets[index]) {
-                                                        // เพิ่มเข้า list ถ้าเลือก
                                                         if (!selectedTicketIndexes.contains(realIndex)) {
                                                           selectedTicketIndexes.add(realIndex);
                                                         }
                                                       } else {
-                                                        // ลบออกถ้ายกเลิกเลือก
                                                         selectedTicketIndexes.remove(realIndex);
                                                       }
                                                       // print(selectedTicketIndexes);
@@ -652,8 +646,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                     ),
                                     itemCount: 18 * 4,
                                     itemBuilder: (context, index2) {
-                                      bool isRedDisabled =
-                                          UseBoxSTART.contains(index2 + 73); // เช็คว่ามีในลิสต์ไหม
+                                      bool isRedDisabled = UseBoxSTART.contains(index2 + 73);
                                       bool isOrangeDisabled = UseBoxWAITTRANSFER.contains(index2 + 73);
                                       bool isGreyDisabled = UseBoxPM.contains(index2 + 73);
                                       bool isBlueDisabled = UseBoxRECEIVED.contains(index2 + 73);
@@ -669,19 +662,19 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                         136,
                                         140,
                                         144
-                                      ].contains(index2 + 73); // เช็ค index ที่กำหนด
+                                      ].contains(index2 + 73);
 
                                       return Container(
                                         margin: const EdgeInsets.all(2.0),
                                         decoration: BoxDecoration(
                                           color: isBlackDisabled
-                                              ? Colors.black // สีดำถ้าเป็น index ที่กำหนด
+                                              ? Colors.black
                                               : (isGreyDisabled
                                                   ? Colors.blueGrey
                                                   : isOrangeDisabled
                                                       ? Colors.orange
                                                       : isRedDisabled
-                                                          ? Colors.red // สีแดงถ้ามีใน UseBoxSTART
+                                                          ? Colors.red
                                                           : isBlueDisabled
                                                               ? Colors.blue[200]
                                                               : (selectedTickets2[index2]
@@ -695,19 +688,17 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                                   isBlueDisabled ||
                                                   isOrangeDisabled ||
                                                   isGreyDisabled)
-                                              ? null // ปิดการกดถ้าเป็น index ที่ถูกปิด
+                                              ? null
                                               : () {
                                                   setState(() {
                                                     selectedTickets2[index2] = !selectedTickets2[index2];
                                                     int realIndex = index2 + 73;
 
                                                     if (selectedTickets2[index2]) {
-                                                      // เพิ่มเข้า list ถ้าเลือก
                                                       if (!selectedTicketIndexes.contains(realIndex)) {
                                                         selectedTicketIndexes.add(realIndex);
                                                       }
                                                     } else {
-                                                      // ลบออกถ้ายกเลิกเลือก
                                                       selectedTicketIndexes.remove(realIndex);
                                                     }
                                                     // print(selectedTicketIndexes);
@@ -754,12 +745,10 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                                     ),
                                   ),
                                   const SizedBox(height: 10),
-
-                                  // ข้อมูล selectedDataSTART อยู่ใน Expanded + SingleChildScrollView
                                   Expanded(
                                     child: SingleChildScrollView(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start, // ให้ข้อความชิดซ้าย
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: selectedDataRECEIVED.map((data) {
                                           final reqNo = data['REQUESTNO'] ?? '';
                                           final checkbox = data['CHECKBOX'] ?? '';
@@ -868,7 +857,6 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
 
                       selectedTicketIndexes.clear();
 
-                      // === Grid ซ้าย (1–72) ===
                       for (int i = 0; i < 72; i++) {
                         int realIndex = i + 1;
                         bool isDisabled = UseBoxSTART.contains(realIndex) ||
@@ -885,7 +873,6 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                         }
                       }
 
-                      // === Grid ขวา (73–144) ===
                       for (int i = 0; i < 72; i++) {
                         int realIndex = i + 73;
                         bool isDisabled = UseBoxSTART.contains(realIndex) ||

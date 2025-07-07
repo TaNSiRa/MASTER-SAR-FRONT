@@ -31,7 +31,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
     PageName = 'CALENDAR INSTRUMENT';
   }
 
-  // ฟังก์ชันคำนวณเปอร์เซ็นต์ capacity ของแต่ละ instrument ในวันที่กำหนด
   Map<String, double> calculateDayCapacity(
       DateTime targetDate, List<P04CALENDARINSTRUMENTGETDATAclass> data) {
     Map<String, double> capacityMap = {
@@ -50,10 +49,8 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
       DateTime? finishDate;
 
       try {
-        // แปลง Start_Date
         startDate = convertStringToDateTime(item.STARTDATE);
 
-        // หา Finish_Date ตัวสุดท้ายที่มีค่า
         List<String?> finishDateStrings = [
           item.FINISHDATE1,
           item.FINISHDATE2,
@@ -80,7 +77,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
 
       if (startDate == null || finishDate == null) continue;
 
-      // เช็คว่า targetDate อยู่ในช่วง startDate ถึง finishDate
       DateTime targetDateOnly = DateTime(targetDate.year, targetDate.month, targetDate.day);
       DateTime startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
       DateTime finishDateOnly = DateTime(finishDate.year, finishDate.month, finishDate.day);
@@ -88,55 +84,45 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
       if (targetDateOnly.isAtSameMomentAs(startDateOnly) ||
           targetDateOnly.isAtSameMomentAs(finishDateOnly) ||
           (targetDateOnly.isAfter(startDateOnly) && targetDateOnly.isBefore(finishDateOnly))) {
-        // คำนวณจำนวนนาทีที่ใช้จริงในวันนี้
         double actualUsedMinutes = 0;
 
         if (targetDateOnly.isAtSameMomentAs(startDateOnly)) {
-          // วันเริ่มต้น: คำนวณจากเวลาเริ่มต้นจนถึงเที่ยงคืน
           DateTime endOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
           actualUsedMinutes = endOfDay.difference(startDate).inMinutes.toDouble() + 1; // +1 สำหรับนาทีสุดท้าย
         } else if (targetDateOnly.isAtSameMomentAs(finishDateOnly)) {
-          // วันสิ้นสุด: คำนวณจากเที่ยงคืนจนถึงเวลาสิ้นสุด
           DateTime startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 0, 0, 0);
           actualUsedMinutes = finishDate.difference(startOfDay).inMinutes.toDouble();
         } else {
-          // วันกลาง: ใช้เต็มวัน 1440 นาที
           actualUsedMinutes = 1440;
         }
 
-        // จำกัดไม่ให้เกิน 1440 นาทีต่อวัน
         if (actualUsedMinutes > 1440) actualUsedMinutes = 1440;
         if (actualUsedMinutes < 0) actualUsedMinutes = 0;
 
-        // นับจำนวน checkbox slots ที่ใช้
         List<String> checkboxList = item.CHECKBOX.split(',');
         int checkboxSlotsUsed = 0;
 
         for (String checkboxStr in checkboxList) {
           if (checkboxStr.trim().isNotEmpty) {
             try {
-              int.parse(checkboxStr.trim()); // เช็คว่าเป็นตัวเลขที่ valid
-              checkboxSlotsUsed += 1; // นับจำนวน slots ที่ใช้
+              int.parse(checkboxStr.trim());
+              checkboxSlotsUsed += 1;
             } catch (e) {
               print("Error parsing checkbox: $e");
             }
           }
         }
 
-        // คำนวณเปอร์เซ็นต์ capacity
-        // เปอร์เซ็นต์ = (นาทีที่ใช้จริง × จำนวน slots ที่ใช้) / (1440 × 122) × 100
         double totalCapacityForDay = 1440 * totalCheckboxSlots;
         double usedCapacity = actualUsedMinutes * checkboxSlotsUsed;
         double percentage = (usedCapacity / totalCapacityForDay) * 100;
 
-        // เพิ่มเปอร์เซ็นต์ให้กับ instrument ที่เกี่ยวข้อง
         if (capacityMap.containsKey(item.INSTRUMENT)) {
           capacityMap[item.INSTRUMENT] = capacityMap[item.INSTRUMENT]! + percentage;
         }
       }
     }
 
-    // จำกัดเปอร์เซ็นต์ไม่ให้เกิน 100%
     capacityMap.forEach((key, value) {
       if (value > 100.0) {
         capacityMap[key] = 100.0;
@@ -150,8 +136,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
   Widget build(BuildContext context) {
     P04CALENDARINSTRUMENTMAINcontext = context;
     List<P04CALENDARINSTRUMENTGETDATAclass> _datain = widget.data ?? [];
-
-    // Filter data สำหรับเดือนปัจจุบัน
     List<P04CALENDARINSTRUMENTGETDATAclass> monthData = _datain.where((data) {
       DateTime? start;
       DateTime? finish;
@@ -185,7 +169,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
 
       if (start == null || finish == null) return false;
 
-      // เช็คว่าข้อมูลนี้เกี่ยวข้องกับเดือนปัจจุบันหรือไม่
       DateTime monthStart = DateTime(
           P04CALENDARINSTRUMENTVAR.dateTimeSelect.year, P04CALENDARINSTRUMENTVAR.dateTimeSelect.month, 1);
       DateTime monthEnd = DateTime(
@@ -237,10 +220,8 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             children: [
-              // Header with navigation and month/year selector
               Row(
                 children: [
-                  // Previous month button
                   Container(
                     height: 48,
                     width: 48,
@@ -283,8 +264,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                       ),
                     ),
                   ),
-
-                  // Month/Year selector
                   Expanded(
                     child: Container(
                       height: 48,
@@ -326,8 +305,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                       ),
                     ),
                   ),
-
-                  // Next month button
                   Container(
                     height: 48,
                     width: 48,
@@ -372,8 +349,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                   ),
                 ],
               ),
-
-              // Weekdays header
               Container(
                 // margin: const EdgeInsets.only(bottom: 16),
                 // padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
@@ -407,8 +382,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                   }).toList(),
                 ),
               ),
-
-              // Calendar grid
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(8),
@@ -436,7 +409,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                           date.month == DateTime.now().month &&
                           date.day == DateTime.now().day;
 
-                      // คำนวณเปอร์เซ็นต์สำหรับวันนี้
                       Map<String, double> dayCapacity = date != null
                           ? calculateDayCapacity(date, monthData)
                           : {'SST No.1': 0.0, 'SST No.2': 0.0, 'SST No.3': 0.0, 'SST No.4': 0.0};
@@ -463,7 +435,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                         ),
                         child: Stack(
                           children: [
-                            // Date number
                             if (date != null)
                               Positioned(
                                 top: 6,
@@ -484,8 +455,6 @@ class _P04CALENDARINSTRUMENTMAINState extends State<P04CALENDARINSTRUMENTMAIN> {
                                   ),
                                 ),
                               ),
-
-                            // Capacity indicators
                             if (date != null)
                               Positioned.fill(
                                 child: Column(

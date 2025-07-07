@@ -81,10 +81,9 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
       DateTime? finish;
 
       try {
-        // แปลง STARTDATE จาก string
         start = data.STARTDATE != null ? convertStringToDateTime(data.STARTDATE) : null;
         // print(data.STARTDATE);
-        // หา FINISHDATE สุดท้ายที่ไม่ว่าง
+
         List<String?> finishDateStrings = [
           data.FINISHDATE1,
           data.FINISHDATE2,
@@ -112,7 +111,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
 
       if (start == null || finish == null) return false;
       // print(!checkDate.isBefore(start) && !checkDate.isAfter(finish));
-      // เช็คว่า checkDate อยู่ในช่วง start ถึง finish
+
       return !checkDate.isBefore(start) && !checkDate.isAfter(finish);
     }).toList();
 
@@ -350,7 +349,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           label: Text('Transfer',
                                               style: TextStyle(fontSize: 10, color: Colors.white)),
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber[700], // สีเหลืองสวย ๆ
+                                            backgroundColor: Colors.amber[700],
                                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(12),
@@ -643,7 +642,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           label: Text('Transfer',
                                               style: TextStyle(fontSize: 10, color: Colors.white)),
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber[700], // สีเหลืองสวย ๆ
+                                            backgroundColor: Colors.amber[700],
                                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(12),
@@ -942,7 +941,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           label: Text('Transfer',
                                               style: TextStyle(fontSize: 10, color: Colors.white)),
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber[700], // สีเหลืองสวย ๆ
+                                            backgroundColor: Colors.amber[700],
                                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(12),
@@ -1235,7 +1234,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           label: Text('Transfer',
                                               style: TextStyle(fontSize: 10, color: Colors.white)),
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber[700], // สีเหลืองสวย ๆ
+                                            backgroundColor: Colors.amber[700],
                                             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(12),
@@ -1849,7 +1848,7 @@ void showAlert(BuildContext context, String instrument, String customerName, Str
                     child: Center(
                       child: LinearPercentIndicator(
                         lineHeight: 20.0,
-                        percent: (percentage / 100).clamp(0.0, 1.0), // กันเกิน 100%
+                        percent: (percentage / 100).clamp(0.0, 1.0),
                         backgroundColor: Colors.orange[100]!,
                         progressColor: Colors.green,
                         animation: true,
@@ -2330,8 +2329,8 @@ Future<void> showInstrumentbreakdownDialog({
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(); // ปิด dialog ก่อน
-              onConfirm(); // เรียก function ที่ส่งมา
+              Navigator.of(context).pop();
+              onConfirm();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.amber,

@@ -84,7 +84,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
         if (finishDate != null) {
           DateTime finishDateOnly = DateTime(finishDate.year, finishDate.month, finishDate.day);
           if (targetDateOnly.isAtSameMomentAs(finishDateOnly)) {
-            // ถ้าเป็น Finish_Date ตัวสุดท้าย
             if (i == finishDates.length - 1) {
               statusesForDay.add('FINISH');
             } else {
@@ -182,7 +181,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
     // print(_datain.length);
     // print(monthData.length);
 
-    // ฟังก์ชันตรวจสอบว่าเป็นวันหยุดหรือไม่
     bool isHoliday(DateTime date) {
       String dateString = DateFormat('yyyy-MM-dd').format(date);
 
@@ -200,7 +198,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
       return false;
     }
 
-    // ฟังก์ชันเลือกสีพื้นหลังตามประเภทของวัน
     Color getBackgroundColor(DateTime? date, bool isToday) {
       if (date == null) return Colors.grey.shade50;
 
@@ -213,7 +210,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
       }
     }
 
-    // ฟังก์ชันเลือกสีขอบตามประเภทของวัน
     Color getBorderColor(DateTime? date, bool isToday) {
       if (date == null) return Colors.grey.shade200;
 
@@ -507,7 +503,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                   ),
                                 ),
                               ),
-                            // เพิ่มไอคอนสำหรับวันหยุด
                             if (date != null && isHoliday(date))
                               Positioned(
                                 top: 4,
@@ -648,7 +643,6 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
   }
 }
 
-// ฟังก์ชันสำหรับได้สีของวงกลมตามสถานะ
 Color getStatusColor(String status) {
   switch (status) {
     case 'START':
@@ -662,10 +656,8 @@ Color getStatusColor(String status) {
   }
 }
 
-// ฟังก์ชันสำหรับแสดง popup รายละเอียดงาน
 void _showJobDetailsDialog(BuildContext context, DateTime date, List<Map<String, dynamic>> jobsForDate,
     List<P05CALENDARJOBGETDATAclass> monthData) {
-  // หาข้อมูลเต็มของงานในวันนั้น
   List<P05CALENDARJOBGETDATAclass> fullJobDetails = [];
 
   for (var job in jobsForDate) {
@@ -872,7 +864,6 @@ void _showJobDetailsDialog(BuildContext context, DateTime date, List<Map<String,
   );
 }
 
-// ฟังก์ชันช่วยสำหรับสร้างแถวข้อมูล
 Widget _buildInfoRow(String label, String value) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -913,7 +904,6 @@ Widget _buildInfoRow(String label, String value) {
   );
 }
 
-// ฟังก์ชันสำหรับแสดงวันที่และเวลา
 Widget _buildDateTimeRow(String label, String? dateTimeString) {
   if (dateTimeString == null || dateTimeString.isEmpty) {
     return const SizedBox.shrink();
@@ -948,7 +938,6 @@ Widget _buildDateTimeRow(String label, String? dateTimeString) {
   }
 }
 
-// ฟังก์ชันสำหรับแสดงข้อมูล Finish Dates
 Widget _buildFinishDatesInfo(P05CALENDARJOBGETDATAclass job) {
   List<String?> finishDates = [
     job.FINISHDATE1,
@@ -963,7 +952,6 @@ Widget _buildFinishDatesInfo(P05CALENDARJOBGETDATAclass job) {
     job.FINISHDATE10,
   ];
 
-  // หา index ของตัวสุดท้ายที่มีค่า
   int lastIndex = finishDates.lastIndexWhere(
     (e) => e != null && e.trim().isNotEmpty,
   );
@@ -1001,7 +989,7 @@ Widget _buildFinishDatesInfo(P05CALENDARJOBGETDATAclass job) {
           ),
         );
       } catch (e) {
-        // Invalid date, skip
+        print('Error parsing finish date: $e');
       }
     }
   }
@@ -1012,7 +1000,6 @@ Widget _buildFinishDatesInfo(P05CALENDARJOBGETDATAclass job) {
   );
 }
 
-// ฟังก์ชันสำหรับได้สีพื้นหลังของสถานะ
 Color _getStatusBackgroundColor(String status) {
   switch (status.toUpperCase()) {
     case 'RECEIVED':
@@ -1035,7 +1022,6 @@ Color _getStatusBackgroundColor(String status) {
   }
 }
 
-// ฟังก์ชันสำหรับได้สีข้อความของสถานะ
 Color _getStatusTextColor(String status) {
   switch (status.toUpperCase()) {
     case 'RECEIVED':
@@ -1089,7 +1075,6 @@ Future<void> fetchHolidays() async {
   }
 }
 
-// เพิ่มฟังก์ชันสำหรับสร้าง Legend
 Widget _buildStatusLegend(String status, Color color) {
   return Row(
     mainAxisSize: MainAxisSize.min,

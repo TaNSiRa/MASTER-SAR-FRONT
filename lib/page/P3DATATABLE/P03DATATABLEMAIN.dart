@@ -784,7 +784,7 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
           try {
             return dateFormat.parse(v.toString());
           } catch (e) {
-            return null; // ถ้า parse ไม่ได้
+            return null;
           }
         })
         .where((v) => v != null)
@@ -845,7 +845,7 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
       child: Center(
         child: LinearPercentIndicator(
           lineHeight: 15.0,
-          percent: progress.clamp(0.0, 1.0), // กันเกิน 100%
+          percent: progress.clamp(0.0, 1.0),
           backgroundColor: Colors.orange[100]!,
           progressColor: Colors.green,
           animation: true,
@@ -872,7 +872,6 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
     );
   }
 
-  // ถ้าไม่มีข้อมูล แสดง cell เปล่าที่มีความสูงเท่ากับ maxRowCount
   return SizedBox(
     height: 30.0 * maxRowCount,
     child: Center(
@@ -929,7 +928,6 @@ Widget buildDataCell(String data, int maxRowCount, dynamic item) {
 }
 
 int countRowMultiplier(item) {
-  // TIME1 - TIME10
   List<dynamic> timeFields = [
     item.TIME1,
     item.TIME2,
@@ -944,7 +942,6 @@ int countRowMultiplier(item) {
   ];
   int timeCount = timeFields.where((time) => time != null && time != 0).length;
 
-  // PARTNAME1 - PARTNAME10
   List<dynamic> partNameFields = [
     item.PARTNAME1,
     item.PARTNAME2,
@@ -959,7 +956,6 @@ int countRowMultiplier(item) {
   ];
   int partNameCount = partNameFields.where((Name) => Name != null && Name != '').length;
 
-  // PARTNO1 - PARTNO10
   List<dynamic> partNoFields = [
     item.PARTNO1,
     item.PARTNO2,
@@ -974,7 +970,6 @@ int countRowMultiplier(item) {
   ];
   int partNoCount = partNoFields.where((No) => No != null && No != '').length;
 
-  // คืนค่ามากที่สุด
   return [timeCount, partNameCount, partNoCount].reduce((a, b) => a > b ? a : b);
 }
 
@@ -4141,7 +4136,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
   final sheet = workbook.worksheets[0];
   sheet.name = 'SALT SPRAY';
 
-  // ✅ Header Row
   sheet.importList([
     'Request No.',
     'Report No.',
@@ -4172,7 +4166,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
     'Remark',
   ], 1, 1, false);
 
-  // ✅ Fill data rows
   int currentRow = 2;
   final centerStyleHeader = workbook.styles.add('centerStyleHeader');
   centerStyleHeader.hAlign = xlsio.HAlignType.center;
@@ -4185,7 +4178,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
   headerRange.cellStyle = centerStyleHeader;
 
   for (var item in filteredData) {
-    // ✅ สร้าง list ของแต่ละ field ที่มีหลายค่า
     List<String> partNames = [];
     List<String> partNos = [];
     List<String> lotNos = [];
@@ -4341,7 +4333,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
       // if (due.toString().trim().isNotEmpty) dueDates.add(due);
     }
 
-    // ✅ หา row ที่มากสุด เพื่อ merge
     int maxRows = [
       partNames.length,
       partNos.length,
@@ -4357,7 +4348,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
     maxRows = maxRows == 0 ? 1 : maxRows;
 
     for (int i = 0; i < maxRows; i++) {
-      // ✅ ใส่ข้อมูลที่แตกเป็น row
       sheet.getRangeByIndex(currentRow + i, 8)
         ..setText(i < partNames.length ? partNames[i] : '')
         ..cellStyle = centerStyleData;
@@ -4390,7 +4380,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
       //   ..cellStyle = centerStyleData;
     }
 
-    // ✅ Merge column อื่นๆ
     void mergeAndSet(int col, dynamic value) {
       sheet.getRangeByIndex(currentRow, col, currentRow + maxRows - 1, col).merge();
       sheet.getRangeByIndex(currentRow, col)
@@ -4425,12 +4414,10 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
     sheet.autoFitColumn(col);
   }
 
-  // Export...
   final List<int> bytes = workbook.saveAsStream();
   workbook.dispose();
 
   if (kIsWeb) {
-    // ✅ Web: trigger download
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
@@ -4438,7 +4425,6 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
       ..click();
     html.Url.revokeObjectUrl(url);
   } else {
-    // ✅ Android / iOS: save to local storage
     if (await Permission.storage.request().isGranted) {
       final directory = await getExternalStorageDirectory();
       final path = '${directory!.path}/SaltSprayExport.xlsx';

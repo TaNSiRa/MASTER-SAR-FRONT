@@ -161,7 +161,6 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
     });
 
     try {
-      // เช็ค old password
       bool isOldPasswordValid = await _checkOldPassword(_oldPasswordController.text);
 
       if (!isOldPasswordValid) {
@@ -172,7 +171,6 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
         return;
       }
 
-      // อัพเดทรหัสผ่านใหม่
       bool isUpdateSuccess = await _updatePassword(_newPasswordController.text);
 
       if (isUpdateSuccess) {

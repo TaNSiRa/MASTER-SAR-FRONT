@@ -263,7 +263,7 @@ class _menu_dropdownState extends State<menu_dropdown> {
   OverlayEntry _createOverlayEntry(Offset position) {
     return OverlayEntry(
       builder: (context) => Positioned(
-        left: position.dx + 190, // ขยับไปด้านขวาของ drawer
+        left: position.dx + 190,
         top: position.dy,
         child: MouseRegion(
           onEnter: (_) {
@@ -361,8 +361,7 @@ class _menu_dropdownState extends State<menu_dropdown> {
           setState(() {
             isHovered = false;
           });
-          // เพิ่มการหน่วงเวลาเล็กน้อยเพื่อให้ผู้ใช้สามารถเลื่อนเมาส์ไปยัง dropdown ได้
-          Future.delayed(const Duration(milliseconds: 100), () {
+          Future.delayed(const Duration(milliseconds: 0), () {
             if (!isHovered) {
               _hideDropdown();
             }
