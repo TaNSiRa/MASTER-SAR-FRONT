@@ -238,7 +238,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               // Month/Year Dropdown
@@ -298,14 +298,14 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                         children: [
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(right: 8, bottom: 8),
+                              margin: const EdgeInsets.only(right: 4, bottom: 4),
                               child: _buildInstrumentChart('SST No.1', instrumentData['SST No.1']!,
                                   averages['SST No.1']!, Colors.blue),
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(left: 8, bottom: 8),
+                              margin: const EdgeInsets.only(left: 4, bottom: 4),
                               child: _buildInstrumentChart('SST No.2', instrumentData['SST No.2']!,
                                   averages['SST No.2']!, Colors.green),
                             ),
@@ -319,14 +319,14 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                         children: [
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(right: 8, top: 8),
+                              margin: const EdgeInsets.only(right: 4, top: 4),
                               child: _buildInstrumentChart('SST No.3', instrumentData['SST No.3']!,
                                   averages['SST No.3']!, Colors.orange),
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              margin: const EdgeInsets.only(left: 8, top: 8),
+                              margin: const EdgeInsets.only(left: 4, top: 4),
                               child: _buildInstrumentChart('SST No.4', instrumentData['SST No.4']!,
                                   averages['SST No.4']!, Colors.purple),
                             ),
@@ -381,7 +381,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  '${average.toStringAsFixed(1)}%',
+                  'Used ${average.toStringAsFixed(1)}%',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -395,36 +395,36 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
           const SizedBox(height: 12),
 
           // Average Circle
-          Center(
-            child: CircularPercentIndicator(
-              radius: 35.0,
-              lineWidth: 6.0,
-              percent: average / 100,
-              center: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${average.toStringAsFixed(1)}%',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2D3748),
-                    ),
-                  ),
-                  Text(
-                    'Used',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.grey[200]!,
-              progressColor: color,
-              circularStrokeCap: CircularStrokeCap.round,
-            ),
-          ),
+          // Center(
+          //   child: CircularPercentIndicator(
+          //     radius: 35.0,
+          //     lineWidth: 6.0,
+          //     percent: average / 100,
+          //     center: Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Text(
+          //           '${average.toStringAsFixed(1)}%',
+          //           style: const TextStyle(
+          //             fontSize: 12,
+          //             fontWeight: FontWeight.bold,
+          //             color: Color(0xFF2D3748),
+          //           ),
+          //         ),
+          //         Text(
+          //           'Used',
+          //           style: TextStyle(
+          //             fontSize: 10,
+          //             color: Colors.grey[600],
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     backgroundColor: Colors.grey[200]!,
+          //     progressColor: color,
+          //     circularStrokeCap: CircularStrokeCap.round,
+          //   ),
+          // ),
 
           const SizedBox(height: 16),
 
