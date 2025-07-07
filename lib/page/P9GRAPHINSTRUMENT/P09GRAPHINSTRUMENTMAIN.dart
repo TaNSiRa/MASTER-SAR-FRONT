@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../bloc/BlocEvent/09-01-P09GRAPHINSTRUMENTGETDATA.dart';
 import '../../data/global.dart';
@@ -437,7 +436,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    // tooltipBgColor: Colors.black87,
+                    getTooltipColor: (group) => Colors.black87,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
                         'Day ${group.x.toInt()}\n${rod.toY.toStringAsFixed(1)}%',
