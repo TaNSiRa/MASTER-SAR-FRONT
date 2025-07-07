@@ -53,6 +53,8 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     timerRefreshUI = Timer.periodic(Duration(seconds: 5), (timer) {
       // print('refresh...');
       context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+      fetchInstrumentData();
+      setState(() {});
     });
     selectpage = '';
     selectstatus = '';
@@ -1570,6 +1572,19 @@ class _BlinkingStatusButtonState extends State<BlinkingStatusButton> {
   @override
   void initState() {
     super.initState();
+    _updateStatus();
+  }
+
+  @override
+  void didUpdateWidget(BlinkingStatusButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // ตรวจสอบว่า data เปลี่ยนแปลงหรือไม่
+    if (oldWidget.data != widget.data) {
+      _updateStatus();
+    }
+  }
+
+  void _updateStatus() {
     if (widget.data != null && widget.data is String) {
       _currentStatus = widget.data;
     } else {
