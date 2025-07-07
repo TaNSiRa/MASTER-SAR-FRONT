@@ -2345,33 +2345,75 @@ Future<void> showInstrumentbreakdownDialog({
 
 Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item) async {
   // print(item.REQUESTNO);
+  final FocusNode TypeFocusNode = FocusNode();
   final FocusNode RequestNoFocusNode = FocusNode();
   final FocusNode ReportNoFocusNode = FocusNode();
   final FocusNode SectionRequestFocusNode = FocusNode();
   final FocusNode RequesterFocusNode = FocusNode();
+  final FocusNode SamplingDateFocusNode = FocusNode();
   final FocusNode ReceivedDateFocusNode = FocusNode();
   final FocusNode CustomerNameFocusNode = FocusNode();
   final FocusNode PartName1FocusNode = FocusNode();
   final FocusNode PartNo1FocusNode = FocusNode();
+  final FocusNode LotNo1FocusNode = FocusNode();
+  final FocusNode Amount1FocusNode = FocusNode();
+  final FocusNode Material1FocusNode = FocusNode();
+  final FocusNode Process1FocusNode = FocusNode();
   final FocusNode PartName2FocusNode = FocusNode();
   final FocusNode PartNo2FocusNode = FocusNode();
+  final FocusNode LotNo2FocusNode = FocusNode();
+  final FocusNode Amount2FocusNode = FocusNode();
+  final FocusNode Material2FocusNode = FocusNode();
+  final FocusNode Process2FocusNode = FocusNode();
   final FocusNode PartName3FocusNode = FocusNode();
   final FocusNode PartNo3FocusNode = FocusNode();
+  final FocusNode LotNo3FocusNode = FocusNode();
+  final FocusNode Amount3FocusNode = FocusNode();
+  final FocusNode Material3FocusNode = FocusNode();
+  final FocusNode Process3FocusNode = FocusNode();
   final FocusNode PartName4FocusNode = FocusNode();
   final FocusNode PartNo4FocusNode = FocusNode();
+  final FocusNode LotNo4FocusNode = FocusNode();
+  final FocusNode Amount4FocusNode = FocusNode();
+  final FocusNode Material4FocusNode = FocusNode();
+  final FocusNode Process4FocusNode = FocusNode();
   final FocusNode PartName5FocusNode = FocusNode();
   final FocusNode PartNo5FocusNode = FocusNode();
+  final FocusNode LotNo5FocusNode = FocusNode();
+  final FocusNode Amount5FocusNode = FocusNode();
+  final FocusNode Material5FocusNode = FocusNode();
+  final FocusNode Process5FocusNode = FocusNode();
   final FocusNode PartName6FocusNode = FocusNode();
   final FocusNode PartNo6FocusNode = FocusNode();
+  final FocusNode LotNo6FocusNode = FocusNode();
+  final FocusNode Amount6FocusNode = FocusNode();
+  final FocusNode Material6FocusNode = FocusNode();
+  final FocusNode Process6FocusNode = FocusNode();
   final FocusNode PartName7FocusNode = FocusNode();
   final FocusNode PartNo7FocusNode = FocusNode();
+  final FocusNode LotNo7FocusNode = FocusNode();
+  final FocusNode Amount7FocusNode = FocusNode();
+  final FocusNode Material7FocusNode = FocusNode();
+  final FocusNode Process7FocusNode = FocusNode();
   final FocusNode PartName8FocusNode = FocusNode();
   final FocusNode PartNo8FocusNode = FocusNode();
+  final FocusNode LotNo8FocusNode = FocusNode();
+  final FocusNode Amount8FocusNode = FocusNode();
+  final FocusNode Material8FocusNode = FocusNode();
+  final FocusNode Process8FocusNode = FocusNode();
   final FocusNode PartName9FocusNode = FocusNode();
   final FocusNode PartNo9FocusNode = FocusNode();
+  final FocusNode LotNo9FocusNode = FocusNode();
+  final FocusNode Amount9FocusNode = FocusNode();
+  final FocusNode Material9FocusNode = FocusNode();
+  final FocusNode Process9FocusNode = FocusNode();
   final FocusNode PartName10FocusNode = FocusNode();
   final FocusNode PartNo10FocusNode = FocusNode();
-  final FocusNode AmountOfSampleFocusNode = FocusNode();
+  final FocusNode LotNo10FocusNode = FocusNode();
+  final FocusNode Amount10FocusNode = FocusNode();
+  final FocusNode Material10FocusNode = FocusNode();
+  final FocusNode Process10FocusNode = FocusNode();
+  // final FocusNode AmountOfSampleFocusNode = FocusNode();
   final FocusNode TakePhotoFocusNode = FocusNode();
   final FocusNode StartDateFocusNode = FocusNode();
   final FocusNode Time1FocusNode = FocusNode();
@@ -2394,64 +2436,108 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
   final FocusNode FinishDate8FocusNode = FocusNode();
   final FocusNode FinishDate9FocusNode = FocusNode();
   final FocusNode FinishDate10FocusNode = FocusNode();
-  final FocusNode TempDate1FocusNode = FocusNode();
-  final FocusNode TempDate2FocusNode = FocusNode();
-  final FocusNode TempDate3FocusNode = FocusNode();
-  final FocusNode TempDate4FocusNode = FocusNode();
-  final FocusNode TempDate5FocusNode = FocusNode();
-  final FocusNode TempDate6FocusNode = FocusNode();
-  final FocusNode TempDate7FocusNode = FocusNode();
-  final FocusNode TempDate8FocusNode = FocusNode();
-  final FocusNode TempDate9FocusNode = FocusNode();
-  final FocusNode TempDate10FocusNode = FocusNode();
-  final FocusNode DueDate1FocusNode = FocusNode();
-  final FocusNode DueDate2FocusNode = FocusNode();
-  final FocusNode DueDate3FocusNode = FocusNode();
-  final FocusNode DueDate4FocusNode = FocusNode();
-  final FocusNode DueDate5FocusNode = FocusNode();
-  final FocusNode DueDate6FocusNode = FocusNode();
-  final FocusNode DueDate7FocusNode = FocusNode();
-  final FocusNode DueDate8FocusNode = FocusNode();
-  final FocusNode DueDate9FocusNode = FocusNode();
-  final FocusNode DueDate10FocusNode = FocusNode();
+  final FocusNode TempDate0FocusNode = FocusNode();
+  // final FocusNode TempDate1FocusNode = FocusNode();
+  // final FocusNode TempDate2FocusNode = FocusNode();
+  // final FocusNode TempDate3FocusNode = FocusNode();
+  // final FocusNode TempDate4FocusNode = FocusNode();
+  // final FocusNode TempDate5FocusNode = FocusNode();
+  // final FocusNode TempDate6FocusNode = FocusNode();
+  // final FocusNode TempDate7FocusNode = FocusNode();
+  // final FocusNode TempDate8FocusNode = FocusNode();
+  // final FocusNode TempDate9FocusNode = FocusNode();
+  // final FocusNode TempDate10FocusNode = FocusNode();
+  final FocusNode DueDate0FocusNode = FocusNode();
+  // final FocusNode DueDate1FocusNode = FocusNode();
+  // final FocusNode DueDate2FocusNode = FocusNode();
+  // final FocusNode DueDate3FocusNode = FocusNode();
+  // final FocusNode DueDate4FocusNode = FocusNode();
+  // final FocusNode DueDate5FocusNode = FocusNode();
+  // final FocusNode DueDate6FocusNode = FocusNode();
+  // final FocusNode DueDate7FocusNode = FocusNode();
+  // final FocusNode DueDate8FocusNode = FocusNode();
+  // final FocusNode DueDate9FocusNode = FocusNode();
+  // final FocusNode DueDate10FocusNode = FocusNode();
   final FocusNode InstrumentFocusNode = FocusNode();
   final FocusNode MethodFocusNode = FocusNode();
   final FocusNode InchargeFocusNode = FocusNode();
   final FocusNode ApprovedDateFocusNode = FocusNode();
   final FocusNode ApprovedByFocusNode = FocusNode();
   final FocusNode StatusFocusNode = FocusNode();
-  final FocusNode CheckBoxFocusNode = FocusNode();
   final FocusNode RemarkFocusNode = FocusNode();
+  final FocusNode CheckBoxFocusNode = FocusNode();
 
+  TextEditingController TypeController = TextEditingController(text: item.TYPE);
   TextEditingController RequestNoController = TextEditingController(text: item.REQUESTNO);
   TextEditingController ReportNoController = TextEditingController(text: item.REPORTNO);
   TextEditingController SectionRequestController = TextEditingController(text: item.SECTION);
   TextEditingController RequesterController = TextEditingController(text: item.REQUESTER);
+  TextEditingController SamplingDateController = TextEditingController(text: item.SAMPLINGDATE);
   TextEditingController ReceivedDateController = TextEditingController(text: item.RECEIVEDDATE);
   TextEditingController CustomerNameController = TextEditingController(text: item.CUSTOMERNAME);
   TextEditingController PartName1Controller = TextEditingController(text: item.PARTNAME1);
   TextEditingController PartNo1Controller = TextEditingController(text: item.PARTNO1);
+  TextEditingController LotNo1Controller = TextEditingController(text: item.LOTNO1);
+  TextEditingController Amount1Controller = TextEditingController(text: item.AMOUNT1);
+  TextEditingController Material1Controller = TextEditingController(text: item.MATERIAL1);
+  TextEditingController Process1Controller = TextEditingController(text: item.PROCESS1);
   TextEditingController PartName2Controller = TextEditingController(text: item.PARTNAME2);
   TextEditingController PartNo2Controller = TextEditingController(text: item.PARTNO2);
+  TextEditingController LotNo2Controller = TextEditingController(text: item.LOTNO2);
+  TextEditingController Amount2Controller = TextEditingController(text: item.AMOUNT2);
+  TextEditingController Material2Controller = TextEditingController(text: item.MATERIAL2);
+  TextEditingController Process2Controller = TextEditingController(text: item.PROCESS2);
   TextEditingController PartName3Controller = TextEditingController(text: item.PARTNAME3);
   TextEditingController PartNo3Controller = TextEditingController(text: item.PARTNO3);
+  TextEditingController LotNo3Controller = TextEditingController(text: item.LOTNO3);
+  TextEditingController Amount3Controller = TextEditingController(text: item.AMOUNT3);
+  TextEditingController Material3Controller = TextEditingController(text: item.MATERIAL3);
+  TextEditingController Process3Controller = TextEditingController(text: item.PROCESS3);
   TextEditingController PartName4Controller = TextEditingController(text: item.PARTNAME4);
   TextEditingController PartNo4Controller = TextEditingController(text: item.PARTNO4);
+  TextEditingController LotNo4Controller = TextEditingController(text: item.LOTNO4);
+  TextEditingController Amount4Controller = TextEditingController(text: item.AMOUNT4);
+  TextEditingController Material4Controller = TextEditingController(text: item.MATERIAL4);
+  TextEditingController Process4Controller = TextEditingController(text: item.PROCESS4);
   TextEditingController PartName5Controller = TextEditingController(text: item.PARTNAME5);
   TextEditingController PartNo5Controller = TextEditingController(text: item.PARTNO5);
+  TextEditingController LotNo5Controller = TextEditingController(text: item.LOTNO5);
+  TextEditingController Amount5Controller = TextEditingController(text: item.AMOUNT5);
+  TextEditingController Material5Controller = TextEditingController(text: item.MATERIAL5);
+  TextEditingController Process5Controller = TextEditingController(text: item.PROCESS5);
   TextEditingController PartName6Controller = TextEditingController(text: item.PARTNAME6);
   TextEditingController PartNo6Controller = TextEditingController(text: item.PARTNO6);
+  TextEditingController LotNo6Controller = TextEditingController(text: item.LOTNO6);
+  TextEditingController Amount6Controller = TextEditingController(text: item.AMOUNT6);
+  TextEditingController Material6Controller = TextEditingController(text: item.MATERIAL6);
+  TextEditingController Process6Controller = TextEditingController(text: item.PROCESS6);
   TextEditingController PartName7Controller = TextEditingController(text: item.PARTNAME7);
   TextEditingController PartNo7Controller = TextEditingController(text: item.PARTNO7);
+  TextEditingController LotNo7Controller = TextEditingController(text: item.LOTNO7);
+  TextEditingController Amount7Controller = TextEditingController(text: item.AMOUNT7);
+  TextEditingController Material7Controller = TextEditingController(text: item.MATERIAL7);
+  TextEditingController Process7Controller = TextEditingController(text: item.PROCESS7);
   TextEditingController PartName8Controller = TextEditingController(text: item.PARTNAME8);
   TextEditingController PartNo8Controller = TextEditingController(text: item.PARTNO8);
+  TextEditingController LotNo8Controller = TextEditingController(text: item.LOTNO8);
+  TextEditingController Amount8Controller = TextEditingController(text: item.AMOUNT8);
+  TextEditingController Material8Controller = TextEditingController(text: item.MATERIAL8);
+  TextEditingController Process8Controller = TextEditingController(text: item.PROCESS8);
   TextEditingController PartName9Controller = TextEditingController(text: item.PARTNAME9);
   TextEditingController PartNo9Controller = TextEditingController(text: item.PARTNO9);
+  TextEditingController LotNo9Controller = TextEditingController(text: item.LOTNO9);
+  TextEditingController Amount9Controller = TextEditingController(text: item.AMOUNT9);
+  TextEditingController Material9Controller = TextEditingController(text: item.MATERIAL9);
+  TextEditingController Process9Controller = TextEditingController(text: item.PROCESS9);
   TextEditingController PartName10Controller = TextEditingController(text: item.PARTNAME10);
   TextEditingController PartNo10Controller = TextEditingController(text: item.PARTNO10);
-  TextEditingController AmountOfSampleController = TextEditingController(text: '${item.AMOUNTSAMPLE}');
+  TextEditingController LotNo10Controller = TextEditingController(text: item.LOTNO10);
+  TextEditingController Amount10Controller = TextEditingController(text: item.AMOUNT10);
+  TextEditingController Material10Controller = TextEditingController(text: item.MATERIAL10);
+  TextEditingController Process10Controller = TextEditingController(text: item.PROCESS10);
+  // TextEditingController AmountOfSampleController = TextEditingController(text: '${item.AMOUNTSAMPLE}');
   TextEditingController TakePhotoController = TextEditingController(text: '${item.TAKEPHOTO}');
-  StartDateController = TextEditingController(text: item.STARTDATE);
+  TextEditingController StartDateController = TextEditingController(text: item.STARTDATE);
   TextEditingController Time1Controller = TextEditingController(text: '${item.TIME1}');
   TextEditingController Time2Controller = TextEditingController(text: '${item.TIME2}');
   TextEditingController Time3Controller = TextEditingController(text: '${item.TIME3}');
@@ -2472,6 +2558,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
   TextEditingController FinishDate8Controller = TextEditingController(text: item.FINISHDATE8);
   TextEditingController FinishDate9Controller = TextEditingController(text: item.FINISHDATE9);
   TextEditingController FinishDate10Controller = TextEditingController(text: item.FINISHDATE10);
+  TextEditingController TempDate0Controller = TextEditingController(text: item.TEMPDATE0);
   TextEditingController TempDate1Controller = TextEditingController(text: item.TEMPDATE1);
   TextEditingController TempDate2Controller = TextEditingController(text: item.TEMPDATE2);
   TextEditingController TempDate3Controller = TextEditingController(text: item.TEMPDATE3);
@@ -2482,6 +2569,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
   TextEditingController TempDate8Controller = TextEditingController(text: item.TEMPDATE8);
   TextEditingController TempDate9Controller = TextEditingController(text: item.TEMPDATE9);
   TextEditingController TempDate10Controller = TextEditingController(text: item.TEMPDATE10);
+  TextEditingController DueDate0Controller = TextEditingController(text: item.DUEDATE0);
   TextEditingController DueDate1Controller = TextEditingController(text: item.DUEDATE1);
   TextEditingController DueDate2Controller = TextEditingController(text: item.DUEDATE2);
   TextEditingController DueDate3Controller = TextEditingController(text: item.DUEDATE3);
@@ -2499,6 +2587,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
   TextEditingController ApprovedByController = TextEditingController(text: item.APPROVEDBY);
   TextEditingController StatusController = TextEditingController(text: item.STATUS);
   TextEditingController RemarkController = TextEditingController(text: item.REMARK);
+  // TextEditingController CheckBoxController = TextEditingController(text: item.CHECKBOX);
 
   List<TextEditingController> partNameControllers = [
     PartName1Controller,
@@ -2547,6 +2636,102 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
     PartNo8FocusNode,
     PartNo9FocusNode,
     PartNo10FocusNode,
+  ];
+  List<TextEditingController> lotNoControllers = [
+    LotNo1Controller,
+    LotNo2Controller,
+    LotNo3Controller,
+    LotNo4Controller,
+    LotNo5Controller,
+    LotNo6Controller,
+    LotNo7Controller,
+    LotNo8Controller,
+    LotNo9Controller,
+    LotNo10Controller,
+  ];
+  List<FocusNode> lotNoFocusNodes = [
+    LotNo1FocusNode,
+    LotNo2FocusNode,
+    LotNo3FocusNode,
+    LotNo4FocusNode,
+    LotNo5FocusNode,
+    LotNo6FocusNode,
+    LotNo7FocusNode,
+    LotNo8FocusNode,
+    LotNo9FocusNode,
+    LotNo10FocusNode,
+  ];
+  List<TextEditingController> amountControllers = [
+    Amount1Controller,
+    Amount2Controller,
+    Amount3Controller,
+    Amount4Controller,
+    Amount5Controller,
+    Amount6Controller,
+    Amount7Controller,
+    Amount8Controller,
+    Amount9Controller,
+    Amount10Controller,
+  ];
+  List<FocusNode> amountFocusNodes = [
+    Amount1FocusNode,
+    Amount2FocusNode,
+    Amount3FocusNode,
+    Amount4FocusNode,
+    Amount5FocusNode,
+    Amount6FocusNode,
+    Amount7FocusNode,
+    Amount8FocusNode,
+    Amount9FocusNode,
+    Amount10FocusNode,
+  ];
+  List<TextEditingController> materialControllers = [
+    Material1Controller,
+    Material2Controller,
+    Material3Controller,
+    Material4Controller,
+    Material5Controller,
+    Material6Controller,
+    Material7Controller,
+    Material8Controller,
+    Material9Controller,
+    Material10Controller,
+  ];
+  List<FocusNode> materialFocusNodes = [
+    Material1FocusNode,
+    Material2FocusNode,
+    Material3FocusNode,
+    Material4FocusNode,
+    Material5FocusNode,
+    Material6FocusNode,
+    Material7FocusNode,
+    Material8FocusNode,
+    Material9FocusNode,
+    Material10FocusNode,
+  ];
+  List<TextEditingController> processControllers = [
+    Process1Controller,
+    Process2Controller,
+    Process3Controller,
+    Process4Controller,
+    Process5Controller,
+    Process6Controller,
+    Process7Controller,
+    Process8Controller,
+    Process9Controller,
+    Process10Controller,
+  ];
+  List<FocusNode> processFocusNodes = [
+    Process1FocusNode,
+    Process2FocusNode,
+    Process3FocusNode,
+    Process4FocusNode,
+    Process5FocusNode,
+    Process6FocusNode,
+    Process7FocusNode,
+    Process8FocusNode,
+    Process9FocusNode,
+    Process10FocusNode,
   ];
   List<TextEditingController> timeControllers = [
     Time1Controller,
@@ -2608,18 +2793,18 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
     TempDate9Controller,
     TempDate10Controller,
   ];
-  List<FocusNode> tempDateFocusNodes = [
-    TempDate1FocusNode,
-    TempDate2FocusNode,
-    TempDate3FocusNode,
-    TempDate4FocusNode,
-    TempDate5FocusNode,
-    TempDate6FocusNode,
-    TempDate7FocusNode,
-    TempDate8FocusNode,
-    TempDate9FocusNode,
-    TempDate10FocusNode,
-  ];
+  // List<FocusNode> tempDateFocusNodes = [
+  //   TempDate1FocusNode,
+  //   TempDate2FocusNode,
+  //   TempDate3FocusNode,
+  //   TempDate4FocusNode,
+  //   TempDate5FocusNode,
+  //   TempDate6FocusNode,
+  //   TempDate7FocusNode,
+  //   TempDate8FocusNode,
+  //   TempDate9FocusNode,
+  //   TempDate10FocusNode,
+  // ];
   List<TextEditingController> dueDateControllers = [
     DueDate1Controller,
     DueDate2Controller,
@@ -2632,18 +2817,18 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
     DueDate9Controller,
     DueDate10Controller,
   ];
-  List<FocusNode> dueDateFocusNodes = [
-    DueDate1FocusNode,
-    DueDate2FocusNode,
-    DueDate3FocusNode,
-    DueDate4FocusNode,
-    DueDate5FocusNode,
-    DueDate6FocusNode,
-    DueDate7FocusNode,
-    DueDate8FocusNode,
-    DueDate9FocusNode,
-    DueDate10FocusNode,
-  ];
+  // List<FocusNode> dueDateFocusNodes = [
+  //   DueDate1FocusNode,
+  //   DueDate2FocusNode,
+  //   DueDate3FocusNode,
+  //   DueDate4FocusNode,
+  //   DueDate5FocusNode,
+  //   DueDate6FocusNode,
+  //   DueDate7FocusNode,
+  //   DueDate8FocusNode,
+  //   DueDate9FocusNode,
+  //   DueDate10FocusNode,
+  // ];
   List<int> itemTimes = [
     item.TIME1,
     item.TIME2,
@@ -2680,7 +2865,54 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
     item.PARTNO9,
     item.PARTNO10,
   ];
-
+  List<String> lotNos = [
+    item.LOTNO1,
+    item.LOTNO2,
+    item.LOTNO3,
+    item.LOTNO4,
+    item.LOTNO5,
+    item.LOTNO6,
+    item.LOTNO7,
+    item.LOTNO8,
+    item.LOTNO9,
+    item.LOTNO10,
+  ];
+  List<String> amounts = [
+    item.AMOUNT1,
+    item.AMOUNT2,
+    item.AMOUNT3,
+    item.AMOUNT4,
+    item.AMOUNT5,
+    item.AMOUNT6,
+    item.AMOUNT7,
+    item.AMOUNT8,
+    item.AMOUNT9,
+    item.AMOUNT10,
+  ];
+  List<String> materials = [
+    item.MATERIAL1,
+    item.MATERIAL2,
+    item.MATERIAL3,
+    item.MATERIAL4,
+    item.MATERIAL5,
+    item.MATERIAL6,
+    item.MATERIAL7,
+    item.MATERIAL8,
+    item.MATERIAL9,
+    item.MATERIAL10,
+  ];
+  List<String> processs = [
+    item.PROCESS1,
+    item.PROCESS2,
+    item.PROCESS3,
+    item.PROCESS4,
+    item.PROCESS5,
+    item.PROCESS6,
+    item.PROCESS7,
+    item.PROCESS8,
+    item.PROCESS9,
+    item.PROCESS10,
+  ];
   // void updateMultipleDatesAll() {
   //   updateMultipleDates({
   //     ReceivedDateController: (val) => item.RECEIVEDDATE = val,
@@ -2768,6 +3000,18 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                       SizedBox(
                         height: 10,
                       ),
+                      buildCustomField(
+                        context: P01DASHBOARDMAINcontext,
+                        controller: TypeController,
+                        focusNode: TypeFocusNode,
+                        labelText: "Type",
+                        icon: Icons.account_tree,
+                        dropdownItems: ['Service lab', 'Special request'],
+                        onChanged: (value) {
+                          item.TYPE = value;
+                          P01DASHBOARDVAR.TYPE = value;
+                        },
+                      ),
                       buildCustomFieldforEditData(
                         controller: RequestNoController,
                         focusNode: RequestNoFocusNode,
@@ -2805,6 +3049,20 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                       ),
                       buildCustomField(
                         context: P01DASHBOARDMAINcontext,
+                        controller: SamplingDateController,
+                        focusNode: SamplingDateFocusNode,
+                        labelText: "Sampling Date",
+                        icon: Icons.calendar_month_rounded,
+                        onChanged: (value) {
+                          EditTextController(
+                            controller: SamplingDateController,
+                            value: value,
+                          );
+                          P01DASHBOARDVAR.SAMPLINGDATE = value;
+                        },
+                      ),
+                      buildCustomField(
+                        context: P01DASHBOARDMAINcontext,
                         controller: ReceivedDateController,
                         focusNode: ReceivedDateFocusNode,
                         labelText: "Received Date",
@@ -2829,7 +3087,8 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                           P01DASHBOARDVAR.CUSTOMERNAME = value;
                         },
                       ),
-                      for (int i = 0; i < 10; i++)
+
+                      for (int i = 0; i < 10; i++) ...[
                         if (partNameControllers[i].text != '')
                           buildCustomField(
                             context: P01DASHBOARDMAINcontext,
@@ -2865,7 +3124,6 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                               P01DASHBOARDVAR.PARTNAME10 = partNames[9];
                             },
                           ),
-                      for (int i = 0; i < 10; i++)
                         if (partNoControllers[i].text != '')
                           buildCustomField(
                             context: P01DASHBOARDMAINcontext,
@@ -2901,17 +3159,158 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                               P01DASHBOARDVAR.PARTNO10 = partNos[9];
                             },
                           ),
-                      buildCustomField(
-                        context: P01DASHBOARDMAINcontext,
-                        controller: AmountOfSampleController,
-                        focusNode: AmountOfSampleFocusNode,
-                        labelText: "Amount of Sample (Pcs)",
-                        icon: Icons.science,
-                        onChanged: (value) {
-                          item.AMOUNTSAMPLE = value.isNotEmpty ? int.parse(value) : 0;
-                          P01DASHBOARDVAR.AMOUNTSAMPLE = int.parse(value);
-                        },
-                      ),
+                        if (lotNoControllers[i].text != '')
+                          buildCustomField(
+                            context: P01DASHBOARDMAINcontext,
+                            controller: lotNoControllers[i],
+                            focusNode: lotNoFocusNodes[i],
+                            labelText: "Lot No ${i + 1}",
+                            icon: Icons.settings,
+                            onChanged: (value) {
+                              EditTextController(
+                                controller: lotNoControllers[i],
+                                value: value,
+                              );
+                              lotNos[i] = value;
+                              item.LOTNO1 = lotNos[0];
+                              item.LOTNO2 = lotNos[1];
+                              item.LOTNO3 = lotNos[2];
+                              item.LOTNO4 = lotNos[3];
+                              item.LOTNO5 = lotNos[4];
+                              item.LOTNO6 = lotNos[5];
+                              item.LOTNO7 = lotNos[6];
+                              item.LOTNO8 = lotNos[7];
+                              item.LOTNO9 = lotNos[8];
+                              item.LOTNO10 = lotNos[9];
+                              P01DASHBOARDVAR.LOTNO1 = lotNos[0];
+                              P01DASHBOARDVAR.LOTNO2 = lotNos[1];
+                              P01DASHBOARDVAR.LOTNO3 = lotNos[2];
+                              P01DASHBOARDVAR.LOTNO4 = lotNos[3];
+                              P01DASHBOARDVAR.LOTNO5 = lotNos[4];
+                              P01DASHBOARDVAR.LOTNO6 = lotNos[5];
+                              P01DASHBOARDVAR.LOTNO7 = lotNos[6];
+                              P01DASHBOARDVAR.LOTNO8 = lotNos[7];
+                              P01DASHBOARDVAR.LOTNO9 = lotNos[8];
+                              P01DASHBOARDVAR.LOTNO10 = lotNos[9];
+                            },
+                          ),
+                        if (amountControllers[i].text != '')
+                          buildCustomField(
+                            context: P01DASHBOARDMAINcontext,
+                            controller: amountControllers[i],
+                            focusNode: amountFocusNodes[i],
+                            labelText: "Amount ${i + 1}",
+                            icon: Icons.settings,
+                            onChanged: (value) {
+                              EditTextController(
+                                controller: amountControllers[i],
+                                value: value,
+                              );
+                              amounts[i] = value;
+                              item.AMOUNT1 = amounts[0];
+                              item.AMOUNT2 = amounts[1];
+                              item.AMOUNT3 = amounts[2];
+                              item.AMOUNT4 = amounts[3];
+                              item.AMOUNT5 = amounts[4];
+                              item.AMOUNT6 = amounts[5];
+                              item.AMOUNT7 = amounts[6];
+                              item.AMOUNT8 = amounts[7];
+                              item.AMOUNT9 = amounts[8];
+                              item.AMOUNT10 = amounts[9];
+                              P01DASHBOARDVAR.AMOUNT1 = amounts[0];
+                              P01DASHBOARDVAR.AMOUNT2 = amounts[1];
+                              P01DASHBOARDVAR.AMOUNT3 = amounts[2];
+                              P01DASHBOARDVAR.AMOUNT4 = amounts[3];
+                              P01DASHBOARDVAR.AMOUNT5 = amounts[4];
+                              P01DASHBOARDVAR.AMOUNT6 = amounts[5];
+                              P01DASHBOARDVAR.AMOUNT7 = amounts[6];
+                              P01DASHBOARDVAR.AMOUNT8 = amounts[7];
+                              P01DASHBOARDVAR.AMOUNT9 = amounts[8];
+                              P01DASHBOARDVAR.AMOUNT10 = amounts[9];
+                            },
+                          ),
+                        if (materialControllers[i].text != '')
+                          buildCustomField(
+                            context: P01DASHBOARDMAINcontext,
+                            controller: materialControllers[i],
+                            focusNode: materialFocusNodes[i],
+                            labelText: "Material ${i + 1}",
+                            icon: Icons.settings,
+                            onChanged: (value) {
+                              EditTextController(
+                                controller: materialControllers[i],
+                                value: value,
+                              );
+                              materials[i] = value;
+                              item.MATERIAL1 = materials[0];
+                              item.MATERIAL2 = materials[1];
+                              item.MATERIAL3 = materials[2];
+                              item.MATERIAL4 = materials[3];
+                              item.MATERIAL5 = materials[4];
+                              item.MATERIAL6 = materials[5];
+                              item.MATERIAL7 = materials[6];
+                              item.MATERIAL8 = materials[7];
+                              item.MATERIAL9 = materials[8];
+                              item.MATERIAL10 = materials[9];
+                              P01DASHBOARDVAR.MATERIAL1 = materials[0];
+                              P01DASHBOARDVAR.MATERIAL2 = materials[1];
+                              P01DASHBOARDVAR.MATERIAL3 = materials[2];
+                              P01DASHBOARDVAR.MATERIAL4 = materials[3];
+                              P01DASHBOARDVAR.MATERIAL5 = materials[4];
+                              P01DASHBOARDVAR.MATERIAL6 = materials[5];
+                              P01DASHBOARDVAR.MATERIAL7 = materials[6];
+                              P01DASHBOARDVAR.MATERIAL8 = materials[7];
+                              P01DASHBOARDVAR.MATERIAL9 = materials[8];
+                              P01DASHBOARDVAR.MATERIAL10 = materials[9];
+                            },
+                          ),
+                        if (processControllers[i].text != '')
+                          buildCustomField(
+                            context: P01DASHBOARDMAINcontext,
+                            controller: processControllers[i],
+                            focusNode: processFocusNodes[i],
+                            labelText: "Process ${i + 1}",
+                            icon: Icons.settings,
+                            onChanged: (value) {
+                              EditTextController(
+                                controller: processControllers[i],
+                                value: value,
+                              );
+                              processs[i] = value;
+                              item.PROCESS1 = processs[0];
+                              item.PROCESS2 = processs[1];
+                              item.PROCESS3 = processs[2];
+                              item.PROCESS4 = processs[3];
+                              item.PROCESS5 = processs[4];
+                              item.PROCESS6 = processs[5];
+                              item.PROCESS7 = processs[6];
+                              item.PROCESS8 = processs[7];
+                              item.PROCESS9 = processs[8];
+                              item.PROCESS10 = processs[9];
+                              P01DASHBOARDVAR.PROCESS1 = processs[0];
+                              P01DASHBOARDVAR.PROCESS2 = processs[1];
+                              P01DASHBOARDVAR.PROCESS3 = processs[2];
+                              P01DASHBOARDVAR.PROCESS4 = processs[3];
+                              P01DASHBOARDVAR.PROCESS5 = processs[4];
+                              P01DASHBOARDVAR.PROCESS6 = processs[5];
+                              P01DASHBOARDVAR.PROCESS7 = processs[6];
+                              P01DASHBOARDVAR.PROCESS8 = processs[7];
+                              P01DASHBOARDVAR.PROCESS9 = processs[8];
+                              P01DASHBOARDVAR.PROCESS10 = processs[9];
+                            },
+                          ),
+                      ],
+                      // buildCustomField(
+                      //   context: P01DASHBOARDMAINcontext,
+                      //   controller: AmountOfSampleController,
+                      //   focusNode: AmountOfSampleFocusNode,
+                      //   labelText: "Amount of Sample (Pcs)",
+                      //   icon: Icons.science,
+                      //   onChanged: (value) {
+                      //     item.AMOUNTSAMPLE = value.isNotEmpty ? int.parse(value) : 0;
+                      //     P01DASHBOARDVAR.AMOUNTSAMPLE = int.parse(value);
+                      //   },
+                      // ),
                       buildCustomField(
                         context: P01DASHBOARDMAINcontext,
                         controller: TakePhotoController,
@@ -2964,7 +3363,6 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                   convertStringToDateTime(finishDateControllers[0].text).toString();
                               P01DASHBOARDVAR.FINISHDATE2 =
                                   convertStringToDateTime(finishDateControllers[1].text).toString();
-
                               P01DASHBOARDVAR.FINISHDATE3 =
                                   convertStringToDateTime(finishDateControllers[2].text).toString();
                               P01DASHBOARDVAR.FINISHDATE4 =
@@ -3129,6 +3527,25 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                             convertStringToDateTime(dueDateControllers[8].text).toString();
                                         P01DASHBOARDVAR.DUEDATE10 =
                                             convertStringToDateTime(dueDateControllers[9].text).toString();
+                                        for (int i = finishDateControllers.length - 1; i >= 0; i--) {
+                                          if (finishDateControllers[i].text.isNotEmpty) {
+                                            await calculateAndSetTempDate(
+                                              finishDateController: finishDateControllers[i],
+                                              DateController: TempDate0Controller,
+                                              addDays: P01DASHBOARDVAR.TempAddDays,
+                                            );
+                                            await calculateAndSetTempDate(
+                                              finishDateController: finishDateControllers[i],
+                                              DateController: DueDate0Controller,
+                                              addDays: P01DASHBOARDVAR.DueAddDays,
+                                            );
+                                            break;
+                                          }
+                                        }
+                                        P01DASHBOARDVAR.TEMPDATE0 =
+                                            convertStringToDateTime(TempDate0Controller.text).toString();
+                                        P01DASHBOARDVAR.DUEDATE0 =
+                                            convertStringToDateTime(DueDate0Controller.text).toString();
                                         itemTimes[i] = value.isNotEmpty ? int.parse(value) : 0;
                                         item.TIME1 = itemTimes[0];
                                         item.TIME2 = itemTimes[1];
@@ -3140,10 +3557,13 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                         item.TIME8 = itemTimes[7];
                                         item.TIME9 = itemTimes[8];
                                         item.TIME10 = itemTimes[9];
+                                        P01DASHBOARDVAR.TYPE = item.TYPE;
                                         P01DASHBOARDVAR.REQUESTNO = item.REQUESTNO;
                                         P01DASHBOARDVAR.REPORTNO = item.REPORTNO;
                                         P01DASHBOARDVAR.SECTION = item.SECTION;
                                         P01DASHBOARDVAR.REQUESTER = item.REQUESTER;
+                                        P01DASHBOARDVAR.SAMPLINGDATE =
+                                            convertStringToDateTime(item.SAMPLINGDATE).toString();
                                         P01DASHBOARDVAR.RECEIVEDDATE =
                                             convertStringToDateTime(item.RECEIVEDDATE).toString();
                                         P01DASHBOARDVAR.CUSTOMERNAME = item.CUSTOMERNAME;
@@ -3167,7 +3587,47 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                         P01DASHBOARDVAR.PARTNO8 = item.PARTNO8;
                                         P01DASHBOARDVAR.PARTNO9 = item.PARTNO9;
                                         P01DASHBOARDVAR.PARTNO10 = item.PARTNO10;
-                                        P01DASHBOARDVAR.AMOUNTSAMPLE = item.AMOUNTSAMPLE;
+                                        P01DASHBOARDVAR.LOTNO1 = item.LOTNO1;
+                                        P01DASHBOARDVAR.LOTNO2 = item.LOTNO2;
+                                        P01DASHBOARDVAR.LOTNO3 = item.LOTNO3;
+                                        P01DASHBOARDVAR.LOTNO4 = item.LOTNO4;
+                                        P01DASHBOARDVAR.LOTNO5 = item.LOTNO5;
+                                        P01DASHBOARDVAR.LOTNO6 = item.LOTNO6;
+                                        P01DASHBOARDVAR.LOTNO7 = item.LOTNO7;
+                                        P01DASHBOARDVAR.LOTNO8 = item.LOTNO8;
+                                        P01DASHBOARDVAR.LOTNO9 = item.LOTNO9;
+                                        P01DASHBOARDVAR.LOTNO10 = item.LOTNO10;
+                                        P01DASHBOARDVAR.AMOUNT1 = item.AMOUNT1;
+                                        P01DASHBOARDVAR.AMOUNT2 = item.AMOUNT2;
+                                        P01DASHBOARDVAR.AMOUNT3 = item.AMOUNT3;
+                                        P01DASHBOARDVAR.AMOUNT4 = item.AMOUNT4;
+                                        P01DASHBOARDVAR.AMOUNT5 = item.AMOUNT5;
+                                        P01DASHBOARDVAR.AMOUNT6 = item.AMOUNT6;
+                                        P01DASHBOARDVAR.AMOUNT7 = item.AMOUNT7;
+                                        P01DASHBOARDVAR.AMOUNT8 = item.AMOUNT8;
+                                        P01DASHBOARDVAR.AMOUNT9 = item.AMOUNT9;
+                                        P01DASHBOARDVAR.AMOUNT10 = item.AMOUNT10;
+                                        P01DASHBOARDVAR.MATERIAL1 = item.MATERIAL1;
+                                        P01DASHBOARDVAR.MATERIAL2 = item.MATERIAL2;
+                                        P01DASHBOARDVAR.MATERIAL3 = item.MATERIAL3;
+                                        P01DASHBOARDVAR.MATERIAL4 = item.MATERIAL4;
+                                        P01DASHBOARDVAR.MATERIAL5 = item.MATERIAL5;
+                                        P01DASHBOARDVAR.MATERIAL6 = item.MATERIAL6;
+                                        P01DASHBOARDVAR.MATERIAL7 = item.MATERIAL7;
+                                        P01DASHBOARDVAR.MATERIAL8 = item.MATERIAL8;
+                                        P01DASHBOARDVAR.MATERIAL9 = item.MATERIAL9;
+                                        P01DASHBOARDVAR.MATERIAL10 = item.MATERIAL10;
+                                        P01DASHBOARDVAR.PROCESS1 = item.PROCESS1;
+                                        P01DASHBOARDVAR.PROCESS2 = item.PROCESS2;
+                                        P01DASHBOARDVAR.PROCESS3 = item.PROCESS3;
+                                        P01DASHBOARDVAR.PROCESS4 = item.PROCESS4;
+                                        P01DASHBOARDVAR.PROCESS5 = item.PROCESS5;
+                                        P01DASHBOARDVAR.PROCESS6 = item.PROCESS6;
+                                        P01DASHBOARDVAR.PROCESS7 = item.PROCESS7;
+                                        P01DASHBOARDVAR.PROCESS8 = item.PROCESS8;
+                                        P01DASHBOARDVAR.PROCESS9 = item.PROCESS9;
+                                        P01DASHBOARDVAR.PROCESS10 = item.PROCESS10;
+                                        // P01DASHBOARDVAR.AMOUNTSAMPLE = item.AMOUNTSAMPLE;
                                         P01DASHBOARDVAR.TAKEPHOTO = item.TAKEPHOTO;
                                         P01DASHBOARDVAR.METHOD = item.METHOD;
                                         P01DASHBOARDVAR.INCHARGE = item.INCHARGE;
@@ -3190,14 +3650,37 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                   ),
                                 ],
                               ),
+                              // Row(
+                              //   children: [
+                              //     Expanded(
+                              //       child: buildCustomField(
+                              //         context: P01DASHBOARDMAINcontext,
+                              //         controller: tempDateControllers[i],
+                              //         focusNode: tempDateFocusNodes[i],
+                              //         labelText: "Temp Date ${i + 1}",
+                              //         icon: Icons.calendar_month_rounded,
+                              //       ),
+                              //     ),
+                              //     const SizedBox(width: 10),
+                              //     Expanded(
+                              //       child: buildCustomField(
+                              //         context: P01DASHBOARDMAINcontext,
+                              //         controller: dueDateControllers[i],
+                              //         focusNode: dueDateFocusNodes[i],
+                              //         labelText: "Due Date ${i + 1}",
+                              //         icon: Icons.calendar_month_rounded,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               Row(
                                 children: [
                                   Expanded(
                                     child: buildCustomField(
                                       context: P01DASHBOARDMAINcontext,
-                                      controller: tempDateControllers[i],
-                                      focusNode: tempDateFocusNodes[i],
-                                      labelText: "Temp Date ${i + 1}",
+                                      controller: TempDate0Controller,
+                                      focusNode: TempDate0FocusNode,
+                                      labelText: "Temp Report",
                                       icon: Icons.calendar_month_rounded,
                                     ),
                                   ),
@@ -3205,9 +3688,9 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                                   Expanded(
                                     child: buildCustomField(
                                       context: P01DASHBOARDMAINcontext,
-                                      controller: dueDateControllers[i],
-                                      focusNode: dueDateFocusNodes[i],
-                                      labelText: "Due Date ${i + 1}",
+                                      controller: DueDate0Controller,
+                                      focusNode: DueDate0FocusNode,
+                                      labelText: "Due Report",
                                       icon: Icons.calendar_month_rounded,
                                     ),
                                   ),
@@ -3657,6 +4140,7 @@ Future<void> CheckSlotAndTimeOverlabToAPI(
         context: context,
         onConfirm: () async {
           P01DASHBOARDVAR.SendEditDataToAPI = jsonEncode(toJsonAddDate());
+          print(P01DASHBOARDVAR.SendEditDataToAPI);
           _TransferDataToAPI();
           Navigator.of(context).pop(true);
         },

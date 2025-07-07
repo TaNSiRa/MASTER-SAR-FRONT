@@ -475,7 +475,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                       showTitles: true,
                       reservedSize: 35,
                       getTitlesWidget: (value, meta) {
-                        if (value % 25 == 0) {
+                        if (value % 10 == 0) {
                           return Text(
                             '${value.toInt()}%',
                             style: const TextStyle(
@@ -492,7 +492,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                 borderData: FlBorderData(show: false),
                 gridData: FlGridData(
                   show: true,
-                  horizontalInterval: 25,
+                  horizontalInterval: 20,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
                       color: Colors.grey[300]!,
@@ -510,7 +510,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                       BarChartRodData(
                         toY: value,
                         color: color,
-                        width: 4,
+                        width: 10,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
                       ),
                     ],

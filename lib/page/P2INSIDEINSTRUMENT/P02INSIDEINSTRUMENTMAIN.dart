@@ -891,7 +891,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                     });
                   },
                   child: Container(
-                    width: 150,
+                    width: 130,
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -961,7 +961,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
                         ),
                         // SizedBox(width: 10),
                         Text(
-                          "Select all slot",
+                          "Select all",
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
