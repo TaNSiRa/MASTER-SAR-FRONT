@@ -48,7 +48,7 @@ class _P02INSIDEINSTRUMENTMAINState extends State<P02INSIDEINSTRUMENTMAIN> {
   @override
   Widget build(BuildContext context) {
     P02INSIDEINSTRUMENTMAINcontext = context;
-    print(selectpage);
+    // print(selectpage);
     List<P02INSIDEINSTRUMENTGETDATAclass> _datain = widget.data ?? [];
     // List<P02INSIDEINSTRUMENTGETDATAclass> AllSSTCheckBox = _datain.toList();
     // print(_datain);

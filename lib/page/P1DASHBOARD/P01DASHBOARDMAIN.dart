@@ -3797,7 +3797,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                             P01DASHBOARDVAR.CHECKBOX = value;
                             StartDateController.text = StartDateControllerGlobal.text;
                             // setState(() {});
-                            print(StartDateController.text);
+                            // print(StartDateController.text);
                           },
                           ontap: () {
                             P01DASHBOARDVAR.STATUS = StatusController.text;
@@ -4069,7 +4069,7 @@ void showChangeStatusDialog(BuildContext context, void Function(String) onStatus
             width: 150,
             child: ElevatedButton.icon(
               onPressed: () {
-                print('TEST');
+                // print('TEST');
                 onStatusSelected('Instrument Breakdown');
               },
               style: ElevatedButton.styleFrom(
@@ -4126,8 +4126,8 @@ Future<void> CheckSlotAndTimeOverlabToAPI(
       if (finishDate != null) break;
     }
 
-    print(startDate);
-    print(finishDate);
+    // print(startDate);
+    // print(finishDate);
 
     if (startDate == null ||
         finishDate == null ||
@@ -4155,7 +4155,7 @@ Future<void> CheckSlotAndTimeOverlabToAPI(
         context: context,
         onConfirm: () async {
           P01DASHBOARDVAR.SendEditDataToAPI = jsonEncode(toJsonAddDate());
-          print(P01DASHBOARDVAR.SendEditDataToAPI);
+          // print(P01DASHBOARDVAR.SendEditDataToAPI);
           _TransferDataToAPI();
           Navigator.of(context).pop(true);
         },
