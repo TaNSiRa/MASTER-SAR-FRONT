@@ -106,7 +106,8 @@ Widget buildCustomField({
   List<String>? dropdownItems,
 }) {
   // ถ้าเป็น Section Request ให้แสดง Dropdown
-  if ((labelText == "Section Request" ||
+  if ((labelText == "Type" ||
+          labelText == "Section Request" ||
           labelText == "Customer Name" ||
           labelText == "Instrument" ||
           labelText == "Method" ||

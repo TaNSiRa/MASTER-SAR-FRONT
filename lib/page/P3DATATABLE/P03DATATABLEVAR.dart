@@ -41,6 +41,7 @@ class P03DATATABLEVAR {
   static int TempAddDays = 4;
   static int DueAddDays = 6;
   static String SendEditDataToAPI = '';
+  static String TYPE = '';
   static String REQUESTNO = '';
   static String REPORTNO = '';
   static String SECTION = '';

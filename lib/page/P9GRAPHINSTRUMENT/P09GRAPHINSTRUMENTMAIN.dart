@@ -270,7 +270,7 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(8),
-                        onTap: () => _selectMonthYear(context),
+                        onTap: () async => await _selectMonthYear(context),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           child: const Icon(
@@ -582,9 +582,12 @@ class _P09GRAPHINSTRUMENTMAINState extends State<P09GRAPHINSTRUMENTMAIN> {
     );
 
     if (picked != null) {
-      setState(() {
-        P09GRAPHINSTRUMENTVAR.dateTimeSelect = picked;
-        context.read<P09GRAPHINSTRUMENTGETDATA_Bloc>().add(P09GRAPHINSTRUMENTGETDATA_GET());
+      // ใช้ addPostFrameCallback เพื่อหลีกเลี่ยง setState ตอน Flutter render อยู่
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          P09GRAPHINSTRUMENTVAR.dateTimeSelect = picked;
+          context.read<P09GRAPHINSTRUMENTGETDATA_Bloc>().add(P09GRAPHINSTRUMENTGETDATA_GET());
+        });
       });
     }
   }

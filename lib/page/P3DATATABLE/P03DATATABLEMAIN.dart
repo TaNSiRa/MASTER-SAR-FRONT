@@ -368,11 +368,12 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                 26: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth26),
                                 27: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth27),
                                 28: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth28),
-                                // 29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
+                                29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
                               },
                               children: [
                                 TableRow(
                                   children: [
+                                    TableCell(child: buildHeaderCell('Type (SP/SV)')),
                                     TableCell(child: buildHeaderCell('Request No.')),
                                     TableCell(child: buildHeaderCell('Report No.')),
                                     TableCell(child: buildHeaderCell('Stop')),
@@ -444,11 +445,13 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                     26: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth26),
                                     27: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth27),
                                     28: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth28),
-                                    // 29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
+                                    29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
                                   },
                                   children: filteredData.map((item) {
                                     return TableRow(
                                       children: [
+                                        TableCell(
+                                            child: buildDataCell(item.TYPE, countRowMultiplier(item), item)),
                                         TableCell(
                                             child: buildDataCell(
                                                 item.REQUESTNO, countRowMultiplier(item), item)),
@@ -992,6 +995,7 @@ Color _getStatusColor(String status) {
 
 void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
   // print(item.REQUESTNO);
+  final FocusNode TypeFocusNode = FocusNode();
   final FocusNode RequestNoFocusNode = FocusNode();
   final FocusNode ReportNoFocusNode = FocusNode();
   final FocusNode SectionRequestFocusNode = FocusNode();
@@ -1112,6 +1116,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
   final FocusNode StatusFocusNode = FocusNode();
   final FocusNode RemarkFocusNode = FocusNode();
 
+  TextEditingController TypeController = TextEditingController(text: item.TYPE);
   TextEditingController RequestNoController = TextEditingController(text: item.REQUESTNO);
   TextEditingController ReportNoController = TextEditingController(text: item.REPORTNO);
   TextEditingController SectionRequestController = TextEditingController(text: item.SECTION);
@@ -1648,6 +1653,17 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                           children: [
                             SizedBox(
                               height: 10,
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: TypeController,
+                              focusNode: TypeFocusNode,
+                              labelText: "Type",
+                              icon: Icons.assignment,
+                              dropdownItems: ['Service lab', 'Special request'],
+                              onChanged: (value) {
+                                item.TYPE = value;
+                              },
                             ),
                             buildCustomFieldforEditData(
                               controller: RequestNoController,
@@ -2372,6 +2388,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
 
 void showAddDialog(BuildContext context) {
   // print(item.REQUESTNO);
+  final FocusNode TypeFocusNode = FocusNode();
   final FocusNode RequestNoFocusNode = FocusNode();
   final FocusNode ReportNoFocusNode = FocusNode();
   final FocusNode SectionRequestFocusNode = FocusNode();
@@ -2493,6 +2510,7 @@ void showAddDialog(BuildContext context) {
   final FocusNode CheckBoxFocusNode = FocusNode();
   // final FocusNode RemarkFocusNode = FocusNode();
 
+  TextEditingController TypeController = TextEditingController();
   TextEditingController RequestNoController = TextEditingController();
   TextEditingController ReportNoController = TextEditingController();
   TextEditingController SectionRequestController = TextEditingController();
@@ -3365,6 +3383,17 @@ void showAddDialog(BuildContext context) {
                             ),
                           buildCustomField(
                             context: P03DATATABLEMAINcontext,
+                            controller: TypeController,
+                            focusNode: TypeFocusNode,
+                            labelText: "Type",
+                            icon: Icons.description,
+                            dropdownItems: ['Service lab', 'Special request'],
+                            onChanged: (value) {
+                              P03DATATABLEVAR.TYPE = value;
+                            },
+                          ),
+                          buildCustomField(
+                            context: P03DATATABLEMAINcontext,
                             controller: RequestNoController,
                             focusNode: RequestNoFocusNode,
                             labelText: "Request No.",
@@ -4137,6 +4166,7 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
   sheet.name = 'SALT SPRAY';
 
   sheet.importList([
+    'Type (SP/SV)',
     'Request No.',
     'Report No.',
     'Section Request',
@@ -4174,7 +4204,7 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
   final centerStyleData = workbook.styles.add('centerStyleData');
   centerStyleData.hAlign = xlsio.HAlignType.center;
   centerStyleData.vAlign = xlsio.VAlignType.center;
-  final headerRange = sheet.getRangeByIndex(1, 1, 1, 26);
+  final headerRange = sheet.getRangeByIndex(1, 1, 1, 27);
   headerRange.cellStyle = centerStyleHeader;
 
   for (var item in filteredData) {
@@ -4348,28 +4378,28 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
     maxRows = maxRows == 0 ? 1 : maxRows;
 
     for (int i = 0; i < maxRows; i++) {
-      sheet.getRangeByIndex(currentRow + i, 8)
+      sheet.getRangeByIndex(currentRow + i, 9)
         ..setText(i < partNames.length ? partNames[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 9)
+      sheet.getRangeByIndex(currentRow + i, 10)
         ..setText(i < partNos.length ? partNos[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 10)
+      sheet.getRangeByIndex(currentRow + i, 11)
         ..setText(i < lotNos.length ? lotNos[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 11)
+      sheet.getRangeByIndex(currentRow + i, 12)
         ..setText(i < amounts.length ? amounts[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 12)
+      sheet.getRangeByIndex(currentRow + i, 13)
         ..setText(i < materials.length ? materials[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 13)
+      sheet.getRangeByIndex(currentRow + i, 14)
         ..setText(i < processs.length ? processs[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 16)
+      sheet.getRangeByIndex(currentRow + i, 17)
         ..setText(i < times.length ? times[i] : '')
         ..cellStyle = centerStyleData;
-      sheet.getRangeByIndex(currentRow + i, 17)
+      sheet.getRangeByIndex(currentRow + i, 18)
         ..setText(i < finishDates.length ? finishDates[i] : '')
         ..cellStyle = centerStyleData;
       // sheet.getRangeByIndex(currentRow + i, 18)
@@ -4387,30 +4417,31 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
         ..cellStyle = centerStyleData;
     }
 
-    mergeAndSet(1, item.REQUESTNO);
-    mergeAndSet(2, item.REPORTNO);
-    mergeAndSet(3, item.SECTION);
-    mergeAndSet(4, item.REQUESTER);
-    mergeAndSet(5, item.SAMPLINGDATE);
-    mergeAndSet(6, item.RECEIVEDDATE);
-    mergeAndSet(7, item.CUSTOMERNAME);
+    mergeAndSet(1, item.TYPE);
+    mergeAndSet(2, item.REQUESTNO);
+    mergeAndSet(3, item.REPORTNO);
+    mergeAndSet(4, item.SECTION);
+    mergeAndSet(5, item.REQUESTER);
+    mergeAndSet(6, item.SAMPLINGDATE);
+    mergeAndSet(7, item.RECEIVEDDATE);
+    mergeAndSet(8, item.CUSTOMERNAME);
     // mergeAndSet(10, item.AMOUNTSAMPLE);
-    mergeAndSet(14, item.TAKEPHOTO);
-    mergeAndSet(15, item.STARTDATE);
-    mergeAndSet(18, item.TEMPDATE0);
-    mergeAndSet(19, item.DUEDATE0);
-    mergeAndSet(20, item.INSTRUMENT);
-    mergeAndSet(21, item.METHOD);
-    mergeAndSet(22, item.INCHARGE);
-    mergeAndSet(23, item.APPROVEDDATE);
-    mergeAndSet(24, item.APPROVEDBY);
-    mergeAndSet(25, item.STATUS);
-    mergeAndSet(26, item.REMARK);
+    mergeAndSet(15, item.TAKEPHOTO);
+    mergeAndSet(16, item.STARTDATE);
+    mergeAndSet(19, item.TEMPDATE0);
+    mergeAndSet(20, item.DUEDATE0);
+    mergeAndSet(21, item.INSTRUMENT);
+    mergeAndSet(22, item.METHOD);
+    mergeAndSet(23, item.INCHARGE);
+    mergeAndSet(24, item.APPROVEDDATE);
+    mergeAndSet(25, item.APPROVEDBY);
+    mergeAndSet(26, item.STATUS);
+    mergeAndSet(27, item.REMARK);
 
     currentRow += maxRows;
   }
 
-  for (int col = 1; col <= 26; col++) {
+  for (int col = 1; col <= 27; col++) {
     sheet.autoFitColumn(col);
   }
 

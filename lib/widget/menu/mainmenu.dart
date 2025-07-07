@@ -15,6 +15,7 @@ import '../../page/page5.dart';
 import '../../page/page6.dart';
 import '../../page/page7.dart';
 import '../../page/page8.dart';
+import '../../page/page9.dart';
 
 late BuildContext MenuContext;
 
@@ -149,6 +150,12 @@ class Data_Menu_mainmenu extends StatelessWidget {
                       Lv: 1,
                       icon: Icons.water_drop,
                     ),
+                    menu_normal(
+                      name: "INSTRUMENT ANALYTICS",
+                      page: const Page9(),
+                      Lv: 1,
+                      icon: Icons.analytics_outlined,
+                    ),
                     menu_dropdown(
                       name: "CALENDAR",
                       icon: Icons.calendar_today,
@@ -174,7 +181,7 @@ class Data_Menu_mainmenu extends StatelessWidget {
                           page: const Page6(),
                           icon: Icons.person_outline,
                         ),
-                        if (USERDATA.UserLV >= 15)
+                        if (USERDATA.UserLV >= 99 || USERDATA.Permission == 'Admin')
                           DropdownMenuItem(
                             name: "EDIT USER",
                             page: const Page8(),

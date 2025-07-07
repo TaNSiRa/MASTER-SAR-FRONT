@@ -66,6 +66,7 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
       // print(input);
       List<P03DATATABLEGETDATAclass> outputdata = input.map((data) {
         return P03DATATABLEGETDATAclass(
+          TYPE: savenull(data['Type']),
           REQUESTNO: savenull(data['Request_No']),
           REPORTNO: savenull(data['Report_No']),
           SECTION: savenull(data['Section']),
@@ -249,6 +250,7 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
 
 class P03DATATABLEGETDATAclass {
   P03DATATABLEGETDATAclass({
+    this.TYPE = '',
     this.REQUESTNO = '',
     this.REPORTNO = '',
     this.SECTION = '',
@@ -371,6 +373,7 @@ class P03DATATABLEGETDATAclass {
     this.CHECKBOX = '',
   });
 
+  String TYPE;
   String REQUESTNO;
   String REPORTNO;
   String SECTION;
@@ -493,6 +496,7 @@ class P03DATATABLEGETDATAclass {
   String CHECKBOX;
   Map<String, dynamic> toJson() {
     return {
+      'TYPE': TYPE,
       'REQUESTNO': REQUESTNO,
       'REPORTNO': REPORTNO,
       'SECTION': SECTION,
@@ -619,6 +623,7 @@ class P03DATATABLEGETDATAclass {
 
 Map<String, dynamic> toJsonAddDate() {
   return {
+    'TYPE': P03DATATABLEVAR.TYPE,
     'REQUESTNO': P03DATATABLEVAR.REQUESTNO,
     'REPORTNO': P03DATATABLEVAR.REPORTNO,
     'SECTION': P03DATATABLEVAR.SECTION,
