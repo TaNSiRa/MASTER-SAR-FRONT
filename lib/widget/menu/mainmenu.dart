@@ -9,6 +9,7 @@ import '../../data/global.dart';
 import '../../mainBody.dart';
 import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import '../../page/page1.dart';
+import '../../page/page10.dart';
 import '../../page/page3.dart';
 import '../../page/page4.dart';
 import '../../page/page5.dart';
@@ -180,6 +181,11 @@ class Data_Menu_mainmenu extends StatelessWidget {
                           name: "EDIT CUSTOMER",
                           page: const Page6(),
                           icon: Icons.person_outline,
+                        ),
+                        DropdownMenuItem(
+                          name: "EDIT REQUESTER",
+                          page: const Page10(),
+                          icon: Icons.person_3_outlined,
                         ),
                         if (USERDATA.UserLV >= 99 || USERDATA.Permission == 'Admin')
                           DropdownMenuItem(
