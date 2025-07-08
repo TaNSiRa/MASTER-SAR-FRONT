@@ -100,24 +100,6 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Center(
-              child: ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: const [Colors.blueAccent, Colors.lightBlueAccent],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(bounds),
-                child: Text(
-                  'SALT SPRAY STATUS',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
             Expanded(
               child: Column(
                 children: [
