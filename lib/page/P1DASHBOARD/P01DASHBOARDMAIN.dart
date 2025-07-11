@@ -292,6 +292,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                     padding: const EdgeInsets.all(1.0),
                     child: InkWell(
                       onTap: () {
+                        selectstatus = 'Inside SST No.1';
                         MainBodyContext.read<ChangePage_Bloc>()
                             .ChangePage_nodrower('Salt Spray Tester : SST No.1', Page2());
                       },
@@ -338,7 +339,8 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           setState(() {});
                                         },
                                       ),
-                                      if (P01DASHBOARDVAR.SST1Status == 'Instrument Breakdown')
+                                      if (P01DASHBOARDVAR.SST1Status == 'Instrument Breakdown' &&
+                                          USERDATA.UserLV >= 5)
                                         ElevatedButton.icon(
                                           onPressed: () {
                                             P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>()
@@ -585,6 +587,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                     padding: const EdgeInsets.all(1.0),
                     child: InkWell(
                       onTap: () {
+                        selectstatus = 'Inside SST No.2';
                         MainBodyContext.read<ChangePage_Bloc>()
                             .ChangePage_nodrower('Salt Spray Tester : SST No.2', Page2());
                       },
@@ -631,7 +634,8 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           setState(() {});
                                         },
                                       ),
-                                      if (P01DASHBOARDVAR.SST2Status == 'Instrument Breakdown')
+                                      if (P01DASHBOARDVAR.SST2Status == 'Instrument Breakdown' &&
+                                          USERDATA.UserLV >= 5)
                                         ElevatedButton.icon(
                                           onPressed: () {
                                             P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>()
@@ -884,6 +888,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                     padding: const EdgeInsets.all(1.0),
                     child: InkWell(
                       onTap: () {
+                        selectstatus = 'Inside SST No.3';
                         MainBodyContext.read<ChangePage_Bloc>()
                             .ChangePage_nodrower('Salt Spray Tester : SST No.3', Page2());
                       },
@@ -930,7 +935,8 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           setState(() {});
                                         },
                                       ),
-                                      if (P01DASHBOARDVAR.SST3Status == 'Instrument Breakdown')
+                                      if (P01DASHBOARDVAR.SST3Status == 'Instrument Breakdown' &&
+                                          USERDATA.UserLV >= 5)
                                         ElevatedButton.icon(
                                           onPressed: () {
                                             P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>()
@@ -1177,6 +1183,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                     padding: const EdgeInsets.all(1.0),
                     child: InkWell(
                       onTap: () {
+                        selectstatus = 'Inside SST No.4';
                         MainBodyContext.read<ChangePage_Bloc>()
                             .ChangePage_nodrower('Salt Spray Tester : SST No.4', Page2());
                       },
@@ -1223,7 +1230,8 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
                                           setState(() {});
                                         },
                                       ),
-                                      if (P01DASHBOARDVAR.SST4Status == 'Instrument Breakdown')
+                                      if (P01DASHBOARDVAR.SST4Status == 'Instrument Breakdown' &&
+                                          USERDATA.UserLV >= 5)
                                         ElevatedButton.icon(
                                           onPressed: () {
                                             P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>()
