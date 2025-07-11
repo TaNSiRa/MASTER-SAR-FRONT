@@ -112,7 +112,8 @@ Widget buildCustomField({
           labelText == "Instrument" ||
           labelText == "Method" ||
           labelText == "Incharge" ||
-          labelText == "Approved By") &&
+          labelText == "Approved By" ||
+          labelText == "Requester") &&
       dropdownItems != null) {
     return DropdownSearch<String>(
       items: dropdownItems,

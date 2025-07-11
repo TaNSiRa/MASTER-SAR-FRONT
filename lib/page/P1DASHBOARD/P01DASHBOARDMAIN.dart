@@ -3057,6 +3057,7 @@ Future<bool?> showEditDialog(BuildContext context, P01DASHBOARDGETDATAclass item
                         focusNode: RequesterFocusNode,
                         labelText: "Requester",
                         icon: Icons.person,
+                        dropdownItems: P01DASHBOARDVAR.dropdownRequester,
                         onChanged: (value) {
                           item.REQUESTER = value;
                           P01DASHBOARDVAR.REQUESTER = value;
@@ -3941,6 +3942,26 @@ Future<void> _fetchCustomerAndIncharge() async {
     } else {
       print("SearchCustomer failed");
       showErrorPopup(P01DASHBOARDMAINcontext, responseCustomer.toString());
+      Navigator.pop(P01DASHBOARDMAINcontext);
+    }
+
+    final responseRequester = await Dio().post(
+      "$ToServer/02SALTSPRAY/SearchRequester",
+      data: {},
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+      ),
+    );
+
+    if (responseRequester.statusCode == 200 && responseRequester.data is List) {
+      List data = responseRequester.data;
+      P01DASHBOARDVAR.dropdownRequester =
+          data.map((item) => item['Requester_Name'].toString()).where((name) => name.isNotEmpty).toList();
+    } else {
+      print("SearchCustomer failed");
+      showErrorPopup(P01DASHBOARDMAINcontext, responseRequester.toString());
       Navigator.pop(P01DASHBOARDMAINcontext);
     }
 

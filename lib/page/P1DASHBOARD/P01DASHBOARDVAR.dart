@@ -6,6 +6,7 @@ class P01DASHBOARDVAR {
   static List<String> dropdownCustomer = [];
   static List<String> dropdownIncharge = [];
   static List<String> dropdownApprover = [];
+  static List<String> dropdownRequester = [];
   // static List<String> holidays = [];
   static int TempAddDays = 4;
   static int DueAddDays = 6;
