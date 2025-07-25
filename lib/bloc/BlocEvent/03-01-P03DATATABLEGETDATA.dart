@@ -44,160 +44,176 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
     FreeLoadingTan(P03DATATABLEMAINcontext);
     List<P03DATATABLEGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/DataforTableStatus",
-      data: {
-        // 'TYPE': P03DATATABLEVAR.DropDownType.toString(),
-        // 'YEAR': P03DATATABLEVAR.DropDownYear.toString(),
-      },
-      options: Options(
-        validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+    try {
+      final response = await Dio().post(
+        "$ToServer/02SALTSPRAY/DataforTableStatus",
+        data: {
+          // 'TYPE': P03DATATABLEVAR.DropDownType.toString(),
+          // 'YEAR': P03DATATABLEVAR.DropDownYear.toString(),
         },
-      ),
-    );
-    var input = [];
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      // print(response.data);
-      var databuff = response.data;
-      input = databuff;
-      // var input = dummyAchievedCust;
-      // print(input);
-      List<P03DATATABLEGETDATAclass> outputdata = input.map((data) {
-        return P03DATATABLEGETDATAclass(
-          TYPE: savenull(data['Type']),
-          REQUESTNO: savenull(data['Request_No']),
-          REPORTNO: savenull(data['Report_No']),
-          SECTION: savenull(data['Section']),
-          REQUESTER: savenull(data['Requester']),
-          SAMPLINGDATE: formatDate(savenull(data['Sampling_Date'])),
-          RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
-          CUSTOMERNAME: savenull(data['Customer_Name']),
-          PARTNAME1: savenull(data['Part_Name1']),
-          PARTNO1: savenull(data['Part_No1']),
-          LOTNO1: savenull(data['Lot_No1']),
-          AMOUNT1: savenull(data['Amount1']),
-          MATERIAL1: savenull(data['Material1']),
-          PROCESS1: savenull(data['Process1']),
-          PARTNAME2: savenull(data['Part_Name2']),
-          PARTNO2: savenull(data['Part_No2']),
-          LOTNO2: savenull(data['Lot_No2']),
-          AMOUNT2: savenull(data['Amount2']),
-          MATERIAL2: savenull(data['Material2']),
-          PROCESS2: savenull(data['Process2']),
-          PARTNAME3: savenull(data['Part_Name3']),
-          PARTNO3: savenull(data['Part_No3']),
-          LOTNO3: savenull(data['Lot_No3']),
-          AMOUNT3: savenull(data['Amount3']),
-          MATERIAL3: savenull(data['Material3']),
-          PROCESS3: savenull(data['Process3']),
-          PARTNAME4: savenull(data['Part_Name4']),
-          PARTNO4: savenull(data['Part_No4']),
-          LOTNO4: savenull(data['Lot_No4']),
-          AMOUNT4: savenull(data['Amount4']),
-          MATERIAL4: savenull(data['Material4']),
-          PROCESS4: savenull(data['Process4']),
-          PARTNAME5: savenull(data['Part_Name5']),
-          PARTNO5: savenull(data['Part_No5']),
-          LOTNO5: savenull(data['Lot_No5']),
-          AMOUNT5: savenull(data['Amount5']),
-          MATERIAL5: savenull(data['Material5']),
-          PROCESS5: savenull(data['Process5']),
-          PARTNAME6: savenull(data['Part_Name6']),
-          PARTNO6: savenull(data['Part_No6']),
-          LOTNO6: savenull(data['Lot_No6']),
-          AMOUNT6: savenull(data['Amount6']),
-          MATERIAL6: savenull(data['Material6']),
-          PROCESS6: savenull(data['Process6']),
-          PARTNAME7: savenull(data['Part_Name7']),
-          PARTNO7: savenull(data['Part_No7']),
-          LOTNO7: savenull(data['Lot_No7']),
-          AMOUNT7: savenull(data['Amount7']),
-          MATERIAL7: savenull(data['Material7']),
-          PROCESS7: savenull(data['Process7']),
-          PARTNAME8: savenull(data['Part_Name8']),
-          PARTNO8: savenull(data['Part_No8']),
-          LOTNO8: savenull(data['Lot_No8']),
-          AMOUNT8: savenull(data['Amount8']),
-          MATERIAL8: savenull(data['Material8']),
-          PROCESS8: savenull(data['Process8']),
-          PARTNAME9: savenull(data['Part_Name9']),
-          PARTNO9: savenull(data['Part_No9']),
-          LOTNO9: savenull(data['Lot_No9']),
-          AMOUNT9: savenull(data['Amount9']),
-          MATERIAL9: savenull(data['Material9']),
-          PROCESS9: savenull(data['Process9']),
-          PARTNAME10: savenull(data['Part_Name10']),
-          PARTNO10: savenull(data['Part_No10']),
-          LOTNO10: savenull(data['Lot_No10']),
-          AMOUNT10: savenull(data['Amount10']),
-          MATERIAL10: savenull(data['Material10']),
-          PROCESS10: savenull(data['Process10']),
-          // AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
-          TAKEPHOTO: savenullint(data['Take_Photo']),
-          STARTDATE: formatDate(savenull(data['Start_Date'])),
-          TIME1: savenullint(data['Time1']),
-          FINISHDATE1: formatDate(savenull(data['Finish_Date1'])),
-          TEMPDATE1: formatDate(savenull(data['Temp_Date1'])),
-          DUEDATE1: formatDate(savenull(data['Due_Date1'])),
-          TIME2: savenullint(data['Time2']),
-          FINISHDATE2: formatDate(savenull(data['Finish_Date2'])),
-          TEMPDATE2: formatDate(savenull(data['Temp_Date2'])),
-          DUEDATE2: formatDate(savenull(data['Due_Date2'])),
-          TIME3: savenullint(data['Time3']),
-          FINISHDATE3: formatDate(savenull(data['Finish_Date3'])),
-          TEMPDATE3: formatDate(savenull(data['Temp_Date3'])),
-          DUEDATE3: formatDate(savenull(data['Due_Date3'])),
-          TIME4: savenullint(data['Time4']),
-          FINISHDATE4: formatDate(savenull(data['Finish_Date4'])),
-          TEMPDATE4: formatDate(savenull(data['Temp_Date4'])),
-          DUEDATE4: formatDate(savenull(data['Due_Date4'])),
-          TIME5: savenullint(data['Time5']),
-          FINISHDATE5: formatDate(savenull(data['Finish_Date5'])),
-          TEMPDATE5: formatDate(savenull(data['Temp_Date5'])),
-          DUEDATE5: formatDate(savenull(data['Due_Date5'])),
-          TIME6: savenullint(data['Time6']),
-          FINISHDATE6: formatDate(savenull(data['Finish_Date6'])),
-          TEMPDATE6: formatDate(savenull(data['Temp_Date6'])),
-          DUEDATE6: formatDate(savenull(data['Due_Date6'])),
-          TIME7: savenullint(data['Time7']),
-          FINISHDATE7: formatDate(savenull(data['Finish_Date7'])),
-          TEMPDATE7: formatDate(savenull(data['Temp_Date7'])),
-          DUEDATE7: formatDate(savenull(data['Due_Date7'])),
-          TIME8: savenullint(data['Time8']),
-          FINISHDATE8: formatDate(savenull(data['Finish_Date8'])),
-          TEMPDATE8: formatDate(savenull(data['Temp_Date8'])),
-          DUEDATE8: formatDate(savenull(data['Due_Date8'])),
-          TIME9: savenullint(data['Time9']),
-          FINISHDATE9: formatDate(savenull(data['Finish_Date9'])),
-          TEMPDATE9: formatDate(savenull(data['Temp_Date9'])),
-          DUEDATE9: formatDate(savenull(data['Due_Date9'])),
-          TIME10: savenullint(data['Time10']),
-          FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
-          TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
-          DUEDATE10: formatDate(savenull(data['Due_Date10'])),
-          TEMPDATE0: formatDate(savenull(data['Temp_Date0'])),
-          DUEDATE0: formatDate(savenull(data['Due_Date0'])),
-          INSTRUMENT: savenull(data['Instrument']),
-          METHOD: savenull(data['Method']),
-          INCHARGE: savenull(data['Incharge']),
-          APPROVEDDATE: formatDate(savenull(data['Approved_Date'])),
-          APPROVEDBY: savenull(data['Approved_By']),
-          STATUS: savenull(data['Status']),
-          REMARK: savenull(data['Remark']),
-          CHECKBOX: savenull(data['CheckBox']),
-        );
-      }).toList();
-      Navigator.pop(P03DATATABLEMAINcontext);
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+      var input = [];
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        // print(response.data);
+        var databuff = response.data;
+        input = databuff;
+        // var input = dummyAchievedCust;
+        // print(input);
+        List<P03DATATABLEGETDATAclass> outputdata = input.map((data) {
+          return P03DATATABLEGETDATAclass(
+            TYPE: savenull(data['Type']),
+            REQUESTNO: savenull(data['Request_No']),
+            REPORTNO: savenull(data['Report_No']),
+            SECTION: savenull(data['Section']),
+            REQUESTER: savenull(data['Requester']),
+            SAMPLINGDATE: formatDate(savenull(data['Sampling_Date'])),
+            RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
+            CUSTOMERNAME: savenull(data['Customer_Name']),
+            PARTNAME1: savenull(data['Part_Name1']),
+            PARTNO1: savenull(data['Part_No1']),
+            LOTNO1: savenull(data['Lot_No1']),
+            AMOUNT1: savenull(data['Amount1']),
+            MATERIAL1: savenull(data['Material1']),
+            PROCESS1: savenull(data['Process1']),
+            PARTNAME2: savenull(data['Part_Name2']),
+            PARTNO2: savenull(data['Part_No2']),
+            LOTNO2: savenull(data['Lot_No2']),
+            AMOUNT2: savenull(data['Amount2']),
+            MATERIAL2: savenull(data['Material2']),
+            PROCESS2: savenull(data['Process2']),
+            PARTNAME3: savenull(data['Part_Name3']),
+            PARTNO3: savenull(data['Part_No3']),
+            LOTNO3: savenull(data['Lot_No3']),
+            AMOUNT3: savenull(data['Amount3']),
+            MATERIAL3: savenull(data['Material3']),
+            PROCESS3: savenull(data['Process3']),
+            PARTNAME4: savenull(data['Part_Name4']),
+            PARTNO4: savenull(data['Part_No4']),
+            LOTNO4: savenull(data['Lot_No4']),
+            AMOUNT4: savenull(data['Amount4']),
+            MATERIAL4: savenull(data['Material4']),
+            PROCESS4: savenull(data['Process4']),
+            PARTNAME5: savenull(data['Part_Name5']),
+            PARTNO5: savenull(data['Part_No5']),
+            LOTNO5: savenull(data['Lot_No5']),
+            AMOUNT5: savenull(data['Amount5']),
+            MATERIAL5: savenull(data['Material5']),
+            PROCESS5: savenull(data['Process5']),
+            PARTNAME6: savenull(data['Part_Name6']),
+            PARTNO6: savenull(data['Part_No6']),
+            LOTNO6: savenull(data['Lot_No6']),
+            AMOUNT6: savenull(data['Amount6']),
+            MATERIAL6: savenull(data['Material6']),
+            PROCESS6: savenull(data['Process6']),
+            PARTNAME7: savenull(data['Part_Name7']),
+            PARTNO7: savenull(data['Part_No7']),
+            LOTNO7: savenull(data['Lot_No7']),
+            AMOUNT7: savenull(data['Amount7']),
+            MATERIAL7: savenull(data['Material7']),
+            PROCESS7: savenull(data['Process7']),
+            PARTNAME8: savenull(data['Part_Name8']),
+            PARTNO8: savenull(data['Part_No8']),
+            LOTNO8: savenull(data['Lot_No8']),
+            AMOUNT8: savenull(data['Amount8']),
+            MATERIAL8: savenull(data['Material8']),
+            PROCESS8: savenull(data['Process8']),
+            PARTNAME9: savenull(data['Part_Name9']),
+            PARTNO9: savenull(data['Part_No9']),
+            LOTNO9: savenull(data['Lot_No9']),
+            AMOUNT9: savenull(data['Amount9']),
+            MATERIAL9: savenull(data['Material9']),
+            PROCESS9: savenull(data['Process9']),
+            PARTNAME10: savenull(data['Part_Name10']),
+            PARTNO10: savenull(data['Part_No10']),
+            LOTNO10: savenull(data['Lot_No10']),
+            AMOUNT10: savenull(data['Amount10']),
+            MATERIAL10: savenull(data['Material10']),
+            PROCESS10: savenull(data['Process10']),
+            // AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
+            TAKEPHOTO: savenullint(data['Take_Photo']),
+            STARTDATE: formatDate(savenull(data['Start_Date'])),
+            TIME1: savenullint(data['Time1']),
+            FINISHDATE1: formatDate(savenull(data['Finish_Date1'])),
+            TEMPDATE1: formatDate(savenull(data['Temp_Date1'])),
+            DUEDATE1: formatDate(savenull(data['Due_Date1'])),
+            TIME2: savenullint(data['Time2']),
+            FINISHDATE2: formatDate(savenull(data['Finish_Date2'])),
+            TEMPDATE2: formatDate(savenull(data['Temp_Date2'])),
+            DUEDATE2: formatDate(savenull(data['Due_Date2'])),
+            TIME3: savenullint(data['Time3']),
+            FINISHDATE3: formatDate(savenull(data['Finish_Date3'])),
+            TEMPDATE3: formatDate(savenull(data['Temp_Date3'])),
+            DUEDATE3: formatDate(savenull(data['Due_Date3'])),
+            TIME4: savenullint(data['Time4']),
+            FINISHDATE4: formatDate(savenull(data['Finish_Date4'])),
+            TEMPDATE4: formatDate(savenull(data['Temp_Date4'])),
+            DUEDATE4: formatDate(savenull(data['Due_Date4'])),
+            TIME5: savenullint(data['Time5']),
+            FINISHDATE5: formatDate(savenull(data['Finish_Date5'])),
+            TEMPDATE5: formatDate(savenull(data['Temp_Date5'])),
+            DUEDATE5: formatDate(savenull(data['Due_Date5'])),
+            TIME6: savenullint(data['Time6']),
+            FINISHDATE6: formatDate(savenull(data['Finish_Date6'])),
+            TEMPDATE6: formatDate(savenull(data['Temp_Date6'])),
+            DUEDATE6: formatDate(savenull(data['Due_Date6'])),
+            TIME7: savenullint(data['Time7']),
+            FINISHDATE7: formatDate(savenull(data['Finish_Date7'])),
+            TEMPDATE7: formatDate(savenull(data['Temp_Date7'])),
+            DUEDATE7: formatDate(savenull(data['Due_Date7'])),
+            TIME8: savenullint(data['Time8']),
+            FINISHDATE8: formatDate(savenull(data['Finish_Date8'])),
+            TEMPDATE8: formatDate(savenull(data['Temp_Date8'])),
+            DUEDATE8: formatDate(savenull(data['Due_Date8'])),
+            TIME9: savenullint(data['Time9']),
+            FINISHDATE9: formatDate(savenull(data['Finish_Date9'])),
+            TEMPDATE9: formatDate(savenull(data['Temp_Date9'])),
+            DUEDATE9: formatDate(savenull(data['Due_Date9'])),
+            TIME10: savenullint(data['Time10']),
+            FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
+            TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
+            DUEDATE10: formatDate(savenull(data['Due_Date10'])),
+            TEMPDATE0: formatDate(savenull(data['Temp_Date0'])),
+            DUEDATE0: formatDate(savenull(data['Due_Date0'])),
+            INSTRUMENT: savenull(data['Instrument']),
+            METHOD: savenull(data['Method']),
+            INCHARGE: savenull(data['Incharge']),
+            APPROVEDDATE: formatDate(savenull(data['Approved_Date'])),
+            APPROVEDBY: savenull(data['Approved_By']),
+            STATUS: savenull(data['Status']),
+            REMARK: savenull(data['Remark']),
+            CHECKBOX: savenull(data['CheckBox']),
+          );
+        }).toList();
+        Navigator.pop(P03DATATABLEMAINcontext);
 
-      output = outputdata;
-      emit(output);
-    } else {
+        output = outputdata;
+        emit(output);
+      } else {
+        Navigator.pop(P03DATATABLEMAINcontext);
+        showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+        output = [];
+        emit(output);
+      }
+    } on DioException catch (e) {
       Navigator.pop(P03DATATABLEMAINcontext);
-      showErrorPopup(P03DATATABLEMAINcontext, response.toString());
-      output = [];
-      emit(output);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P03DATATABLEMAINcontext, "Send timeout");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P03DATATABLEMAINcontext, "Receive timeout");
+      } else {
+        showErrorPopup(P03DATATABLEMAINcontext, e.message ?? "Unknown Dio error");
+      }
+    } catch (e) {
+      Navigator.pop(P03DATATABLEMAINcontext);
+      showErrorPopup(P03DATATABLEMAINcontext, e.toString());
     }
   }
 

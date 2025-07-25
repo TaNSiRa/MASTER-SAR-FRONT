@@ -124,6 +124,8 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
             validateStatus: (status) {
               return true;
             },
+            sendTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 5),
           ),
         );
 
@@ -180,6 +182,8 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                       validateStatus: (status) {
                         return true;
                       },
+                      sendTimeout: const Duration(seconds: 5),
+                      receiveTimeout: const Duration(seconds: 5),
                     ),
                   );
 
@@ -189,6 +193,15 @@ class _P06EDITCUSTOMERMAINState extends State<P06EDITCUSTOMERMAIN> {
                     Navigator.pop(P06EDITCUSTOMERMAINcontext);
                   } else {
                     showErrorPopup(P06EDITCUSTOMERMAINcontext, response.toString());
+                  }
+                } on DioException catch (e) {
+                  Navigator.pop(P06EDITCUSTOMERMAINcontext);
+                  if (e.type == DioExceptionType.sendTimeout) {
+                    showErrorPopup(P06EDITCUSTOMERMAINcontext, "Send timeout");
+                  } else if (e.type == DioExceptionType.receiveTimeout) {
+                    showErrorPopup(P06EDITCUSTOMERMAINcontext, "Receive timeout");
+                  } else {
+                    showErrorPopup(P06EDITCUSTOMERMAINcontext, e.message ?? "Unknown Dio error");
                   }
                 } catch (e) {
                   print("Error: $e");

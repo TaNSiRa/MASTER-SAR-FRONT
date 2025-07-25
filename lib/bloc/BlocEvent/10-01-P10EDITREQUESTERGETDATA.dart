@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, use_build_context_synchronously, avoid_print, file_names
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/global.dart';
 import '../../page/P10EDITREQUESTER/P10EDITREQUESTERMAIN.dart';
@@ -41,39 +42,55 @@ class P10EDITREQUESTERGETDATA_Bloc
       List<P10EDITREQUESTERGETDATAclass> toAdd, Emitter<List<P10EDITREQUESTERGETDATAclass>> emit) async {
     // FreeLoadingTan(P10EDITREQUESTERMAINcontext);
     List<P10EDITREQUESTERGETDATAclass> output = [];
-    final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/SearchRequester",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-      ),
-    );
-    var input = [];
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      // print(response.data);
-      var databuff = response.data;
-      input = databuff;
+    try {
+      final response = await Dio().post(
+        "$ToServer/02SALTSPRAY/SearchRequester",
+        data: {},
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+      var input = [];
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        // print(response.data);
+        var databuff = response.data;
+        input = databuff;
 
-      // var input = dummyOverDueTable;
-      // print(input);
-      List<P10EDITREQUESTERGETDATAclass> outputdata = input.map((data) {
-        return P10EDITREQUESTERGETDATAclass(
-          ID: data['ID'],
-          REQUESTER: savenull(data['Requester_Name']),
-        );
-      }).toList();
-      // Navigator.pop(P01DASHBOARDMAINcontext);
+        // var input = dummyOverDueTable;
+        // print(input);
+        List<P10EDITREQUESTERGETDATAclass> outputdata = input.map((data) {
+          return P10EDITREQUESTERGETDATAclass(
+            ID: data['ID'],
+            REQUESTER: savenull(data['Requester_Name']),
+          );
+        }).toList();
+        // Navigator.pop(P01DASHBOARDMAINcontext);
 
-      output = outputdata;
-      emit(output);
-    } else {
-      // Navigator.pop(P01DASHBOARDMAINcontext);
-      showErrorPopup(P10EDITREQUESTERMAINcontext, response.toString());
-      output = [];
-      emit(output);
+        output = outputdata;
+        emit(output);
+      } else {
+        // Navigator.pop(P01DASHBOARDMAINcontext);
+        showErrorPopup(P10EDITREQUESTERMAINcontext, response.toString());
+        output = [];
+        emit(output);
+      }
+    } on DioException catch (e) {
+      Navigator.pop(P10EDITREQUESTERMAINcontext);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P10EDITREQUESTERMAINcontext, "Send timeout");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P10EDITREQUESTERMAINcontext, "Receive timeout");
+      } else {
+        showErrorPopup(P10EDITREQUESTERMAINcontext, e.message ?? "Unknown Dio error");
+      }
+    } catch (e) {
+      Navigator.pop(P10EDITREQUESTERMAINcontext);
+      showErrorPopup(P10EDITREQUESTERMAINcontext, e.toString());
     }
   }
 

@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, use_build_context_synchronously, avoid_print, file_names
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/global.dart';
@@ -40,42 +41,58 @@ class P08EDITUSERGETDATA_Bloc extends Bloc<P08EDITUSERGETDATA_Event, List<P08EDI
       List<P08EDITUSERGETDATAclass> toAdd, Emitter<List<P08EDITUSERGETDATAclass>> emit) async {
     // FreeLoadingTan(P08EDITUSERMAINcontext);
     List<P08EDITUSERGETDATAclass> output = [];
-    final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/SearchIncharge",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-      ),
-    );
-    var input = [];
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      // print(response.data);
-      var databuff = response.data;
-      input = databuff;
-      // var input = dummyAchievedCust;
-      // print(input);
-      List<P08EDITUSERGETDATAclass> outputdata = input.map((data) {
-        return P08EDITUSERGETDATAclass(
-          ID: savenull(data['Id']),
-          USERNAME: savenull(data['UserName']),
-          NAME: savenull(data['Name']),
-          SECTION: savenull(data['Section']),
-          BRANCH: savenull(data['Branch']),
-          ROLEID: data['Roleid'],
-        );
-      }).toList();
-      // Navigator.pop(P08EDITUSERMAINcontext);
+    try {
+      final response = await Dio().post(
+        "$ToServer/02SALTSPRAY/SearchIncharge",
+        data: {},
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+      var input = [];
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        // print(response.data);
+        var databuff = response.data;
+        input = databuff;
+        // var input = dummyAchievedCust;
+        // print(input);
+        List<P08EDITUSERGETDATAclass> outputdata = input.map((data) {
+          return P08EDITUSERGETDATAclass(
+            ID: savenull(data['Id']),
+            USERNAME: savenull(data['UserName']),
+            NAME: savenull(data['Name']),
+            SECTION: savenull(data['Section']),
+            BRANCH: savenull(data['Branch']),
+            ROLEID: data['Roleid'],
+          );
+        }).toList();
+        // Navigator.pop(P08EDITUSERMAINcontext);
 
-      output = outputdata;
-      emit(output);
-    } else {
-      // Navigator.pop(P08EDITUSERMAINcontext);
-      showErrorPopup(P08EDITUSERMAINcontext, response.toString());
-      output = [];
-      emit(output);
+        output = outputdata;
+        emit(output);
+      } else {
+        // Navigator.pop(P08EDITUSERMAINcontext);
+        showErrorPopup(P08EDITUSERMAINcontext, response.toString());
+        output = [];
+        emit(output);
+      }
+    } on DioException catch (e) {
+      Navigator.pop(P08EDITUSERMAINcontext);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P08EDITUSERMAINcontext, "Send timeout");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P08EDITUSERMAINcontext, "Receive timeout");
+      } else {
+        showErrorPopup(P08EDITUSERMAINcontext, e.message ?? "Unknown Dio error");
+      }
+    } catch (e) {
+      Navigator.pop(P08EDITUSERMAINcontext);
+      showErrorPopup(P08EDITUSERMAINcontext, e.toString());
     }
   }
 }

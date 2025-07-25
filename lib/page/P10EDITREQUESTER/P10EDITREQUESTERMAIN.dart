@@ -88,6 +88,8 @@ class _P10EDITREQUESTERMAINState extends State<P10EDITREQUESTERMAIN> {
             validateStatus: (status) {
               return true;
             },
+            sendTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 5),
           ),
         );
 
@@ -95,6 +97,15 @@ class _P10EDITREQUESTERMAINState extends State<P10EDITREQUESTERMAIN> {
           context.read<P10EDITREQUESTERGETDATA_Bloc>().add(P10EDITREQUESTERGETDATA_GET());
         } else {
           showErrorPopup(P10EDITREQUESTERMAINcontext, response.toString());
+        }
+      } on DioException catch (e) {
+        Navigator.pop(P10EDITREQUESTERMAINcontext);
+        if (e.type == DioExceptionType.sendTimeout) {
+          showErrorPopup(P10EDITREQUESTERMAINcontext, "Send timeout");
+        } else if (e.type == DioExceptionType.receiveTimeout) {
+          showErrorPopup(P10EDITREQUESTERMAINcontext, "Receive timeout");
+        } else {
+          showErrorPopup(P10EDITREQUESTERMAINcontext, e.message ?? "Unknown Dio error");
         }
       } catch (e) {
         print("Error: $e");
@@ -124,6 +135,8 @@ class _P10EDITREQUESTERMAINState extends State<P10EDITREQUESTERMAIN> {
             validateStatus: (status) {
               return true;
             },
+            sendTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 5),
           ),
         );
 
@@ -180,6 +193,8 @@ class _P10EDITREQUESTERMAINState extends State<P10EDITREQUESTERMAIN> {
                       validateStatus: (status) {
                         return true;
                       },
+                      sendTimeout: const Duration(seconds: 5),
+                      receiveTimeout: const Duration(seconds: 5),
                     ),
                   );
 

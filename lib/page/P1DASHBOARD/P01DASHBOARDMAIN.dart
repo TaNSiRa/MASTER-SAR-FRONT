@@ -3908,8 +3908,10 @@ Future<void> _TransferDataToAPI() async {
       },
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3938,8 +3940,10 @@ Future<void> _fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3960,6 +3964,8 @@ Future<void> _fetchCustomerAndIncharge() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3978,8 +3984,10 @@ Future<void> _fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -4005,8 +4013,10 @@ Future<void> _fetchCustomerAndIncharge() async {
       data: {},
       options: Options(
         validateStatus: (status) {
-          return true; // ให้ Dio ไม่โยน exception แม้จะไม่ใช่ 200
+          return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -4018,6 +4028,15 @@ Future<void> _fetchCustomerAndIncharge() async {
       print("SearchCustomer failed");
       showErrorPopup(P01DASHBOARDMAINcontext, responseHolidays.toString());
       Navigator.pop(P01DASHBOARDMAINcontext);
+    }
+  } on DioException catch (e) {
+    Navigator.pop(P01DASHBOARDMAINcontext);
+    if (e.type == DioExceptionType.sendTimeout) {
+      showErrorPopup(P01DASHBOARDMAINcontext, "Send timeout");
+    } else if (e.type == DioExceptionType.receiveTimeout) {
+      showErrorPopup(P01DASHBOARDMAINcontext, "Receive timeout");
+    } else {
+      showErrorPopup(P01DASHBOARDMAINcontext, e.message ?? "Unknown Dio error");
     }
   } catch (e) {
     print("Error: $e");

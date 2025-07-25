@@ -1055,6 +1055,8 @@ Future<void> fetchHolidays() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -1066,6 +1068,15 @@ Future<void> fetchHolidays() async {
       print("SearchCustomer failed");
       // showErrorPopup(P03DATATABLEMAINcontext, responseHolidays.toString());
       // Navigator.pop(P05CALENDARJOBMAINcontext);
+    }
+  } on DioException catch (e) {
+    Navigator.pop(P05CALENDARJOBMAINcontext);
+    if (e.type == DioExceptionType.sendTimeout) {
+      showErrorPopup(P05CALENDARJOBMAINcontext, "Send timeout");
+    } else if (e.type == DioExceptionType.receiveTimeout) {
+      showErrorPopup(P05CALENDARJOBMAINcontext, "Receive timeout");
+    } else {
+      showErrorPopup(P05CALENDARJOBMAINcontext, e.message ?? "Unknown Dio error");
     }
   } catch (e) {
     print("Error: $e");

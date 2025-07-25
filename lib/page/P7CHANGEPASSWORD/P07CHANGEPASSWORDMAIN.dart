@@ -56,12 +56,26 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
           validateStatus: (status) {
             return true;
           },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
         ),
       );
 
       if (response.statusCode == 200) {
         return true;
       } else {
+        return false;
+      }
+    } on DioException catch (e) {
+      Navigator.pop(P07CHANGEPASSWORDMAINcontext);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P07CHANGEPASSWORDMAINcontext, "Send timeout");
+        return false;
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P07CHANGEPASSWORDMAINcontext, "Receive timeout");
+        return false;
+      } else {
+        showErrorPopup(P07CHANGEPASSWORDMAINcontext, e.message ?? "Unknown Dio error");
         return false;
       }
     } catch (e) {
@@ -83,6 +97,8 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
           validateStatus: (status) {
             return true;
           },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
         ),
       );
       if (response.statusCode == 200) {

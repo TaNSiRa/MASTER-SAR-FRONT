@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, use_build_context_synchronously, avoid_print, file_names
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/global.dart';
 import '../../page/P6EDITCUSTOMER/P06EDITCUSTOMERMAIN.dart';
@@ -41,39 +42,55 @@ class P06EDITCUSTOMERGETDATA_Bloc
       List<P06EDITCUSTOMERGETDATAclass> toAdd, Emitter<List<P06EDITCUSTOMERGETDATAclass>> emit) async {
     // FreeLoadingTan(P06EDITCUSTOMERMAINcontext);
     List<P06EDITCUSTOMERGETDATAclass> output = [];
-    final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/SearchCustomer",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-      ),
-    );
-    var input = [];
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      // print(response.data);
-      var databuff = response.data;
-      input = databuff;
+    try {
+      final response = await Dio().post(
+        "$ToServer/02SALTSPRAY/SearchCustomer",
+        data: {},
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+      var input = [];
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        // print(response.data);
+        var databuff = response.data;
+        input = databuff;
 
-      // var input = dummyOverDueTable;
-      // print(input);
-      List<P06EDITCUSTOMERGETDATAclass> outputdata = input.map((data) {
-        return P06EDITCUSTOMERGETDATAclass(
-          ID: data['ID'],
-          CUSTOMER: savenull(data['Customer_Name']),
-        );
-      }).toList();
-      // Navigator.pop(P01DASHBOARDMAINcontext);
+        // var input = dummyOverDueTable;
+        // print(input);
+        List<P06EDITCUSTOMERGETDATAclass> outputdata = input.map((data) {
+          return P06EDITCUSTOMERGETDATAclass(
+            ID: data['ID'],
+            CUSTOMER: savenull(data['Customer_Name']),
+          );
+        }).toList();
+        // Navigator.pop(P01DASHBOARDMAINcontext);
 
-      output = outputdata;
-      emit(output);
-    } else {
-      // Navigator.pop(P01DASHBOARDMAINcontext);
-      showErrorPopup(P06EDITCUSTOMERMAINcontext, response.toString());
-      output = [];
-      emit(output);
+        output = outputdata;
+        emit(output);
+      } else {
+        // Navigator.pop(P01DASHBOARDMAINcontext);
+        showErrorPopup(P06EDITCUSTOMERMAINcontext, response.toString());
+        output = [];
+        emit(output);
+      }
+    } on DioException catch (e) {
+      Navigator.pop(P06EDITCUSTOMERMAINcontext);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P06EDITCUSTOMERMAINcontext, "Send timeout");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P06EDITCUSTOMERMAINcontext, "Receive timeout");
+      } else {
+        showErrorPopup(P06EDITCUSTOMERMAINcontext, e.message ?? "Unknown Dio error");
+      }
+    } catch (e) {
+      Navigator.pop(P06EDITCUSTOMERMAINcontext);
+      showErrorPopup(P06EDITCUSTOMERMAINcontext, e.toString());
     }
   }
 

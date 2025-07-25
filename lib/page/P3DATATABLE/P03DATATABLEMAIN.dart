@@ -3731,6 +3731,8 @@ Future<void> _fetchCustomerAndIncharge() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3751,6 +3753,8 @@ Future<void> _fetchCustomerAndIncharge() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3771,6 +3775,8 @@ Future<void> _fetchCustomerAndIncharge() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
     // print(responseIncharge);
@@ -3798,6 +3804,8 @@ Future<void> _fetchCustomerAndIncharge() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3830,6 +3838,8 @@ Future<void> _EditDataToAPI() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3861,6 +3871,8 @@ Future<void> _StatJobToAPI() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3892,6 +3904,8 @@ Future<void> _CancelJobToAPI() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3923,6 +3937,8 @@ Future<void> _FinishJobToAPI() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 
@@ -3932,6 +3948,15 @@ Future<void> _FinishJobToAPI() async {
     } else {
       Navigator.pop(P03DATATABLEMAINcontext);
       showErrorPopup(P03DATATABLEMAINcontext, response.toString());
+    }
+  } on DioException catch (e) {
+    Navigator.pop(P03DATATABLEMAINcontext);
+    if (e.type == DioExceptionType.sendTimeout) {
+      showErrorPopup(P03DATATABLEMAINcontext, "Send timeout");
+    } else if (e.type == DioExceptionType.receiveTimeout) {
+      showErrorPopup(P03DATATABLEMAINcontext, "Receive timeout");
+    } else {
+      showErrorPopup(P03DATATABLEMAINcontext, e.message ?? "Unknown Dio error");
     }
   } catch (e) {
     print("Error: $e");
@@ -3953,6 +3978,8 @@ Future<void> AddDataToAPI() async {
         validateStatus: (status) {
           return true;
         },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       ),
     );
 

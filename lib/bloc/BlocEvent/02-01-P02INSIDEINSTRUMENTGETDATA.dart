@@ -44,113 +44,129 @@ class P02INSIDEINSTRUMENTGETDATA_Bloc
     FreeLoadingTan(P02INSIDEINSTRUMENTMAINcontext);
     List<P02INSIDEINSTRUMENTGETDATAclass> output = [];
     //-------------------------------------------------------------------------------------
-    final response = await Dio().post(
-      "$ToServer/02SALTSPRAY/DataTable",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-      ),
-    );
-    var input = [];
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      // print(response.data);
-      var databuff = response.data;
-      input = databuff;
-      // var input = dummyAchievedCust;
-      // print(input);
-      List<P02INSIDEINSTRUMENTGETDATAclass> outputdata = input.map((data) {
-        return P02INSIDEINSTRUMENTGETDATAclass(
-          REQUESTNO: savenull(data['Request_No']),
-          REPORTNO: savenull(data['Report_No']),
-          SECTION: savenull(data['Section']),
-          REQUESTER: savenull(data['Requester']),
-          RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
-          CUSTOMERNAME: savenull(data['Customer_Name']),
-          PARTNAME1: savenull(data['Part_Name1']),
-          PARTNO1: savenull(data['Part_No1']),
-          PARTNAME2: savenull(data['Part_Name2']),
-          PARTNO2: savenull(data['Part_No2']),
-          PARTNAME3: savenull(data['Part_Name3']),
-          PARTNO3: savenull(data['Part_No3']),
-          PARTNAME4: savenull(data['Part_Name4']),
-          PARTNO4: savenull(data['Part_No4']),
-          PARTNAME5: savenull(data['Part_Name5']),
-          PARTNO5: savenull(data['Part_No5']),
-          PARTNAME6: savenull(data['Part_Name6']),
-          PARTNO6: savenull(data['Part_No6']),
-          PARTNAME7: savenull(data['Part_Name7']),
-          PARTNO7: savenull(data['Part_No7']),
-          PARTNAME8: savenull(data['Part_Name8']),
-          PARTNO8: savenull(data['Part_No8']),
-          PARTNAME9: savenull(data['Part_Name9']),
-          PARTNO9: savenull(data['Part_No9']),
-          PARTNAME10: savenull(data['Part_Name10']),
-          PARTNO10: savenull(data['Part_No10']),
-          AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
-          TAKEPHOTO: savenullint(data['Take_Photo']),
-          STARTDATE: formatDate(savenull(data['Start_Date'])),
-          TIME1: savenullint(data['Time1']),
-          FINISHDATE1: formatDate(savenull(data['Finish_Date1'])),
-          TEMPDATE1: formatDate(savenull(data['Temp_Date1'])),
-          DUEDATE1: formatDate(savenull(data['Due_Date1'])),
-          TIME2: savenullint(data['Time2']),
-          FINISHDATE2: formatDate(savenull(data['Finish_Date2'])),
-          TEMPDATE2: formatDate(savenull(data['Temp_Date2'])),
-          DUEDATE2: formatDate(savenull(data['Due_Date2'])),
-          TIME3: savenullint(data['Time3']),
-          FINISHDATE3: formatDate(savenull(data['Finish_Date3'])),
-          TEMPDATE3: formatDate(savenull(data['Temp_Date3'])),
-          DUEDATE3: formatDate(savenull(data['Due_Date3'])),
-          TIME4: savenullint(data['Time4']),
-          FINISHDATE4: formatDate(savenull(data['Finish_Date4'])),
-          TEMPDATE4: formatDate(savenull(data['Temp_Date4'])),
-          DUEDATE4: formatDate(savenull(data['Due_Date4'])),
-          TIME5: savenullint(data['Time5']),
-          FINISHDATE5: formatDate(savenull(data['Finish_Date5'])),
-          TEMPDATE5: formatDate(savenull(data['Temp_Date5'])),
-          DUEDATE5: formatDate(savenull(data['Due_Date5'])),
-          TIME6: savenullint(data['Time6']),
-          FINISHDATE6: formatDate(savenull(data['Finish_Date6'])),
-          TEMPDATE6: formatDate(savenull(data['Temp_Date6'])),
-          DUEDATE6: formatDate(savenull(data['Due_Date6'])),
-          TIME7: savenullint(data['Time7']),
-          FINISHDATE7: formatDate(savenull(data['Finish_Date7'])),
-          TEMPDATE7: formatDate(savenull(data['Temp_Date7'])),
-          DUEDATE7: formatDate(savenull(data['Due_Date7'])),
-          TIME8: savenullint(data['Time8']),
-          FINISHDATE8: formatDate(savenull(data['Finish_Date8'])),
-          TEMPDATE8: formatDate(savenull(data['Temp_Date8'])),
-          DUEDATE8: formatDate(savenull(data['Due_Date8'])),
-          TIME9: savenullint(data['Time9']),
-          FINISHDATE9: formatDate(savenull(data['Finish_Date9'])),
-          TEMPDATE9: formatDate(savenull(data['Temp_Date9'])),
-          DUEDATE9: formatDate(savenull(data['Due_Date9'])),
-          TIME10: savenullint(data['Time10']),
-          FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
-          TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
-          DUEDATE10: formatDate(savenull(data['Due_Date10'])),
-          INSTRUMENT: savenull(data['Instrument']),
-          METHOD: savenull(data['Method']),
-          INCHARGE: savenull(data['Incharge']),
-          APPROVEDDATE: formatDate(savenull(data['Approved_Date'])),
-          APPROVEDBY: savenull(data['Approved_By']),
-          STATUS: savenull(data['Status']),
-          REMARK: savenull(data['Remark']),
-          CHECKBOX: savenull(data['CheckBox']),
-        );
-      }).toList();
-      Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
+    try {
+      final response = await Dio().post(
+        "$ToServer/02SALTSPRAY/DataTable",
+        data: {},
+        options: Options(
+          validateStatus: (status) {
+            return true;
+          },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
+      var input = [];
+      if (response.statusCode == 200) {
+        print(response.statusCode);
+        // print(response.data);
+        var databuff = response.data;
+        input = databuff;
+        // var input = dummyAchievedCust;
+        // print(input);
+        List<P02INSIDEINSTRUMENTGETDATAclass> outputdata = input.map((data) {
+          return P02INSIDEINSTRUMENTGETDATAclass(
+            REQUESTNO: savenull(data['Request_No']),
+            REPORTNO: savenull(data['Report_No']),
+            SECTION: savenull(data['Section']),
+            REQUESTER: savenull(data['Requester']),
+            RECEIVEDDATE: formatDate(savenull(data['Received_Date'])),
+            CUSTOMERNAME: savenull(data['Customer_Name']),
+            PARTNAME1: savenull(data['Part_Name1']),
+            PARTNO1: savenull(data['Part_No1']),
+            PARTNAME2: savenull(data['Part_Name2']),
+            PARTNO2: savenull(data['Part_No2']),
+            PARTNAME3: savenull(data['Part_Name3']),
+            PARTNO3: savenull(data['Part_No3']),
+            PARTNAME4: savenull(data['Part_Name4']),
+            PARTNO4: savenull(data['Part_No4']),
+            PARTNAME5: savenull(data['Part_Name5']),
+            PARTNO5: savenull(data['Part_No5']),
+            PARTNAME6: savenull(data['Part_Name6']),
+            PARTNO6: savenull(data['Part_No6']),
+            PARTNAME7: savenull(data['Part_Name7']),
+            PARTNO7: savenull(data['Part_No7']),
+            PARTNAME8: savenull(data['Part_Name8']),
+            PARTNO8: savenull(data['Part_No8']),
+            PARTNAME9: savenull(data['Part_Name9']),
+            PARTNO9: savenull(data['Part_No9']),
+            PARTNAME10: savenull(data['Part_Name10']),
+            PARTNO10: savenull(data['Part_No10']),
+            AMOUNTSAMPLE: savenullint(data['Amount_Sample']),
+            TAKEPHOTO: savenullint(data['Take_Photo']),
+            STARTDATE: formatDate(savenull(data['Start_Date'])),
+            TIME1: savenullint(data['Time1']),
+            FINISHDATE1: formatDate(savenull(data['Finish_Date1'])),
+            TEMPDATE1: formatDate(savenull(data['Temp_Date1'])),
+            DUEDATE1: formatDate(savenull(data['Due_Date1'])),
+            TIME2: savenullint(data['Time2']),
+            FINISHDATE2: formatDate(savenull(data['Finish_Date2'])),
+            TEMPDATE2: formatDate(savenull(data['Temp_Date2'])),
+            DUEDATE2: formatDate(savenull(data['Due_Date2'])),
+            TIME3: savenullint(data['Time3']),
+            FINISHDATE3: formatDate(savenull(data['Finish_Date3'])),
+            TEMPDATE3: formatDate(savenull(data['Temp_Date3'])),
+            DUEDATE3: formatDate(savenull(data['Due_Date3'])),
+            TIME4: savenullint(data['Time4']),
+            FINISHDATE4: formatDate(savenull(data['Finish_Date4'])),
+            TEMPDATE4: formatDate(savenull(data['Temp_Date4'])),
+            DUEDATE4: formatDate(savenull(data['Due_Date4'])),
+            TIME5: savenullint(data['Time5']),
+            FINISHDATE5: formatDate(savenull(data['Finish_Date5'])),
+            TEMPDATE5: formatDate(savenull(data['Temp_Date5'])),
+            DUEDATE5: formatDate(savenull(data['Due_Date5'])),
+            TIME6: savenullint(data['Time6']),
+            FINISHDATE6: formatDate(savenull(data['Finish_Date6'])),
+            TEMPDATE6: formatDate(savenull(data['Temp_Date6'])),
+            DUEDATE6: formatDate(savenull(data['Due_Date6'])),
+            TIME7: savenullint(data['Time7']),
+            FINISHDATE7: formatDate(savenull(data['Finish_Date7'])),
+            TEMPDATE7: formatDate(savenull(data['Temp_Date7'])),
+            DUEDATE7: formatDate(savenull(data['Due_Date7'])),
+            TIME8: savenullint(data['Time8']),
+            FINISHDATE8: formatDate(savenull(data['Finish_Date8'])),
+            TEMPDATE8: formatDate(savenull(data['Temp_Date8'])),
+            DUEDATE8: formatDate(savenull(data['Due_Date8'])),
+            TIME9: savenullint(data['Time9']),
+            FINISHDATE9: formatDate(savenull(data['Finish_Date9'])),
+            TEMPDATE9: formatDate(savenull(data['Temp_Date9'])),
+            DUEDATE9: formatDate(savenull(data['Due_Date9'])),
+            TIME10: savenullint(data['Time10']),
+            FINISHDATE10: formatDate(savenull(data['Finish_Date10'])),
+            TEMPDATE10: formatDate(savenull(data['Temp_Date10'])),
+            DUEDATE10: formatDate(savenull(data['Due_Date10'])),
+            INSTRUMENT: savenull(data['Instrument']),
+            METHOD: savenull(data['Method']),
+            INCHARGE: savenull(data['Incharge']),
+            APPROVEDDATE: formatDate(savenull(data['Approved_Date'])),
+            APPROVEDBY: savenull(data['Approved_By']),
+            STATUS: savenull(data['Status']),
+            REMARK: savenull(data['Remark']),
+            CHECKBOX: savenull(data['CheckBox']),
+          );
+        }).toList();
+        Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
 
-      output = outputdata;
-      emit(output);
-    } else {
+        output = outputdata;
+        emit(output);
+      } else {
+        Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
+        showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, response.toString());
+        output = [];
+        emit(output);
+      }
+    } on DioException catch (e) {
       Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
-      showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, response.toString());
-      output = [];
-      emit(output);
+      if (e.type == DioExceptionType.sendTimeout) {
+        showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, "Send timeout");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, "Receive timeout");
+      } else {
+        showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, e.message ?? "Unknown Dio error");
+      }
+    } catch (e) {
+      Navigator.pop(P02INSIDEINSTRUMENTMAINcontext);
+      showErrorPopup(P02INSIDEINSTRUMENTMAINcontext, e.toString());
     }
   }
 
