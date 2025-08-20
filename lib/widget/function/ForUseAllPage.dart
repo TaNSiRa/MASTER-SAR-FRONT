@@ -153,6 +153,12 @@ Widget buildCustomField({
           if (onChanged != null) onChanged(value);
         }
       },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please select $labelText';
+        }
+        return null;
+      },
     );
   }
 
@@ -175,9 +181,15 @@ Widget buildCustomField({
           }
         },
         child: AbsorbPointer(
-          child: TextField(
+          child: TextFormField(
             controller: controller,
             focusNode: focusNode,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $labelText';
+              }
+              return null;
+            },
             decoration: InputDecoration(
               prefixIcon: Icon(icon, color: Colors.blue),
               labelText: labelText,
@@ -239,9 +251,15 @@ Widget buildCustomField({
           }
         },
         child: AbsorbPointer(
-          child: TextField(
+          child: TextFormField(
             controller: controller,
             focusNode: focusNode,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $labelText';
+              }
+              return null;
+            },
             decoration: InputDecoration(
               prefixIcon: Icon(icon, color: Colors.blue),
               labelText: labelText,
@@ -376,9 +394,15 @@ Widget buildCustomField({
       labelText == "Time 10 (Hrs.)" ||
       labelText == "Amount of Sample (Pcs)" ||
       labelText == "Take photo (Pcs)") {
-    return TextField(
+    return TextFormField(
       controller: controller,
       focusNode: focusNode,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please fill $labelText';
+        }
+        return null;
+      },
       keyboardType: TextInputType.number, // แสดงคีย์บอร์ดตัวเลข
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly, // รับเฉพาะตัวเลขเท่านั้น
@@ -393,7 +417,7 @@ Widget buildCustomField({
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: onChanged,
-      onSubmitted: onSubmitted,
+      onFieldSubmitted: onSubmitted,
     );
   }
   if (labelText == "Select Slot") {
@@ -402,7 +426,7 @@ Widget buildCustomField({
       child: GestureDetector(
         onTap: ontap,
         child: AbsorbPointer(
-          child: TextField(
+          child: TextFormField(
             controller: controller,
             decoration: InputDecoration(
               prefixIcon: Icon(icon, color: Colors.blue),
@@ -413,12 +437,40 @@ Widget buildCustomField({
               fillColor: Colors.white,
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $labelText';
+              }
+              return null;
+            },
           ),
         ),
       ),
     );
   }
-
+  if (labelText == "Request No.") {
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.blue),
+        labelText: labelText,
+        labelStyle: buildTextStyle(),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        filled: true,
+        fillColor: Colors.white,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please fill $labelText';
+        }
+        return null;
+      },
+    );
+  }
   return TextField(
     controller: controller,
     focusNode: focusNode,

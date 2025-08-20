@@ -45,7 +45,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
     super.initState();
     // context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET2());
     fetchInstrumentData();
-    context.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
+
     // dashboardBloc = context.read<P01DASHBOARDGETDATA_Bloc>();
     StartDateToDateTimeGlobal = DateTime.now();
     timer?.cancel();
@@ -1487,6 +1487,13 @@ Future<void> fetchInstrumentData() async {
     final response = await Dio().post(
       "$ToServer/02SALTSPRAY/InstrumentStatus",
       data: {},
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
     );
 
     if (response.statusCode == 200) {
@@ -1496,6 +1503,7 @@ Future<void> fetchInstrumentData() async {
       P01DASHBOARDVAR.SST2Status = databuff[1]['Status'];
       P01DASHBOARDVAR.SST3Status = databuff[2]['Status'];
       P01DASHBOARDVAR.SST4Status = databuff[3]['Status'];
+      P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
       // Navigator.pop(P01DASHBOARDMAINcontext);
     } else {
       // Navigator.pop();

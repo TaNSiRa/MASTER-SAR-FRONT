@@ -55,6 +55,8 @@ class P04CALENDARINSTRUMENTGETDATA_Bloc
           validateStatus: (status) {
             return true;
           },
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
         ),
       );
       var input = [];

@@ -48,8 +48,8 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
       final response = await Dio().post(
         "$ToServer/02SALTSPRAY/DataforTableStatus",
         data: {
-          // 'TYPE': P03DATATABLEVAR.DropDownType.toString(),
-          // 'YEAR': P03DATATABLEVAR.DropDownYear.toString(),
+          'Year': P03DATATABLEVAR.DropdownYear,
+          'Month': P03DATATABLEVAR.DropdownMonth,
         },
         options: Options(
           validateStatus: (status) {
@@ -69,6 +69,7 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
         // print(input);
         List<P03DATATABLEGETDATAclass> outputdata = input.map((data) {
           return P03DATATABLEGETDATAclass(
+            ID: savenull(data['ID']),
             TYPE: savenull(data['Type']),
             REQUESTNO: savenull(data['Request_No']),
             REPORTNO: savenull(data['Report_No']),
@@ -266,6 +267,7 @@ class P03DATATABLEGETDATA_Bloc extends Bloc<P03DATATABLEGETDATA_Event, List<P03D
 
 class P03DATATABLEGETDATAclass {
   P03DATATABLEGETDATAclass({
+    this.ID = '',
     this.TYPE = '',
     this.REQUESTNO = '',
     this.REPORTNO = '',
@@ -388,7 +390,7 @@ class P03DATATABLEGETDATAclass {
     this.REMARK = '',
     this.CHECKBOX = '',
   });
-
+  String ID;
   String TYPE;
   String REQUESTNO;
   String REPORTNO;
@@ -512,6 +514,7 @@ class P03DATATABLEGETDATAclass {
   String CHECKBOX;
   Map<String, dynamic> toJson() {
     return {
+      'ID': ID,
       'TYPE': TYPE,
       'REQUESTNO': REQUESTNO,
       'REPORTNO': REPORTNO,
@@ -639,6 +642,7 @@ class P03DATATABLEGETDATAclass {
 
 Map<String, dynamic> toJsonAddDate() {
   return {
+    'ID': P03DATATABLEVAR.ID,
     'TYPE': P03DATATABLEVAR.TYPE,
     'REQUESTNO': P03DATATABLEVAR.REQUESTNO,
     'REPORTNO': P03DATATABLEVAR.REPORTNO,

@@ -42,6 +42,7 @@ class P03DATATABLEVAR {
   static int TempAddDays = 4;
   static int DueAddDays = 6;
   static String SendEditDataToAPI = '';
+  static String ID = '';
   static String TYPE = '';
   static String REQUESTNO = '';
   static String REPORTNO = '';
@@ -165,5 +166,7 @@ class P03DATATABLEVAR {
   static String CHECKBOX = '';
   static String SendAddDataToAPI = '';
   static String DropdownInstrument = '';
+  static List<int> DropdownYear = [];
+  static List<int> DropdownMonth = [];
   static bool CustomerIsPM = false;
 }

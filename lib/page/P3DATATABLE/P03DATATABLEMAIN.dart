@@ -23,6 +23,8 @@ import 'P03DATATABLEVAR.dart';
 
 late BuildContext P03DATATABLEMAINcontext;
 ScrollController _controllerIN01 = ScrollController();
+ScrollController _controllerVertical = ScrollController();
+final _formKey = GlobalKey<FormState>();
 
 class P03DATATABLEMAIN extends StatefulWidget {
   P03DATATABLEMAIN({
@@ -36,6 +38,9 @@ class P03DATATABLEMAIN extends StatefulWidget {
 }
 
 class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
+  int currentPage = 1;
+  int itemsPerPage = 50;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +49,238 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
     selectstatus = '';
     selectslot.text = '';
     PageName = 'SALY SPRAY STATUS';
+    P03DATATABLEVAR.DropdownYear = [];
+    P03DATATABLEVAR.DropdownMonth = [];
+    currentPage = 1;
+  }
+
+  @override
+  void dispose() {
+    _controllerVertical.dispose();
+    _controllerIN01.dispose();
+    super.dispose();
+  }
+
+  // ฟังก์ชันคำนวณจำนวนหน้าทั้งหมด
+  int getTotalPages(int totalItems) {
+    if (totalItems == 0) return 1;
+    return (totalItems / itemsPerPage).ceil();
+  }
+
+  // ฟังก์ชันดึงข้อมูลสำหรับหน้าปัจจุบัน
+  List<P03DATATABLEGETDATAclass> getCurrentPageData(List<P03DATATABLEGETDATAclass> allData) {
+    if (allData.isEmpty) return [];
+    int startIndex = (currentPage - 1) * itemsPerPage;
+    int endIndex = startIndex + itemsPerPage;
+    if (startIndex >= allData.length) return [];
+    if (endIndex > allData.length) endIndex = allData.length;
+    return allData.sublist(startIndex, endIndex);
+  }
+
+  // ฟังก์ชันสำหรับ scroll กลับขึ้นบนสุดทั้งแนวตั้งและแนวนอน
+  void scrollToTop() {
+    // Scroll แนวนอนกลับไปซ้ายสุด
+    if (_controllerIN01.hasClients) {
+      _controllerIN01.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+
+    // Scroll แนวตั้งกลับไปบนสุด
+    if (_controllerVertical.hasClients) {
+      _controllerVertical.animateTo(
+        0.0,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  // ฟังก์ชันสร้าง Widget สำหรับ pagination controls
+  Widget buildPaginationControls(int totalItems) {
+    int totalPages = getTotalPages(totalItems);
+    if (totalPages <= 1) return SizedBox.shrink();
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // ปุ่มหน้าแรก
+          IconButton(
+            onPressed: currentPage > 1
+                ? () {
+                    setState(() {
+                      currentPage = 1;
+                    });
+                    scrollToTop();
+                  }
+                : null,
+            icon: Icon(Icons.first_page),
+            tooltip: 'หน้าแรก',
+          ),
+          // ปุ่มหน้าก่อนหน้า
+          IconButton(
+            onPressed: currentPage > 1
+                ? () {
+                    setState(() {
+                      currentPage--;
+                    });
+                    scrollToTop();
+                  }
+                : null,
+            icon: Icon(Icons.chevron_left),
+            tooltip: 'หน้าก่อนหน้า',
+          ),
+          // แสดงหมายเลขหน้า (แสดง 5 หน้าโดยรอบหน้าปัจจุบัน)
+          ...buildPageNumbers(totalPages),
+          // ปุ่มหน้าถัดไป
+          IconButton(
+            onPressed: currentPage < totalPages
+                ? () {
+                    setState(() {
+                      currentPage++;
+                    });
+                    scrollToTop();
+                  }
+                : null,
+            icon: Icon(Icons.chevron_right),
+            tooltip: 'หน้าถัดไป',
+          ),
+          // ปุ่มหน้าสุดท้าย
+          IconButton(
+            onPressed: currentPage < totalPages
+                ? () {
+                    setState(() {
+                      currentPage = totalPages;
+                    });
+                    scrollToTop();
+                  }
+                : null,
+            icon: Icon(Icons.last_page),
+            tooltip: 'หน้าสุดท้าย',
+          ),
+          SizedBox(width: 20),
+          // แสดงข้อมูลสถิติ
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Text(
+              'หน้า $currentPage จาก $totalPages (รายการทั้งหมด: $totalItems)',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ฟังก์ชันสร้างปุ่มหมายเลขหน้า
+  List<Widget> buildPageNumbers(int totalPages) {
+    List<Widget> pageNumbers = [];
+    int start = (currentPage - 2).clamp(1, totalPages);
+    int end = (currentPage + 2).clamp(1, totalPages);
+
+    // ถ้าหน้าแรกไม่ได้อยู่ในช่วงที่แสดง
+    if (start > 1) {
+      pageNumbers.add(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                currentPage = 1;
+              });
+              scrollToTop();
+            },
+            style: TextButton.styleFrom(
+              minimumSize: Size(40, 40),
+              padding: EdgeInsets.zero,
+            ),
+            child: Text('1'),
+          ),
+        ),
+      );
+      if (start > 2) {
+        pageNumbers.add(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text('...', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+        );
+      }
+    }
+
+    // แสดงหมายเลขหน้าในช่วง
+    for (int i = start; i <= end; i++) {
+      pageNumbers.add(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                currentPage = i;
+              });
+              scrollToTop();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: currentPage == i ? Colors.blue : Colors.grey.shade100,
+              foregroundColor: currentPage == i ? Colors.white : Colors.blue,
+              minimumSize: Size(40, 40),
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(
+                  color: currentPage == i ? Colors.blue : Colors.grey.shade300,
+                ),
+              ),
+            ),
+            child: Text('$i', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ),
+      );
+    }
+
+    // ถ้าหน้าสุดท้ายไม่ได้อยู่ในช่วงที่แสดง
+    if (end < totalPages) {
+      if (end < totalPages - 1) {
+        pageNumbers.add(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Text('...', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+        );
+      }
+      pageNumbers.add(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2),
+          child: TextButton(
+            onPressed: () {
+              setState(() {
+                currentPage = totalPages;
+              });
+              scrollToTop();
+            },
+            style: TextButton.styleFrom(
+              minimumSize: Size(40, 40),
+              padding: EdgeInsets.zero,
+            ),
+            child: Text('$totalPages'),
+          ),
+        ),
+      );
+    }
+    return pageNumbers;
   }
 
   @override
@@ -51,40 +288,41 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
     P03DATATABLEMAINcontext = context;
     List<P03DATATABLEGETDATAclass> _datain = widget.data ?? [];
 
-    // print(PageName);
+    // กรองข้อมูลตามการค้นหา
     List<P03DATATABLEGETDATAclass> _datasearch = [];
     _datasearch.addAll(
       _datain.where(
         (data) =>
-            data.REQUESTNO.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.REPORTNO.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.SECTION.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.REQUESTER.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.CUSTOMERNAME.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME1.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO1.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME2.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO2.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME3.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO3.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME4.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO4.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME5.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO5.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME6.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO6.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME7.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO7.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME8.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO8.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME9.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO9.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNAME10.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.PARTNO10.toLowerCase().contains(P03DATATABLEVAR.SEARCH) ||
-            data.INSTRUMENT.toLowerCase().contains(P03DATATABLEVAR.SEARCH),
+            data.REQUESTNO.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.REPORTNO.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.SECTION.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.REQUESTER.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.CUSTOMERNAME.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME1.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO1.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME2.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO2.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME3.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO3.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME4.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO4.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME5.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO5.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME6.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO6.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME7.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO7.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME8.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO8.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME9.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO9.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNAME10.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.PARTNO10.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()) ||
+            data.INSTRUMENT.toLowerCase().contains(P03DATATABLEVAR.SEARCH.toLowerCase()),
       ),
     );
 
+    // กรองข้อมูลตาม Instrument
     List<P03DATATABLEGETDATAclass> filteredData = _datasearch.where((data) {
       if (P03DATATABLEVAR.DropdownInstrument == 'All Instrument' ||
           P03DATATABLEVAR.DropdownInstrument == '') {
@@ -93,6 +331,18 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
         return data.INSTRUMENT == P03DATATABLEVAR.DropdownInstrument;
       }
     }).toList();
+
+    // รีเซ็ตหน้าปัจจุบันถ้าเกินจำนวนหน้าที่มี
+    int totalPages = getTotalPages(filteredData.length);
+    if (currentPage > totalPages && totalPages > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          currentPage = 1;
+        });
+      });
+    }
+
+    List<P03DATATABLEGETDATAclass> currentPageData = getCurrentPageData(filteredData);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -119,9 +369,11 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                         returnfunc: (String s) {
                           setState(() {
                             P03DATATABLEVAR.SEARCH = s;
+                            currentPage = 1; // รีเซ็ตไปหน้าแรกเมื่อค้นหา
                           });
                         },
                       ),
+                      SizedBox(width: 10),
                       MouseRegion(
                         onEnter: (_) {
                           setState(() {
@@ -140,6 +392,7 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                               P03DATATABLEVAR.isHoveredClear = false;
                               P03DATATABLEVAR.iscontrol = true;
                               P03DATATABLEVAR.SEARCH = '';
+                              currentPage = 1; // รีเซ็ตไปหน้าแรก
                             });
                           },
                           child: AnimatedContainer(
@@ -209,6 +462,9 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                             ElevatedButton(
                               onPressed: () {
                                 context.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
+                                setState(() {
+                                  currentPage = 1; // รีเซ็ตไปหน้าแรกเมื่อ refresh
+                                });
                               },
                               style: ElevatedButton.styleFrom(
                                 shape: const CircleBorder(),
@@ -229,6 +485,7 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                           ],
                         ),
                       ),
+                      SizedBox(width: 10),
                       AdvanceDropDown(
                         hint: "Instrument",
                         height: 40,
@@ -243,10 +500,12 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                         onChangeinside: (d, k) {
                           setState(() {
                             P03DATATABLEVAR.DropdownInstrument = d;
+                            currentPage = 1; // รีเซ็ตไปหน้าแรกเมื่อเปลี่ยน filter
                           });
                         },
                         value: P03DATATABLEVAR.DropdownInstrument,
                       ),
+                      SizedBox(width: 10),
                       SizedBox(
                         child: Column(
                           children: [
@@ -277,11 +536,13 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                           ],
                         ),
                       ),
+                      SizedBox(width: 10),
                       SizedBox(
                         child: Column(
                           children: [
                             ElevatedButton(
                               onPressed: () async {
+                                // Export ข้อมูลทั้งหมดที่กรองแล้ว ไม่ใช่เฉพาะหน้าปัจจุบัน
                                 exportToExcel(filteredData);
                               },
                               style: ElevatedButton.styleFrom(
@@ -297,6 +558,58 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                             SizedBox(height: 5),
                             Text(
                               'Export Excel',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      SizedBox(
+                        child: YearMultiSelectDropdown(
+                          onSelectionChanged: (selectedYears) {
+                            setState(() {
+                              P03DATATABLEVAR.DropdownYear = selectedYears;
+                              currentPage = 1; // รีเซ็ตไปหน้าแรก
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      SizedBox(
+                        child: MonthMultiSelectDropdown(
+                          onSelectionChanged: (selectedMonths) {
+                            setState(() {
+                              P03DATATABLEVAR.DropdownMonth = selectedMonths;
+                              currentPage = 1; // รีเซ็ตไปหน้าแรก
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                context.read<P03DATATABLEGETDATA_Bloc>().add(P03DATATABLEGETDATA_GET());
+                                setState(() {
+                                  currentPage = 1; // รีเซ็ตไปหน้าแรกเมื่อค้นหา
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(10),
+                              ),
+                              child: const Icon(
+                                Icons.search_rounded,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'Search',
                               style:
                                   TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
                             )
@@ -371,7 +684,6 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                                     TableCell(child: buildHeaderCell('Amount')),
                                     TableCell(child: buildHeaderCell('Material')),
                                     TableCell(child: buildHeaderCell('Process')),
-                                    // TableCell(child: buildHeaderCell('Amount of\nsample\n(Pcs)')),
                                     TableCell(child: buildHeaderCell('Take\nphoto\n(Pcs)')),
                                     TableCell(
                                         child: buildHeaderCell('Start Date\n(วันที่นำงานเข้า)\n(dd-MM-yy)')),
@@ -393,138 +705,141 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                               ],
                             ),
                             Expanded(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Table(
-                                  border: TableBorder.all(),
-                                  columnWidths: {
-                                    0: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth0),
-                                    1: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth1),
-                                    2: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth2),
-                                    3: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth3),
-                                    4: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth4),
-                                    5: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth5),
-                                    6: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth6),
-                                    7: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth7),
-                                    8: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth8),
-                                    9: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth9),
-                                    10: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth10),
-                                    11: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth11),
-                                    12: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth12),
-                                    13: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth13),
-                                    14: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth14),
-                                    15: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth15),
-                                    16: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth16),
-                                    17: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth17),
-                                    18: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth18),
-                                    19: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth19),
-                                    20: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth20),
-                                    21: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth21),
-                                    22: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth22),
-                                    23: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth23),
-                                    24: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth24),
-                                    25: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth25),
-                                    26: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth26),
-                                    27: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth27),
-                                    28: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth28),
-                                    29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
-                                  },
-                                  children: filteredData.map((item) {
-                                    return TableRow(
-                                      children: [
-                                        TableCell(
-                                            child: buildDataCell(item.TYPE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.REQUESTNO, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.REPORTNO, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Stop', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell('Bar Status', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.SECTION, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.REQUESTER, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.SAMPLINGDATE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.RECEIVEDDATE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.CUSTOMERNAME, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell('Part Name', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Part No', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Lot No', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Amount', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Material', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Process', countRowMultiplier(item), item)),
-                                        // TableCell(
-                                        //     child: buildDataCell(
-                                        //         '${item.AMOUNTSAMPLE}', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                '${item.TAKEPHOTO}', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.STARTDATE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Time', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell('Finish Date', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.TEMPDATE0, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.DUEDATE0, countRowMultiplier(item), item)),
-                                        // TableCell(
-                                        //     child:
-                                        //         buildDataCell('Temp Report', countRowMultiplier(item), item)),
-                                        // TableCell(
-                                        //     child:
-                                        //         buildDataCell('Due Report', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.INSTRUMENT, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.METHOD, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.INCHARGE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.APPROVEDDATE, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell(
-                                                item.APPROVEDBY, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.STATUS, countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child: buildDataCell('Edit', countRowMultiplier(item), item)),
-                                        TableCell(
-                                            child:
-                                                buildDataCell(item.REMARK, countRowMultiplier(item), item)),
-                                      ],
-                                    );
-                                  }).toList(),
+                              child: Scrollbar(
+                                controller: _controllerVertical,
+                                thumbVisibility: true,
+                                interactive: true,
+                                thickness: 10,
+                                radius: Radius.circular(20),
+                                child: SingleChildScrollView(
+                                  controller: _controllerVertical,
+                                  scrollDirection: Axis.vertical,
+                                  child: Table(
+                                    border: TableBorder.all(),
+                                    columnWidths: {
+                                      0: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth0),
+                                      1: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth1),
+                                      2: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth2),
+                                      3: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth3),
+                                      4: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth4),
+                                      5: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth5),
+                                      6: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth6),
+                                      7: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth7),
+                                      8: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth8),
+                                      9: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth9),
+                                      10: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth10),
+                                      11: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth11),
+                                      12: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth12),
+                                      13: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth13),
+                                      14: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth14),
+                                      15: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth15),
+                                      16: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth16),
+                                      17: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth17),
+                                      18: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth18),
+                                      19: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth19),
+                                      20: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth20),
+                                      21: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth21),
+                                      22: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth22),
+                                      23: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth23),
+                                      24: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth24),
+                                      25: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth25),
+                                      26: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth26),
+                                      27: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth27),
+                                      28: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth28),
+                                      29: FixedColumnWidth(P03DATATABLEVAR.FixedColumnWidth29),
+                                    },
+                                    children: currentPageData.map((item) {
+                                      return TableRow(
+                                        children: [
+                                          TableCell(
+                                              child:
+                                                  buildDataCell(item.TYPE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.REQUESTNO, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.REPORTNO, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell('Stop', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  'Bar Status', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.SECTION, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.REQUESTER, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.SAMPLINGDATE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.RECEIVEDDATE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.CUSTOMERNAME, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell('Part Name', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell('Part No', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell('Lot No', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell('Amount', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell('Material', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell('Process', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  '${item.TAKEPHOTO}', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.STARTDATE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell('Time', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  'Finish Date', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.TEMPDATE0, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.DUEDATE0, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.INSTRUMENT, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell(item.METHOD, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.INCHARGE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.APPROVEDDATE, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell(
+                                                  item.APPROVEDBY, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell(item.STATUS, countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child: buildDataCell('Edit', countRowMultiplier(item), item)),
+                                          TableCell(
+                                              child:
+                                                  buildDataCell(item.REMARK, countRowMultiplier(item), item)),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
                             ),
@@ -533,6 +848,7 @@ class _P03DATATABLEMAINState extends State<P03DATATABLEMAIN> {
                       ),
                     ),
                   ),
+                  buildPaginationControls(filteredData.length),
                 ],
               ),
             ),
@@ -1647,11 +1963,17 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                 item.TYPE = value;
                               },
                             ),
-                            buildCustomFieldforEditData(
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
                               controller: RequestNoController,
                               focusNode: RequestNoFocusNode,
                               labelText: "Request No.",
                               icon: Icons.assignment,
+                              onChanged: (value) {
+                                item.REQUESTNO = value;
+                                item.REPORTNO = value;
+                                ReportNoController.text = value;
+                              },
                             ),
                             buildCustomFieldforEditData(
                               controller: ReportNoController,
@@ -2259,56 +2581,6 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                     padding: const EdgeInsets.all(8.0),
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        await showCancelConfirmationDialog(
-                                          context: context,
-                                          onConfirm: () async {
-                                            updateMultipleDatesAll();
-                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                            _CancelJobToAPI();
-                                            // initSocketConnection();
-                                            // sendDataToServer('CancelJob');
-                                            // await EditDataToAPI();
-                                            // await initSocketConnection();
-                                            // await sendDataToServer('CancelJob');
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.red,
-                                        shadowColor: Colors.redAccent,
-                                        elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                          side: BorderSide(color: Colors.red, width: 2),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        spacing: 5,
-                                        children: const [
-                                          Text(
-                                            'ยกเลิกงาน',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.cancel,
-                                            color: Colors.red,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                if (item.STATUS == 'START' && USERDATA.UserLV >= 5)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
                                         await showFinishConfirmationDialog(
                                           context: context,
                                           onConfirm: () async {
@@ -2349,6 +2621,57 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                           Icon(
                                             Icons.done_outline_rounded,
                                             color: Colors.green,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                if ((item.STATUS == 'RECEIVED' || item.STATUS == 'START') &&
+                                    USERDATA.UserLV >= 5)
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        await showCancelConfirmationDialog(
+                                          context: context,
+                                          onConfirm: () async {
+                                            updateMultipleDatesAll();
+                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                            _CancelJobToAPI();
+                                            // initSocketConnection();
+                                            // sendDataToServer('CancelJob');
+                                            // await EditDataToAPI();
+                                            // await initSocketConnection();
+                                            // await sendDataToServer('CancelJob');
+                                          },
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Colors.red,
+                                        shadowColor: Colors.redAccent,
+                                        elevation: 5,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          side: BorderSide(color: Colors.red, width: 2),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        spacing: 5,
+                                        children: const [
+                                          Text(
+                                            'ยกเลิกงาน',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.red,
                                           ),
                                         ],
                                       ),
@@ -2931,6 +3254,247 @@ void showAddDialog(BuildContext context) {
   // int _visiblePartNoCount = 0;
   int _visibleTimeCount = 0;
 
+  P03DATATABLEVAR.TYPE = '';
+  P03DATATABLEVAR.REQUESTNO = '';
+  P03DATATABLEVAR.REPORTNO = '';
+  P03DATATABLEVAR.SECTION = '';
+  P03DATATABLEVAR.REQUESTER = '';
+  P03DATATABLEVAR.SAMPLINGDATE = '';
+  P03DATATABLEVAR.RECEIVEDDATE = '';
+  P03DATATABLEVAR.CUSTOMERNAME = '';
+  P03DATATABLEVAR.PARTNAME1 = '';
+  P03DATATABLEVAR.PARTNO1 = '';
+  P03DATATABLEVAR.LOTNO1 = '';
+  P03DATATABLEVAR.AMOUNT1 = '';
+  P03DATATABLEVAR.MATERIAL1 = '';
+  P03DATATABLEVAR.PROCESS1 = '';
+  P03DATATABLEVAR.PARTNAME2 = '';
+  P03DATATABLEVAR.PARTNO2 = '';
+  P03DATATABLEVAR.LOTNO2 = '';
+  P03DATATABLEVAR.AMOUNT2 = '';
+  P03DATATABLEVAR.MATERIAL2 = '';
+  P03DATATABLEVAR.PROCESS2 = '';
+  P03DATATABLEVAR.PARTNAME3 = '';
+  P03DATATABLEVAR.PARTNO3 = '';
+  P03DATATABLEVAR.LOTNO3 = '';
+  P03DATATABLEVAR.AMOUNT3 = '';
+  P03DATATABLEVAR.MATERIAL3 = '';
+  P03DATATABLEVAR.PROCESS3 = '';
+  P03DATATABLEVAR.PARTNAME4 = '';
+  P03DATATABLEVAR.PARTNO4 = '';
+  P03DATATABLEVAR.LOTNO4 = '';
+  P03DATATABLEVAR.AMOUNT4 = '';
+  P03DATATABLEVAR.MATERIAL4 = '';
+  P03DATATABLEVAR.PROCESS4 = '';
+  P03DATATABLEVAR.PARTNAME5 = '';
+  P03DATATABLEVAR.PARTNO5 = '';
+  P03DATATABLEVAR.LOTNO5 = '';
+  P03DATATABLEVAR.AMOUNT5 = '';
+  P03DATATABLEVAR.MATERIAL5 = '';
+  P03DATATABLEVAR.PROCESS5 = '';
+  P03DATATABLEVAR.PARTNAME6 = '';
+  P03DATATABLEVAR.PARTNO6 = '';
+  P03DATATABLEVAR.LOTNO6 = '';
+  P03DATATABLEVAR.AMOUNT6 = '';
+  P03DATATABLEVAR.MATERIAL6 = '';
+  P03DATATABLEVAR.PROCESS6 = '';
+  P03DATATABLEVAR.PARTNAME7 = '';
+  P03DATATABLEVAR.PARTNO7 = '';
+  P03DATATABLEVAR.LOTNO7 = '';
+  P03DATATABLEVAR.AMOUNT7 = '';
+  P03DATATABLEVAR.MATERIAL7 = '';
+  P03DATATABLEVAR.PROCESS7 = '';
+  P03DATATABLEVAR.PARTNAME8 = '';
+  P03DATATABLEVAR.PARTNO8 = '';
+  P03DATATABLEVAR.LOTNO8 = '';
+  P03DATATABLEVAR.AMOUNT8 = '';
+  P03DATATABLEVAR.MATERIAL8 = '';
+  P03DATATABLEVAR.PROCESS8 = '';
+  P03DATATABLEVAR.PARTNAME9 = '';
+  P03DATATABLEVAR.PARTNO9 = '';
+  P03DATATABLEVAR.LOTNO9 = '';
+  P03DATATABLEVAR.AMOUNT9 = '';
+  P03DATATABLEVAR.MATERIAL9 = '';
+  P03DATATABLEVAR.PROCESS9 = '';
+  P03DATATABLEVAR.PARTNAME10 = '';
+  P03DATATABLEVAR.PARTNO10 = '';
+  P03DATATABLEVAR.LOTNO10 = '';
+  P03DATATABLEVAR.AMOUNT10 = '';
+  P03DATATABLEVAR.MATERIAL10 = '';
+  P03DATATABLEVAR.PROCESS10 = '';
+  P03DATATABLEVAR.TAKEPHOTO = 0;
+  P03DATATABLEVAR.STARTDATE = '';
+  P03DATATABLEVAR.TIME1 = 0;
+  P03DATATABLEVAR.FINISHDATE1 = '';
+  P03DATATABLEVAR.TEMPDATE1 = '';
+  P03DATATABLEVAR.DUEDATE1 = '';
+  P03DATATABLEVAR.TIME2 = 0;
+  P03DATATABLEVAR.FINISHDATE2 = '';
+  P03DATATABLEVAR.TEMPDATE2 = '';
+  P03DATATABLEVAR.DUEDATE2 = '';
+  P03DATATABLEVAR.TIME3 = 0;
+  P03DATATABLEVAR.FINISHDATE3 = '';
+  P03DATATABLEVAR.TEMPDATE3 = '';
+  P03DATATABLEVAR.DUEDATE3 = '';
+  P03DATATABLEVAR.TIME4 = 0;
+  P03DATATABLEVAR.FINISHDATE4 = '';
+  P03DATATABLEVAR.TEMPDATE4 = '';
+  P03DATATABLEVAR.DUEDATE4 = '';
+  P03DATATABLEVAR.TIME5 = 0;
+  P03DATATABLEVAR.FINISHDATE5 = '';
+  P03DATATABLEVAR.TEMPDATE5 = '';
+  P03DATATABLEVAR.DUEDATE5 = '';
+  P03DATATABLEVAR.TIME6 = 0;
+  P03DATATABLEVAR.FINISHDATE6 = '';
+  P03DATATABLEVAR.TEMPDATE6 = '';
+  P03DATATABLEVAR.DUEDATE6 = '';
+  P03DATATABLEVAR.TIME7 = 0;
+  P03DATATABLEVAR.FINISHDATE7 = '';
+  P03DATATABLEVAR.TEMPDATE7 = '';
+  P03DATATABLEVAR.DUEDATE7 = '';
+  P03DATATABLEVAR.TIME8 = 0;
+  P03DATATABLEVAR.FINISHDATE8 = '';
+  P03DATATABLEVAR.TEMPDATE8 = '';
+  P03DATATABLEVAR.DUEDATE8 = '';
+  P03DATATABLEVAR.TIME9 = 0;
+  P03DATATABLEVAR.FINISHDATE9 = '';
+  P03DATATABLEVAR.TEMPDATE9 = '';
+  P03DATATABLEVAR.DUEDATE9 = '';
+  P03DATATABLEVAR.TIME10 = 0;
+  P03DATATABLEVAR.FINISHDATE10 = '';
+  P03DATATABLEVAR.TEMPDATE10 = '';
+  P03DATATABLEVAR.DUEDATE10 = '';
+  P03DATATABLEVAR.TEMPDATE0 = '';
+  P03DATATABLEVAR.DUEDATE0 = '';
+  P03DATATABLEVAR.INSTRUMENT = '';
+  P03DATATABLEVAR.METHOD = '';
+  P03DATATABLEVAR.INCHARGE = '';
+  P03DATATABLEVAR.APPROVEDDATE = '';
+  P03DATATABLEVAR.APPROVEDBY = '';
+  P03DATATABLEVAR.STATUS = '';
+  P03DATATABLEVAR.REMARK = '';
+  P03DATATABLEVAR.CHECKBOX = '';
+
+  print(P03DATATABLEVAR.TYPE);
+  print(P03DATATABLEVAR.REQUESTNO);
+  print(P03DATATABLEVAR.REPORTNO);
+  print(P03DATATABLEVAR.SECTION);
+  print(P03DATATABLEVAR.REQUESTER);
+  print(P03DATATABLEVAR.SAMPLINGDATE);
+  print(P03DATATABLEVAR.RECEIVEDDATE);
+  print(P03DATATABLEVAR.CUSTOMERNAME);
+  print(P03DATATABLEVAR.PARTNAME1);
+  print(P03DATATABLEVAR.PARTNO1);
+  print(P03DATATABLEVAR.LOTNO1);
+  print(P03DATATABLEVAR.AMOUNT1);
+  print(P03DATATABLEVAR.MATERIAL1);
+  print(P03DATATABLEVAR.PROCESS1);
+  print(P03DATATABLEVAR.PARTNAME2);
+  print(P03DATATABLEVAR.PARTNO2);
+  print(P03DATATABLEVAR.LOTNO2);
+  print(P03DATATABLEVAR.AMOUNT2);
+  print(P03DATATABLEVAR.MATERIAL2);
+  print(P03DATATABLEVAR.PROCESS2);
+  print(P03DATATABLEVAR.PARTNAME3);
+  print(P03DATATABLEVAR.PARTNO3);
+  print(P03DATATABLEVAR.LOTNO3);
+  print(P03DATATABLEVAR.AMOUNT3);
+  print(P03DATATABLEVAR.MATERIAL3);
+  print(P03DATATABLEVAR.PROCESS3);
+  print(P03DATATABLEVAR.PARTNAME4);
+  print(P03DATATABLEVAR.PARTNO4);
+  print(P03DATATABLEVAR.LOTNO4);
+  print(P03DATATABLEVAR.AMOUNT4);
+  print(P03DATATABLEVAR.MATERIAL4);
+  print(P03DATATABLEVAR.PROCESS4);
+  print(P03DATATABLEVAR.PARTNAME5);
+  print(P03DATATABLEVAR.PARTNO5);
+  print(P03DATATABLEVAR.LOTNO5);
+  print(P03DATATABLEVAR.AMOUNT5);
+  print(P03DATATABLEVAR.MATERIAL5);
+  print(P03DATATABLEVAR.PROCESS5);
+  print(P03DATATABLEVAR.PARTNAME6);
+  print(P03DATATABLEVAR.PARTNO6);
+  print(P03DATATABLEVAR.LOTNO6);
+  print(P03DATATABLEVAR.AMOUNT6);
+  print(P03DATATABLEVAR.MATERIAL6);
+  print(P03DATATABLEVAR.PROCESS6);
+  print(P03DATATABLEVAR.PARTNAME7);
+  print(P03DATATABLEVAR.PARTNO7);
+  print(P03DATATABLEVAR.LOTNO7);
+  print(P03DATATABLEVAR.AMOUNT7);
+  print(P03DATATABLEVAR.MATERIAL7);
+  print(P03DATATABLEVAR.PROCESS7);
+  print(P03DATATABLEVAR.PARTNAME8);
+  print(P03DATATABLEVAR.PARTNO8);
+  print(P03DATATABLEVAR.LOTNO8);
+  print(P03DATATABLEVAR.AMOUNT8);
+  print(P03DATATABLEVAR.MATERIAL8);
+  print(P03DATATABLEVAR.PROCESS8);
+  print(P03DATATABLEVAR.PARTNAME9);
+  print(P03DATATABLEVAR.PARTNO9);
+  print(P03DATATABLEVAR.LOTNO9);
+  print(P03DATATABLEVAR.AMOUNT9);
+  print(P03DATATABLEVAR.MATERIAL9);
+  print(P03DATATABLEVAR.PROCESS9);
+  print(P03DATATABLEVAR.PARTNAME10);
+  print(P03DATATABLEVAR.PARTNO10);
+  print(P03DATATABLEVAR.LOTNO10);
+  print(P03DATATABLEVAR.AMOUNT10);
+  print(P03DATATABLEVAR.MATERIAL10);
+  print(P03DATATABLEVAR.PROCESS10);
+  print(P03DATATABLEVAR.TAKEPHOTO);
+  print(P03DATATABLEVAR.STARTDATE);
+  print(P03DATATABLEVAR.TIME1);
+  print(P03DATATABLEVAR.FINISHDATE1);
+  print(P03DATATABLEVAR.TEMPDATE1);
+  print(P03DATATABLEVAR.DUEDATE1);
+  print(P03DATATABLEVAR.TIME2);
+  print(P03DATATABLEVAR.FINISHDATE2);
+  print(P03DATATABLEVAR.TEMPDATE2);
+  print(P03DATATABLEVAR.DUEDATE2);
+  print(P03DATATABLEVAR.TIME3);
+  print(P03DATATABLEVAR.FINISHDATE3);
+  print(P03DATATABLEVAR.TEMPDATE3);
+  print(P03DATATABLEVAR.DUEDATE3);
+  print(P03DATATABLEVAR.TIME4);
+  print(P03DATATABLEVAR.FINISHDATE4);
+  print(P03DATATABLEVAR.TEMPDATE4);
+  print(P03DATATABLEVAR.DUEDATE4);
+  print(P03DATATABLEVAR.TIME5);
+  print(P03DATATABLEVAR.FINISHDATE5);
+  print(P03DATATABLEVAR.TEMPDATE5);
+  print(P03DATATABLEVAR.DUEDATE5);
+  print(P03DATATABLEVAR.TIME6);
+  print(P03DATATABLEVAR.FINISHDATE6);
+  print(P03DATATABLEVAR.TEMPDATE6);
+  print(P03DATATABLEVAR.DUEDATE6);
+  print(P03DATATABLEVAR.TIME7);
+  print(P03DATATABLEVAR.FINISHDATE7);
+  print(P03DATATABLEVAR.TEMPDATE7);
+  print(P03DATATABLEVAR.DUEDATE7);
+  print(P03DATATABLEVAR.TIME8);
+  print(P03DATATABLEVAR.FINISHDATE8);
+  print(P03DATATABLEVAR.TEMPDATE8);
+  print(P03DATATABLEVAR.DUEDATE8);
+  print(P03DATATABLEVAR.TIME9);
+  print(P03DATATABLEVAR.FINISHDATE9);
+  print(P03DATATABLEVAR.TEMPDATE9);
+  print(P03DATATABLEVAR.DUEDATE9);
+  print(P03DATATABLEVAR.TIME10);
+  print(P03DATATABLEVAR.FINISHDATE10);
+  print(P03DATATABLEVAR.TEMPDATE10);
+  print(P03DATATABLEVAR.DUEDATE10);
+  print(P03DATATABLEVAR.TEMPDATE0);
+  print(P03DATATABLEVAR.DUEDATE0);
+  print(P03DATATABLEVAR.INSTRUMENT);
+  print(P03DATATABLEVAR.METHOD);
+  print(P03DATATABLEVAR.INCHARGE);
+  print(P03DATATABLEVAR.APPROVEDDATE);
+  print(P03DATATABLEVAR.APPROVEDBY);
+  print(P03DATATABLEVAR.STATUS);
+  print(P03DATATABLEVAR.REMARK);
+  print(P03DATATABLEVAR.CHECKBOX);
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -2949,769 +3513,785 @@ void showAddDialog(BuildContext context) {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              child: Column(
-                // spacing: 10,
-                children: [
-                  Stack(
-                    children: [
-                      Center(
-                        child: Text(
-                          'เพิ่มงานใหม่',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  // spacing: 10,
+                  children: [
+                    Stack(
+                      children: [
+                        Center(
+                          child: Text(
+                            'เพิ่มงานใหม่',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.black,
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
                         ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        spacing: 10,
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: CustomerNameController,
-                            focusNode: CustomerNameFocusNode,
-                            labelText: "Customer Name",
-                            icon: Icons.people,
-                            dropdownItems: P03DATATABLEVAR.dropdownCustomer,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.CUSTOMERNAME = value;
-                              setState(() {
-                                if (P03DATATABLEVAR.CUSTOMERNAME == 'PM') {
-                                  P03DATATABLEVAR.CustomerIsPM = true;
-                                  StatusController.text = 'PM';
-                                } else {
-                                  P03DATATABLEVAR.CustomerIsPM = false;
-                                }
-                              });
-                            },
-                          ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: InstrumentController,
-                            focusNode: InstrumentFocusNode,
-                            labelText: "Instrument",
-                            icon: Icons.analytics_outlined,
-                            dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
-                            onChanged: (value) {
-                              P03DATATABLEVAR.INSTRUMENT = value;
-                              setState(() {});
-                            },
-                          ),
-                          if (InstrumentController.text != '')
+                      ],
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          spacing: 10,
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
                             buildCustomField(
                               context: P03DATATABLEMAINcontext,
-                              controller: selectslot,
-                              focusNode: CheckBoxFocusNode,
-                              labelText: "Select Slot",
-                              icon: Icons.add_box_rounded,
+                              controller: CustomerNameController,
+                              focusNode: CustomerNameFocusNode,
+                              labelText: "Customer Name",
+                              icon: Icons.people,
+                              dropdownItems: P03DATATABLEVAR.dropdownCustomer,
                               onChanged: (value) {
-                                P03DATATABLEVAR.CHECKBOX = value;
-                                StartDateController.text = StartDateControllerGlobal.text;
-                                setState(() {});
-                                // print(StartDateController.text);
-                              },
-                              ontap: () {
-                                P03DATATABLEVAR.STATUS = StatusController.text;
-                                selectstatus = StatusController.text;
-                                selectpage = 'Salt Spray Tester : ${P03DATATABLEVAR.INSTRUMENT}';
-                                showChooseSlot(context);
-                                setState(() {});
-                              },
-                            ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: StartDateController,
-                            focusNode: StartDateFocusNode,
-                            labelText: "Start Date",
-                            icon: Icons.calendar_month_rounded,
-                            onChanged: (value) async {
-                              for (int i = 0; i < 10; i++) {
-                                await calculateFinishDate(
-                                  startDateController: StartDateController,
-                                  timeController: timeControllers[i],
-                                  finishDateController: finishDateControllers[i],
-                                );
-                                DateTime? FinishDateToDateTime =
-                                    convertStringToDateTime(finishDateControllers[i].text);
-                                if (FinishDateToDateTime != '' &&
-                                    FinishDateToDateTime != null &&
-                                    P03DATATABLEVAR.CustomerIsPM == false) {
-                                  String CalTemp = await calculateRepDue(
-                                    startDate: DateTime(FinishDateToDateTime.year, FinishDateToDateTime.month,
-                                        FinishDateToDateTime.day),
-                                    addDays: P03DATATABLEVAR.TempAddDays,
-                                  );
-                                  tempDateControllers[i].text = CalTemp;
-                                  String CalDue = await calculateRepDue(
-                                    startDate: DateTime(FinishDateToDateTime.year, FinishDateToDateTime.month,
-                                        FinishDateToDateTime.day),
-                                    addDays: P03DATATABLEVAR.DueAddDays,
-                                  );
-                                  dueDateControllers[i].text = CalDue;
-                                }
-                              }
-                              P03DATATABLEVAR.FINISHDATE1 =
-                                  convertStringToDateTime(finishDateControllers[0].text).toString();
-                              P03DATATABLEVAR.FINISHDATE2 =
-                                  convertStringToDateTime(finishDateControllers[1].text).toString();
-                              P03DATATABLEVAR.FINISHDATE3 =
-                                  convertStringToDateTime(finishDateControllers[2].text).toString();
-                              P03DATATABLEVAR.FINISHDATE4 =
-                                  convertStringToDateTime(finishDateControllers[3].text).toString();
-                              P03DATATABLEVAR.FINISHDATE5 =
-                                  convertStringToDateTime(finishDateControllers[4].text).toString();
-                              P03DATATABLEVAR.FINISHDATE6 =
-                                  convertStringToDateTime(finishDateControllers[5].text).toString();
-                              P03DATATABLEVAR.FINISHDATE7 =
-                                  convertStringToDateTime(finishDateControllers[6].text).toString();
-                              P03DATATABLEVAR.FINISHDATE8 =
-                                  convertStringToDateTime(finishDateControllers[7].text).toString();
-                              P03DATATABLEVAR.FINISHDATE9 =
-                                  convertStringToDateTime(finishDateControllers[8].text).toString();
-                              P03DATATABLEVAR.FINISHDATE10 =
-                                  convertStringToDateTime(finishDateControllers[9].text).toString();
-                              if (P03DATATABLEVAR.CustomerIsPM == false) {
-                                P03DATATABLEVAR.TEMPDATE1 =
-                                    convertStringToDateTime(tempDateControllers[0].text).toString();
-                                P03DATATABLEVAR.TEMPDATE2 =
-                                    convertStringToDateTime(tempDateControllers[1].text).toString();
-                                P03DATATABLEVAR.TEMPDATE3 =
-                                    convertStringToDateTime(tempDateControllers[2].text).toString();
-                                P03DATATABLEVAR.TEMPDATE4 =
-                                    convertStringToDateTime(tempDateControllers[3].text).toString();
-                                P03DATATABLEVAR.TEMPDATE5 =
-                                    convertStringToDateTime(tempDateControllers[4].text).toString();
-                                P03DATATABLEVAR.TEMPDATE6 =
-                                    convertStringToDateTime(tempDateControllers[5].text).toString();
-                                P03DATATABLEVAR.TEMPDATE7 =
-                                    convertStringToDateTime(tempDateControllers[6].text).toString();
-                                P03DATATABLEVAR.TEMPDATE8 =
-                                    convertStringToDateTime(tempDateControllers[7].text).toString();
-                                P03DATATABLEVAR.TEMPDATE9 =
-                                    convertStringToDateTime(tempDateControllers[8].text).toString();
-                                P03DATATABLEVAR.TEMPDATE10 =
-                                    convertStringToDateTime(tempDateControllers[9].text).toString();
-                                P03DATATABLEVAR.DUEDATE1 =
-                                    convertStringToDateTime(dueDateControllers[0].text).toString();
-                                P03DATATABLEVAR.DUEDATE2 =
-                                    convertStringToDateTime(dueDateControllers[1].text).toString();
-                                P03DATATABLEVAR.DUEDATE3 =
-                                    convertStringToDateTime(dueDateControllers[2].text).toString();
-                                P03DATATABLEVAR.DUEDATE4 =
-                                    convertStringToDateTime(dueDateControllers[3].text).toString();
-                                P03DATATABLEVAR.DUEDATE5 =
-                                    convertStringToDateTime(dueDateControllers[4].text).toString();
-                                P03DATATABLEVAR.DUEDATE6 =
-                                    convertStringToDateTime(dueDateControllers[5].text).toString();
-                                P03DATATABLEVAR.DUEDATE7 =
-                                    convertStringToDateTime(dueDateControllers[6].text).toString();
-                                P03DATATABLEVAR.DUEDATE8 =
-                                    convertStringToDateTime(dueDateControllers[7].text).toString();
-                                P03DATATABLEVAR.DUEDATE9 =
-                                    convertStringToDateTime(dueDateControllers[8].text).toString();
-                                P03DATATABLEVAR.DUEDATE10 =
-                                    convertStringToDateTime(dueDateControllers[9].text).toString();
-                              }
-                              setState(() {});
-                            },
-                          ),
-                          // if (StartDateController.text != '') ...[
-                          for (int i = 0; i < _visibleTimeCount + 1 && i < 10; i++)
-                            Column(
-                              spacing: 10,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: buildCustomField(
-                                        context: P03DATATABLEMAINcontext,
-                                        controller: timeControllers[i],
-                                        focusNode: timeFocusNodes[i],
-                                        labelText: "Time ${i + 1} (Hrs.)",
-                                        icon: Icons.timer_sharp,
-                                        onChanged: (value) async {
-                                          EditTextController(
-                                            controller: timeControllers[i],
-                                            value: value,
-                                          );
-                                          P03DATATABLEVAR.TIME1 = int.tryParse(timeControllers[0].text) ?? 0;
-                                          P03DATATABLEVAR.TIME2 = int.tryParse(timeControllers[1].text) ?? 0;
-                                          P03DATATABLEVAR.TIME3 = int.tryParse(timeControllers[2].text) ?? 0;
-                                          P03DATATABLEVAR.TIME4 = int.tryParse(timeControllers[3].text) ?? 0;
-                                          P03DATATABLEVAR.TIME5 = int.tryParse(timeControllers[4].text) ?? 0;
-                                          P03DATATABLEVAR.TIME6 = int.tryParse(timeControllers[5].text) ?? 0;
-                                          P03DATATABLEVAR.TIME7 = int.tryParse(timeControllers[6].text) ?? 0;
-                                          P03DATATABLEVAR.TIME8 = int.tryParse(timeControllers[7].text) ?? 0;
-                                          P03DATATABLEVAR.TIME9 = int.tryParse(timeControllers[8].text) ?? 0;
-                                          P03DATATABLEVAR.TIME10 = int.tryParse(timeControllers[9].text) ?? 0;
-                                          await calculateFinishDate(
-                                            startDateController: StartDateController,
-                                            timeController: timeControllers[i],
-                                            finishDateController: finishDateControllers[i],
-                                          );
-                                          P03DATATABLEVAR.FINISHDATE1 =
-                                              convertStringToDateTime(finishDateControllers[0].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE2 =
-                                              convertStringToDateTime(finishDateControllers[1].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE3 =
-                                              convertStringToDateTime(finishDateControllers[2].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE4 =
-                                              convertStringToDateTime(finishDateControllers[3].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE5 =
-                                              convertStringToDateTime(finishDateControllers[4].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE6 =
-                                              convertStringToDateTime(finishDateControllers[5].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE7 =
-                                              convertStringToDateTime(finishDateControllers[6].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE8 =
-                                              convertStringToDateTime(finishDateControllers[7].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE9 =
-                                              convertStringToDateTime(finishDateControllers[8].text)
-                                                  .toString();
-                                          P03DATATABLEVAR.FINISHDATE10 =
-                                              convertStringToDateTime(finishDateControllers[9].text)
-                                                  .toString();
-                                          if (P03DATATABLEVAR.CustomerIsPM == false) {
-                                            await calculateAndSetTempDate(
-                                              finishDateController: finishDateControllers[i],
-                                              DateController: tempDateControllers[i],
-                                              addDays: P03DATATABLEVAR.TempAddDays,
-                                            );
-                                            for (int i = finishDateControllers.length - 1; i >= 0; i--) {
-                                              if (finishDateControllers[i].text.isNotEmpty) {
-                                                await calculateAndSetTempDate(
-                                                  finishDateController: finishDateControllers[i],
-                                                  DateController: TempDate0Controller,
-                                                  addDays: P03DATATABLEVAR.TempAddDays,
-                                                );
-                                                await calculateAndSetTempDate(
-                                                  finishDateController: finishDateControllers[i],
-                                                  DateController: DueDate0Controller,
-                                                  addDays: P03DATATABLEVAR.DueAddDays,
-                                                );
-                                                break;
-                                              }
-                                            }
-                                            P03DATATABLEVAR.TEMPDATE0 =
-                                                convertStringToDateTime(TempDate0Controller.text).toString();
-                                            P03DATATABLEVAR.TEMPDATE1 =
-                                                convertStringToDateTime(tempDateControllers[0].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE2 =
-                                                convertStringToDateTime(tempDateControllers[1].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE3 =
-                                                convertStringToDateTime(tempDateControllers[2].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE4 =
-                                                convertStringToDateTime(tempDateControllers[3].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE5 =
-                                                convertStringToDateTime(tempDateControllers[4].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE6 =
-                                                convertStringToDateTime(tempDateControllers[5].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE7 =
-                                                convertStringToDateTime(tempDateControllers[6].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE8 =
-                                                convertStringToDateTime(tempDateControllers[7].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE9 =
-                                                convertStringToDateTime(tempDateControllers[8].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.TEMPDATE10 =
-                                                convertStringToDateTime(tempDateControllers[9].text)
-                                                    .toString();
-                                            await calculateAndSetTempDate(
-                                              finishDateController: finishDateControllers[i],
-                                              DateController: dueDateControllers[i],
-                                              addDays: P03DATATABLEVAR.DueAddDays,
-                                            );
-
-                                            P03DATATABLEVAR.DUEDATE0 =
-                                                convertStringToDateTime(DueDate0Controller.text).toString();
-                                            P03DATATABLEVAR.DUEDATE1 =
-                                                convertStringToDateTime(dueDateControllers[0].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE2 =
-                                                convertStringToDateTime(dueDateControllers[1].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE3 =
-                                                convertStringToDateTime(dueDateControllers[2].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE4 =
-                                                convertStringToDateTime(dueDateControllers[3].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE5 =
-                                                convertStringToDateTime(dueDateControllers[4].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE6 =
-                                                convertStringToDateTime(dueDateControllers[5].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE7 =
-                                                convertStringToDateTime(dueDateControllers[6].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE8 =
-                                                convertStringToDateTime(dueDateControllers[7].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE9 =
-                                                convertStringToDateTime(dueDateControllers[8].text)
-                                                    .toString();
-                                            P03DATATABLEVAR.DUEDATE10 =
-                                                convertStringToDateTime(dueDateControllers[9].text)
-                                                    .toString();
-                                          }
-                                          setState(() {});
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: buildCustomField(
-                                        context: P03DATATABLEMAINcontext,
-                                        controller: finishDateControllers[i],
-                                        focusNode: finishDateFocusNodes[i],
-                                        labelText: "Finish Date ${i + 1}",
-                                        icon: Icons.calendar_month_rounded,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                // if (P03DATATABLEVAR.CustomerIsPM == false)
-                                //   Row(
-                                //     children: [
-                                //       Expanded(
-                                //         child: buildCustomField(
-                                //           context: P03DATATABLEMAINcontext,
-                                //           controller: tempDateControllers[i],
-                                //           focusNode: tempDateFocusNodes[i],
-                                //           labelText: "Temp Report ${i + 1}",
-                                //           icon: Icons.calendar_month_rounded,
-                                //         ),
-                                //       ),
-                                //       const SizedBox(width: 10),
-                                //       Expanded(
-                                //         child: buildCustomField(
-                                //           context: P03DATATABLEMAINcontext,
-                                //           controller: dueDateControllers[i],
-                                //           focusNode: dueDateFocusNodes[i],
-                                //           labelText: "Due Report ${i + 1}",
-                                //           icon: Icons.calendar_month_rounded,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                              ],
-                            ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: TempDate0Controller,
-                                  focusNode: TempDate0FocusNode,
-                                  labelText: "Temp Report",
-                                  icon: Icons.calendar_month_rounded,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: DueDate0Controller,
-                                  focusNode: DueDate0FocusNode,
-                                  labelText: "Due Report",
-                                  icon: Icons.calendar_month_rounded,
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (_visibleTimeCount < 9 && P03DATATABLEVAR.CustomerIsPM == false)
-                            buildAddPartNameButton(
-                              visibleCount: _visibleTimeCount,
-                              onPressed: () {
+                                P03DATATABLEVAR.CUSTOMERNAME = value;
                                 setState(() {
-                                  _visibleTimeCount++;
+                                  if (P03DATATABLEVAR.CUSTOMERNAME == 'PM') {
+                                    P03DATATABLEVAR.CustomerIsPM = true;
+                                    StatusController.text = 'PM';
+                                  } else {
+                                    P03DATATABLEVAR.CustomerIsPM = false;
+                                  }
                                 });
                               },
                             ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: TypeController,
-                            focusNode: TypeFocusNode,
-                            labelText: "Type",
-                            icon: Icons.description,
-                            dropdownItems: ['Service lab', 'Special request'],
-                            onChanged: (value) {
-                              P03DATATABLEVAR.TYPE = value;
-                            },
-                          ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: RequestNoController,
-                            focusNode: RequestNoFocusNode,
-                            labelText: "Request No.",
-                            icon: Icons.assignment,
-                            onChanged: (value) {
-                              P03DATATABLEVAR.REQUESTNO = value;
-                              P03DATATABLEVAR.REPORTNO = value;
-                              ReportNoController.text = value;
-                            },
-                          ),
-                          buildCustomField(
-                            context: P03DATATABLEMAINcontext,
-                            controller: ReportNoController,
-                            focusNode: ReportNoFocusNode,
-                            labelText: "Report No.",
-                            icon: Icons.assignment,
-                          ),
-                          if (P03DATATABLEVAR.CustomerIsPM == false) ...[
                             buildCustomField(
                               context: P03DATATABLEMAINcontext,
-                              controller: SectionRequestController,
-                              focusNode: SectionRequestFocusNode,
-                              labelText: "Section Request",
-                              icon: Icons.account_tree,
-                              dropdownItems: ['QC HP', 'QC BP', 'MKT ES1'],
+                              controller: InstrumentController,
+                              focusNode: InstrumentFocusNode,
+                              labelText: "Instrument",
+                              icon: Icons.analytics_outlined,
+                              dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
                               onChanged: (value) {
-                                P03DATATABLEVAR.SECTION = value;
+                                P03DATATABLEVAR.INSTRUMENT = value;
+                                setState(() {});
                               },
                             ),
+                            if (InstrumentController.text != '')
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: selectslot,
+                                focusNode: CheckBoxFocusNode,
+                                labelText: "Select Slot",
+                                icon: Icons.add_box_rounded,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.CHECKBOX = value;
+                                  StartDateController.text = StartDateControllerGlobal.text;
+                                  setState(() {});
+                                  // print(StartDateController.text);
+                                },
+                                ontap: () {
+                                  P03DATATABLEVAR.STATUS = StatusController.text;
+                                  selectstatus = StatusController.text;
+                                  selectpage = 'Salt Spray Tester : ${P03DATATABLEVAR.INSTRUMENT}';
+                                  showChooseSlot(context);
+                                  setState(() {});
+                                },
+                              ),
                             buildCustomField(
                               context: P03DATATABLEMAINcontext,
-                              controller: RequesterController,
-                              focusNode: RequesterFocusNode,
-                              labelText: "Requester",
-                              icon: Icons.person,
-                              dropdownItems: P03DATATABLEVAR.dropdownRequester,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.REQUESTER = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: SamplingDateController,
-                              focusNode: SamplingDateFocusNode,
-                              labelText: "Sampling Date",
+                              controller: StartDateController,
+                              focusNode: StartDateFocusNode,
+                              labelText: "Start Date",
                               icon: Icons.calendar_month_rounded,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.SAMPLINGDATE = convertStringToDateTime(value).toString();
+                              onChanged: (value) async {
+                                for (int i = 0; i < 10; i++) {
+                                  await calculateFinishDate(
+                                    startDateController: StartDateController,
+                                    timeController: timeControllers[i],
+                                    finishDateController: finishDateControllers[i],
+                                  );
+                                  DateTime? FinishDateToDateTime =
+                                      convertStringToDateTime(finishDateControllers[i].text);
+                                  if (FinishDateToDateTime != '' &&
+                                      FinishDateToDateTime != null &&
+                                      P03DATATABLEVAR.CustomerIsPM == false) {
+                                    String CalTemp = await calculateRepDue(
+                                      startDate: DateTime(FinishDateToDateTime.year,
+                                          FinishDateToDateTime.month, FinishDateToDateTime.day),
+                                      addDays: P03DATATABLEVAR.TempAddDays,
+                                    );
+                                    tempDateControllers[i].text = CalTemp;
+                                    String CalDue = await calculateRepDue(
+                                      startDate: DateTime(FinishDateToDateTime.year,
+                                          FinishDateToDateTime.month, FinishDateToDateTime.day),
+                                      addDays: P03DATATABLEVAR.DueAddDays,
+                                    );
+                                    dueDateControllers[i].text = CalDue;
+                                  }
+                                }
+                                P03DATATABLEVAR.FINISHDATE1 =
+                                    convertStringToDateTime(finishDateControllers[0].text).toString();
+                                P03DATATABLEVAR.FINISHDATE2 =
+                                    convertStringToDateTime(finishDateControllers[1].text).toString();
+                                P03DATATABLEVAR.FINISHDATE3 =
+                                    convertStringToDateTime(finishDateControllers[2].text).toString();
+                                P03DATATABLEVAR.FINISHDATE4 =
+                                    convertStringToDateTime(finishDateControllers[3].text).toString();
+                                P03DATATABLEVAR.FINISHDATE5 =
+                                    convertStringToDateTime(finishDateControllers[4].text).toString();
+                                P03DATATABLEVAR.FINISHDATE6 =
+                                    convertStringToDateTime(finishDateControllers[5].text).toString();
+                                P03DATATABLEVAR.FINISHDATE7 =
+                                    convertStringToDateTime(finishDateControllers[6].text).toString();
+                                P03DATATABLEVAR.FINISHDATE8 =
+                                    convertStringToDateTime(finishDateControllers[7].text).toString();
+                                P03DATATABLEVAR.FINISHDATE9 =
+                                    convertStringToDateTime(finishDateControllers[8].text).toString();
+                                P03DATATABLEVAR.FINISHDATE10 =
+                                    convertStringToDateTime(finishDateControllers[9].text).toString();
+                                if (P03DATATABLEVAR.CustomerIsPM == false) {
+                                  P03DATATABLEVAR.TEMPDATE1 =
+                                      convertStringToDateTime(tempDateControllers[0].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE2 =
+                                      convertStringToDateTime(tempDateControllers[1].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE3 =
+                                      convertStringToDateTime(tempDateControllers[2].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE4 =
+                                      convertStringToDateTime(tempDateControllers[3].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE5 =
+                                      convertStringToDateTime(tempDateControllers[4].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE6 =
+                                      convertStringToDateTime(tempDateControllers[5].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE7 =
+                                      convertStringToDateTime(tempDateControllers[6].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE8 =
+                                      convertStringToDateTime(tempDateControllers[7].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE9 =
+                                      convertStringToDateTime(tempDateControllers[8].text).toString();
+                                  P03DATATABLEVAR.TEMPDATE10 =
+                                      convertStringToDateTime(tempDateControllers[9].text).toString();
+                                  P03DATATABLEVAR.DUEDATE1 =
+                                      convertStringToDateTime(dueDateControllers[0].text).toString();
+                                  P03DATATABLEVAR.DUEDATE2 =
+                                      convertStringToDateTime(dueDateControllers[1].text).toString();
+                                  P03DATATABLEVAR.DUEDATE3 =
+                                      convertStringToDateTime(dueDateControllers[2].text).toString();
+                                  P03DATATABLEVAR.DUEDATE4 =
+                                      convertStringToDateTime(dueDateControllers[3].text).toString();
+                                  P03DATATABLEVAR.DUEDATE5 =
+                                      convertStringToDateTime(dueDateControllers[4].text).toString();
+                                  P03DATATABLEVAR.DUEDATE6 =
+                                      convertStringToDateTime(dueDateControllers[5].text).toString();
+                                  P03DATATABLEVAR.DUEDATE7 =
+                                      convertStringToDateTime(dueDateControllers[6].text).toString();
+                                  P03DATATABLEVAR.DUEDATE8 =
+                                      convertStringToDateTime(dueDateControllers[7].text).toString();
+                                  P03DATATABLEVAR.DUEDATE9 =
+                                      convertStringToDateTime(dueDateControllers[8].text).toString();
+                                  P03DATATABLEVAR.DUEDATE10 =
+                                      convertStringToDateTime(dueDateControllers[9].text).toString();
+                                }
+                                setState(() {});
                               },
                             ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: ReceivedDateController,
-                              focusNode: ReceivedDateFocusNode,
-                              labelText: "Received Date",
-                              icon: Icons.calendar_month_rounded,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.RECEIVEDDATE = convertStringToDateTime(value).toString();
-                              },
-                            ),
+                            // if (StartDateController.text != '') ...[
+                            for (int i = 0; i < _visibleTimeCount + 1 && i < 10; i++)
+                              Column(
+                                spacing: 10,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: buildCustomField(
+                                          context: P03DATATABLEMAINcontext,
+                                          controller: timeControllers[i],
+                                          focusNode: timeFocusNodes[i],
+                                          labelText: "Time ${i + 1} (Hrs.)",
+                                          icon: Icons.timer_sharp,
+                                          onChanged: (value) async {
+                                            EditTextController(
+                                              controller: timeControllers[i],
+                                              value: value,
+                                            );
+                                            P03DATATABLEVAR.TIME1 =
+                                                int.tryParse(timeControllers[0].text) ?? 0;
+                                            P03DATATABLEVAR.TIME2 =
+                                                int.tryParse(timeControllers[1].text) ?? 0;
+                                            P03DATATABLEVAR.TIME3 =
+                                                int.tryParse(timeControllers[2].text) ?? 0;
+                                            P03DATATABLEVAR.TIME4 =
+                                                int.tryParse(timeControllers[3].text) ?? 0;
+                                            P03DATATABLEVAR.TIME5 =
+                                                int.tryParse(timeControllers[4].text) ?? 0;
+                                            P03DATATABLEVAR.TIME6 =
+                                                int.tryParse(timeControllers[5].text) ?? 0;
+                                            P03DATATABLEVAR.TIME7 =
+                                                int.tryParse(timeControllers[6].text) ?? 0;
+                                            P03DATATABLEVAR.TIME8 =
+                                                int.tryParse(timeControllers[7].text) ?? 0;
+                                            P03DATATABLEVAR.TIME9 =
+                                                int.tryParse(timeControllers[8].text) ?? 0;
+                                            P03DATATABLEVAR.TIME10 =
+                                                int.tryParse(timeControllers[9].text) ?? 0;
+                                            await calculateFinishDate(
+                                              startDateController: StartDateController,
+                                              timeController: timeControllers[i],
+                                              finishDateController: finishDateControllers[i],
+                                            );
+                                            P03DATATABLEVAR.FINISHDATE1 =
+                                                convertStringToDateTime(finishDateControllers[0].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE2 =
+                                                convertStringToDateTime(finishDateControllers[1].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE3 =
+                                                convertStringToDateTime(finishDateControllers[2].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE4 =
+                                                convertStringToDateTime(finishDateControllers[3].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE5 =
+                                                convertStringToDateTime(finishDateControllers[4].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE6 =
+                                                convertStringToDateTime(finishDateControllers[5].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE7 =
+                                                convertStringToDateTime(finishDateControllers[6].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE8 =
+                                                convertStringToDateTime(finishDateControllers[7].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE9 =
+                                                convertStringToDateTime(finishDateControllers[8].text)
+                                                    .toString();
+                                            P03DATATABLEVAR.FINISHDATE10 =
+                                                convertStringToDateTime(finishDateControllers[9].text)
+                                                    .toString();
+                                            if (P03DATATABLEVAR.CustomerIsPM == false) {
+                                              await calculateAndSetTempDate(
+                                                finishDateController: finishDateControllers[i],
+                                                DateController: tempDateControllers[i],
+                                                addDays: P03DATATABLEVAR.TempAddDays,
+                                              );
+                                              for (int i = finishDateControllers.length - 1; i >= 0; i--) {
+                                                if (finishDateControllers[i].text.isNotEmpty) {
+                                                  await calculateAndSetTempDate(
+                                                    finishDateController: finishDateControllers[i],
+                                                    DateController: TempDate0Controller,
+                                                    addDays: P03DATATABLEVAR.TempAddDays,
+                                                  );
+                                                  await calculateAndSetTempDate(
+                                                    finishDateController: finishDateControllers[i],
+                                                    DateController: DueDate0Controller,
+                                                    addDays: P03DATATABLEVAR.DueAddDays,
+                                                  );
+                                                  break;
+                                                }
+                                              }
+                                              P03DATATABLEVAR.TEMPDATE0 =
+                                                  convertStringToDateTime(TempDate0Controller.text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE1 =
+                                                  convertStringToDateTime(tempDateControllers[0].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE2 =
+                                                  convertStringToDateTime(tempDateControllers[1].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE3 =
+                                                  convertStringToDateTime(tempDateControllers[2].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE4 =
+                                                  convertStringToDateTime(tempDateControllers[3].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE5 =
+                                                  convertStringToDateTime(tempDateControllers[4].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE6 =
+                                                  convertStringToDateTime(tempDateControllers[5].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE7 =
+                                                  convertStringToDateTime(tempDateControllers[6].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE8 =
+                                                  convertStringToDateTime(tempDateControllers[7].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE9 =
+                                                  convertStringToDateTime(tempDateControllers[8].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.TEMPDATE10 =
+                                                  convertStringToDateTime(tempDateControllers[9].text)
+                                                      .toString();
+                                              await calculateAndSetTempDate(
+                                                finishDateController: finishDateControllers[i],
+                                                DateController: dueDateControllers[i],
+                                                addDays: P03DATATABLEVAR.DueAddDays,
+                                              );
 
-                            for (int i = 0; i < _visiblePartNameCount + 1 && i < 10; i++) ...[
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: partNameControllers[i],
-                                focusNode: partNameFocusNodes[i],
-                                labelText: "Part Name ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  partNameVAR[i] = value;
-                                  P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
-                                  P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
-                                  P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
-                                  P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
-                                  P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
-                                  P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
-                                  P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
-                                  P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
-                                  P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
-                                  P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
-                                },
+                                              P03DATATABLEVAR.DUEDATE0 =
+                                                  convertStringToDateTime(DueDate0Controller.text).toString();
+                                              P03DATATABLEVAR.DUEDATE1 =
+                                                  convertStringToDateTime(dueDateControllers[0].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE2 =
+                                                  convertStringToDateTime(dueDateControllers[1].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE3 =
+                                                  convertStringToDateTime(dueDateControllers[2].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE4 =
+                                                  convertStringToDateTime(dueDateControllers[3].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE5 =
+                                                  convertStringToDateTime(dueDateControllers[4].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE6 =
+                                                  convertStringToDateTime(dueDateControllers[5].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE7 =
+                                                  convertStringToDateTime(dueDateControllers[6].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE8 =
+                                                  convertStringToDateTime(dueDateControllers[7].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE9 =
+                                                  convertStringToDateTime(dueDateControllers[8].text)
+                                                      .toString();
+                                              P03DATATABLEVAR.DUEDATE10 =
+                                                  convertStringToDateTime(dueDateControllers[9].text)
+                                                      .toString();
+                                            }
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: buildCustomField(
+                                          context: P03DATATABLEMAINcontext,
+                                          controller: finishDateControllers[i],
+                                          focusNode: finishDateFocusNodes[i],
+                                          labelText: "Finish Date ${i + 1}",
+                                          icon: Icons.calendar_month_rounded,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // if (P03DATATABLEVAR.CustomerIsPM == false)
+                                  //   Row(
+                                  //     children: [
+                                  //       Expanded(
+                                  //         child: buildCustomField(
+                                  //           context: P03DATATABLEMAINcontext,
+                                  //           controller: tempDateControllers[i],
+                                  //           focusNode: tempDateFocusNodes[i],
+                                  //           labelText: "Temp Report ${i + 1}",
+                                  //           icon: Icons.calendar_month_rounded,
+                                  //         ),
+                                  //       ),
+                                  //       const SizedBox(width: 10),
+                                  //       Expanded(
+                                  //         child: buildCustomField(
+                                  //           context: P03DATATABLEMAINcontext,
+                                  //           controller: dueDateControllers[i],
+                                  //           focusNode: dueDateFocusNodes[i],
+                                  //           labelText: "Due Report ${i + 1}",
+                                  //           icon: Icons.calendar_month_rounded,
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                ],
                               ),
-                              // for (int i = 0; i < _visiblePartNoCount + 1 && i < 10; i++)
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: partNoControllers[i],
-                                focusNode: partNoFocusNodes[i],
-                                labelText: "Part No ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  partNoVAR[i] = value;
-                                  P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
-                                  P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
-                                  P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
-                                  P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
-                                  P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
-                                  P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
-                                  P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
-                                  P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
-                                  P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
-                                  P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
-                                },
-                              ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: lotNoControllers[i],
-                                focusNode: lotNoFocusNodes[i],
-                                labelText: "Lot No ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  lotNoVAR[i] = value;
-                                  P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
-                                  P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
-                                  P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
-                                  P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
-                                  P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
-                                  P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
-                                  P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
-                                  P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
-                                  P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
-                                  P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
-                                },
-                              ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: amountControllers[i],
-                                focusNode: amountFocusNodes[i],
-                                labelText: "Amount ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  amountVAR[i] = value;
-                                  P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
-                                  P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
-                                  P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
-                                  P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
-                                  P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
-                                  P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
-                                  P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
-                                  P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
-                                  P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
-                                  P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
-                                },
-                              ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: materialControllers[i],
-                                focusNode: materialFocusNodes[i],
-                                labelText: "Material ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  materialVAR[i] = value;
-                                  P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
-                                  P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
-                                  P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
-                                  P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
-                                  P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
-                                  P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
-                                  P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
-                                  P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
-                                  P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
-                                  P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
-                                },
-                              ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: processControllers[i],
-                                focusNode: processFocusNodes[i],
-                                labelText: "Process ${i + 1}",
-                                icon: Icons.settings,
-                                onChanged: (value) {
-                                  processVAR[i] = value;
-                                  P03DATATABLEVAR.PROCESS1 = processVAR[0];
-                                  P03DATATABLEVAR.PROCESS2 = processVAR[1];
-                                  P03DATATABLEVAR.PROCESS3 = processVAR[2];
-                                  P03DATATABLEVAR.PROCESS4 = processVAR[3];
-                                  P03DATATABLEVAR.PROCESS5 = processVAR[4];
-                                  P03DATATABLEVAR.PROCESS6 = processVAR[5];
-                                  P03DATATABLEVAR.PROCESS7 = processVAR[6];
-                                  P03DATATABLEVAR.PROCESS8 = processVAR[7];
-                                  P03DATATABLEVAR.PROCESS9 = processVAR[8];
-                                  P03DATATABLEVAR.PROCESS10 = processVAR[9];
-                                },
-                              ),
-                            ],
-                            if (_visiblePartNameCount < 9)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: TempDate0Controller,
+                                    focusNode: TempDate0FocusNode,
+                                    labelText: "Temp Report",
+                                    icon: Icons.calendar_month_rounded,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: DueDate0Controller,
+                                    focusNode: DueDate0FocusNode,
+                                    labelText: "Due Report",
+                                    icon: Icons.calendar_month_rounded,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_visibleTimeCount < 9 && P03DATATABLEVAR.CustomerIsPM == false)
                               buildAddPartNameButton(
-                                visibleCount: _visiblePartNameCount,
+                                visibleCount: _visibleTimeCount,
                                 onPressed: () {
                                   setState(() {
-                                    _visiblePartNameCount++;
+                                    _visibleTimeCount++;
                                   });
                                 },
                               ),
-                            // if (_visiblePartNoCount < 9)
-                            //   buildAddPartNameButton(
-                            //     visibleCount: _visiblePartNoCount,
-                            //     onPressed: () {
-                            //       setState(() {
-                            //         _visiblePartNoCount++;
-                            //       });
-                            //     },
-                            //   ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: TypeController,
+                              focusNode: TypeFocusNode,
+                              labelText: "Type",
+                              icon: Icons.description,
+                              dropdownItems: ['Service lab', 'Special request'],
+                              onChanged: (value) {
+                                P03DATATABLEVAR.TYPE = value;
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: RequestNoController,
+                              focusNode: RequestNoFocusNode,
+                              labelText: "Request No.",
+                              icon: Icons.assignment,
+                              onChanged: (value) {
+                                P03DATATABLEVAR.REQUESTNO = value;
+                                P03DATATABLEVAR.REPORTNO = value;
+                                ReportNoController.text = value;
+                              },
+                            ),
+                            buildCustomField(
+                              context: P03DATATABLEMAINcontext,
+                              controller: ReportNoController,
+                              focusNode: ReportNoFocusNode,
+                              labelText: "Report No.",
+                              icon: Icons.assignment,
+                            ),
+                            if (P03DATATABLEVAR.CustomerIsPM == false) ...[
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: SectionRequestController,
+                                focusNode: SectionRequestFocusNode,
+                                labelText: "Section Request",
+                                icon: Icons.account_tree,
+                                dropdownItems: ['QC HP', 'QC BP', 'MKT ES1'],
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.SECTION = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: RequesterController,
+                                focusNode: RequesterFocusNode,
+                                labelText: "Requester",
+                                icon: Icons.person,
+                                dropdownItems: P03DATATABLEVAR.dropdownRequester,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.REQUESTER = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: SamplingDateController,
+                                focusNode: SamplingDateFocusNode,
+                                labelText: "Sampling Date",
+                                icon: Icons.calendar_month_rounded,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.SAMPLINGDATE = convertStringToDateTime(value).toString();
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: ReceivedDateController,
+                                focusNode: ReceivedDateFocusNode,
+                                labelText: "Received Date",
+                                icon: Icons.calendar_month_rounded,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.RECEIVEDDATE = convertStringToDateTime(value).toString();
+                                },
+                              ),
+
+                              for (int i = 0; i < _visiblePartNameCount + 1 && i < 10; i++) ...[
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: partNameControllers[i],
+                                  focusNode: partNameFocusNodes[i],
+                                  labelText: "Part Name ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    partNameVAR[i] = value;
+                                    P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
+                                    P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
+                                    P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
+                                    P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
+                                    P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
+                                    P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
+                                    P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
+                                    P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
+                                    P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
+                                    P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
+                                  },
+                                ),
+                                // for (int i = 0; i < _visiblePartNoCount + 1 && i < 10; i++)
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: partNoControllers[i],
+                                  focusNode: partNoFocusNodes[i],
+                                  labelText: "Part No ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    partNoVAR[i] = value;
+                                    P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
+                                    P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
+                                    P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
+                                    P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
+                                    P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
+                                    P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
+                                    P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
+                                    P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
+                                    P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
+                                    P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
+                                  },
+                                ),
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: lotNoControllers[i],
+                                  focusNode: lotNoFocusNodes[i],
+                                  labelText: "Lot No ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    lotNoVAR[i] = value;
+                                    P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
+                                    P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
+                                    P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
+                                    P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
+                                    P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
+                                    P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
+                                    P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
+                                    P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
+                                    P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
+                                    P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
+                                  },
+                                ),
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: amountControllers[i],
+                                  focusNode: amountFocusNodes[i],
+                                  labelText: "Amount ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    amountVAR[i] = value;
+                                    P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
+                                    P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
+                                    P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
+                                    P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
+                                    P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
+                                    P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
+                                    P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
+                                    P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
+                                    P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
+                                    P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
+                                  },
+                                ),
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: materialControllers[i],
+                                  focusNode: materialFocusNodes[i],
+                                  labelText: "Material ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    materialVAR[i] = value;
+                                    P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
+                                    P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
+                                    P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
+                                    P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
+                                    P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
+                                    P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
+                                    P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
+                                    P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
+                                    P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
+                                    P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
+                                  },
+                                ),
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: processControllers[i],
+                                  focusNode: processFocusNodes[i],
+                                  labelText: "Process ${i + 1}",
+                                  icon: Icons.settings,
+                                  onChanged: (value) {
+                                    processVAR[i] = value;
+                                    P03DATATABLEVAR.PROCESS1 = processVAR[0];
+                                    P03DATATABLEVAR.PROCESS2 = processVAR[1];
+                                    P03DATATABLEVAR.PROCESS3 = processVAR[2];
+                                    P03DATATABLEVAR.PROCESS4 = processVAR[3];
+                                    P03DATATABLEVAR.PROCESS5 = processVAR[4];
+                                    P03DATATABLEVAR.PROCESS6 = processVAR[5];
+                                    P03DATATABLEVAR.PROCESS7 = processVAR[6];
+                                    P03DATATABLEVAR.PROCESS8 = processVAR[7];
+                                    P03DATATABLEVAR.PROCESS9 = processVAR[8];
+                                    P03DATATABLEVAR.PROCESS10 = processVAR[9];
+                                  },
+                                ),
+                              ],
+                              if (_visiblePartNameCount < 9)
+                                buildAddPartNameButton(
+                                  visibleCount: _visiblePartNameCount,
+                                  onPressed: () {
+                                    setState(() {
+                                      _visiblePartNameCount++;
+                                    });
+                                  },
+                                ),
+                              // if (_visiblePartNoCount < 9)
+                              //   buildAddPartNameButton(
+                              //     visibleCount: _visiblePartNoCount,
+                              //     onPressed: () {
+                              //       setState(() {
+                              //         _visiblePartNoCount++;
+                              //       });
+                              //     },
+                              //   ),
+                              // buildCustomField(
+                              //   context: P03DATATABLEMAINcontext,
+                              //   controller: AmountOfSampleController,
+                              //   focusNode: AmountOfSampleFocusNode,
+                              //   labelText: "Amount of Sample (Pcs)",
+                              //   icon: Icons.science,
+                              //   onChanged: (value) {
+                              //     P03DATATABLEVAR.AMOUNTSAMPLE = int.parse(value);
+                              //   },
+                              // ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: TakePhotoController,
+                                focusNode: TakePhotoFocusNode,
+                                labelText: "Take photo (Pcs)",
+                                icon: Icons.photo_camera,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.TAKEPHOTO = int.parse(value);
+                                },
+                              ),
+
+                              // ],
+
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: MethodController,
+                                focusNode: MethodFocusNode,
+                                labelText: "Method",
+                                icon: Icons.precision_manufacturing,
+                                dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.METHOD = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: InchargeController,
+                                focusNode: InchargeFocusNode,
+                                labelText: "Incharge",
+                                icon: Icons.person,
+                                dropdownItems: P03DATATABLEVAR.dropdownIncharge,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.INCHARGE = value;
+                                },
+                              ),
+                            ],
                             // buildCustomField(
                             //   context: P03DATATABLEMAINcontext,
-                            //   controller: AmountOfSampleController,
-                            //   focusNode: AmountOfSampleFocusNode,
-                            //   labelText: "Amount of Sample (Pcs)",
-                            //   icon: Icons.science,
+                            //   controller: ApprovedDateController,
+                            //   focusNode: ApprovedDateFocusNode,
+                            //   labelText: "Approved Date",
+                            //   icon: Icons.calendar_month_rounded,
                             //   onChanged: (value) {
-                            //     P03DATATABLEVAR.AMOUNTSAMPLE = int.parse(value);
+                            //     P03DATATABLEVAR.APPROVEDDATE = convertStringToDateTime(value).toString();
                             //   },
                             // ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: TakePhotoController,
-                              focusNode: TakePhotoFocusNode,
-                              labelText: "Take photo (Pcs)",
-                              icon: Icons.photo_camera,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.TAKEPHOTO = int.parse(value);
-                              },
-                            ),
+                            // buildCustomField(
+                            //   context: P03DATATABLEMAINcontext,
+                            //   controller: ApprovedByController,
+                            //   focusNode: ApprovedByFocusNode,
+                            //   labelText: "Approved By",
+                            //   icon: Icons.assignment,
+                            //   dropdownItems: P03DATATABLEVAR.dropdownApprover,
+                            //   onChanged: (value) {
+                            //     P03DATATABLEVAR.APPROVEDBY = value;
+                            //   },
+                            // ),
+                            if (InstrumentController.text != '')
+                              buildCustomFieldforEditData(
+                                controller: StatusController,
+                                focusNode: StatusFocusNode,
+                                labelText: "Status",
+                                icon: Icons.info,
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.STATUS = value;
+                                },
+                              ),
+                            // if (StatusController.text != '')
 
-                            // ],
-
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: MethodController,
-                              focusNode: MethodFocusNode,
-                              labelText: "Method",
-                              icon: Icons.precision_manufacturing,
-                              dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
-                              onChanged: (value) {
-                                P03DATATABLEVAR.METHOD = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: InchargeController,
-                              focusNode: InchargeFocusNode,
-                              labelText: "Incharge",
-                              icon: Icons.person,
-                              dropdownItems: P03DATATABLEVAR.dropdownIncharge,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.INCHARGE = value;
-                              },
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    CheckSlotAndTimeOverlabToAPI(context);
+                                  }
+                                  // await showAddConfirmationDialog(
+                                  //   context: context,
+                                  //   onConfirm: () async {
+                                  //     P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
+                                  //     // print(P03DATATABLEVAR.SendAddDataToAPI);
+                                  //     AddDataToAPI();
+                                  //     // initSocketConnection();
+                                  //     // sendDataToServer('AddJob');
+                                  //     // await AddDataToAPI();
+                                  //     // await initSocketConnection();
+                                  //     // await sendDataToServer('AddJob');
+                                  //   },
+                                  // );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.green,
+                                  shadowColor: Colors.greenAccent,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.green, width: 2),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 5,
+                                  children: const [
+                                    Text(
+                                      'ยืนยันการเพิ่มงาน',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.note_add_rounded,
+                                      color: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
-                          // buildCustomField(
-                          //   context: P03DATATABLEMAINcontext,
-                          //   controller: ApprovedDateController,
-                          //   focusNode: ApprovedDateFocusNode,
-                          //   labelText: "Approved Date",
-                          //   icon: Icons.calendar_month_rounded,
-                          //   onChanged: (value) {
-                          //     P03DATATABLEVAR.APPROVEDDATE = convertStringToDateTime(value).toString();
-                          //   },
-                          // ),
-                          // buildCustomField(
-                          //   context: P03DATATABLEMAINcontext,
-                          //   controller: ApprovedByController,
-                          //   focusNode: ApprovedByFocusNode,
-                          //   labelText: "Approved By",
-                          //   icon: Icons.assignment,
-                          //   dropdownItems: P03DATATABLEVAR.dropdownApprover,
-                          //   onChanged: (value) {
-                          //     P03DATATABLEVAR.APPROVEDBY = value;
-                          //   },
-                          // ),
-                          if (InstrumentController.text != '')
-                            buildCustomFieldforEditData(
-                              controller: StatusController,
-                              focusNode: StatusFocusNode,
-                              labelText: "Status",
-                              icon: Icons.info,
-                              onChanged: (value) {
-                                P03DATATABLEVAR.STATUS = value;
-                              },
-                            ),
-                          // if (StatusController.text != '')
-
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                CheckSlotAndTimeOverlabToAPI(context);
-                                // await showAddConfirmationDialog(
-                                //   context: context,
-                                //   onConfirm: () async {
-                                //     P03DATATABLEVAR.SendAddDataToAPI = jsonEncode(toJsonAddDate());
-                                //     // print(P03DATATABLEVAR.SendAddDataToAPI);
-                                //     AddDataToAPI();
-                                //     // initSocketConnection();
-                                //     // sendDataToServer('AddJob');
-                                //     // await AddDataToAPI();
-                                //     // await initSocketConnection();
-                                //     // await sendDataToServer('AddJob');
-                                //   },
-                                // );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.green,
-                                shadowColor: Colors.greenAccent,
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(color: Colors.green, width: 2),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                spacing: 5,
-                                children: const [
-                                  Text(
-                                    'ยืนยันการเพิ่มงาน',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.note_add_rounded,
-                                    color: Colors.green,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -4494,5 +5074,460 @@ Future<void> exportToExcel(List<P03DATATABLEGETDATAclass> filteredData) async {
       await file.writeAsBytes(bytes, flush: true);
       print('Saved to $path');
     }
+  }
+}
+
+class YearMultiSelectDropdown extends StatefulWidget {
+  final Function(List<int>) onSelectionChanged;
+
+  const YearMultiSelectDropdown({
+    Key? key,
+    required this.onSelectionChanged,
+  }) : super(key: key);
+
+  @override
+  State<YearMultiSelectDropdown> createState() => _YearMultiSelectDropdownState();
+}
+
+class _YearMultiSelectDropdownState extends State<YearMultiSelectDropdown> {
+  List<int> selectedYears = [];
+  List<int> availableYears = [];
+  final GlobalKey _dropdownKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // สร้างรายการปีจากปีปัจจุบันย้อนหลัง 10 ปี
+    int currentYear = DateTime.now().year;
+    for (int i = 0; i <= 10; i++) {
+      availableYears.add(currentYear - i);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: _dropdownKey,
+      width: 105,
+      height: 40,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showMultiSelectMenu(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: const [
+            Text(
+              'Year',
+            ),
+            Icon(Icons.arrow_drop_down),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showMultiSelectMenu(BuildContext context) {
+    final RenderBox? button = _dropdownKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? overlay = Navigator.of(context).overlay?.context.findRenderObject() as RenderBox?;
+
+    if (button == null || overlay == null) return;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    print('test');
+    showMenu<String>(
+      context: context,
+      position: position,
+      color: Colors.white,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      items: [
+        PopupMenuItem<String>(
+          enabled: false, // ป้องกันการปิดเมื่อคลิก
+          child: Container(
+            width: 280,
+            height: 400,
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setMenuState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        'เลือกปี',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Divider(height: 1),
+
+                    // List ปี
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: availableYears.length,
+                        itemBuilder: (context, index) {
+                          final year = availableYears[index];
+                          final isSelected = selectedYears.contains(year);
+
+                          return CheckboxListTile(
+                            title: Text(
+                              year.toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setMenuState(() {
+                                if (value == true) {
+                                  selectedYears.add(year);
+                                } else {
+                                  selectedYears.remove(year);
+                                }
+                                selectedYears.sort((a, b) => b.compareTo(a));
+                              });
+                              setState(() {}); // อัปเดต main widget
+                              widget.onSelectionChanged(selectedYears);
+                            },
+                            activeColor: Colors.blue,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            dense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                          );
+                        },
+                      ),
+                    ),
+
+                    Divider(height: 1),
+
+                    // ปุ่มควบคุม
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              setMenuState(() {
+                                selectedYears = List.from(availableYears);
+                              });
+                              setState(() {});
+                              widget.onSelectionChanged(selectedYears);
+                            },
+                            child: Text('เลือกทั้งหมด', style: TextStyle(fontSize: 12)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setMenuState(() {
+                                selectedYears.clear();
+                              });
+                              setState(() {});
+                              widget.onSelectionChanged(selectedYears);
+                            },
+                            child: Text('ล้างทั้งหมด', style: TextStyle(fontSize: 12)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
+                            child: Text('เสร็จสิ้น', style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (selectedYears.isNotEmpty)
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ปีที่เลือก:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Wrap(
+                              spacing: 5,
+                              children: selectedYears.map((year) {
+                                return Chip(
+                                  label: Text('$year'),
+                                  backgroundColor: Colors.white,
+                                  deleteIcon: Icon(Icons.close, size: 16),
+                                  onDeleted: () {
+                                    setMenuState(() {
+                                      selectedYears.remove(year);
+                                    });
+                                    setState(() {});
+                                    widget.onSelectionChanged(selectedYears);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MonthMultiSelectDropdown extends StatefulWidget {
+  final Function(List<int>) onSelectionChanged;
+
+  const MonthMultiSelectDropdown({
+    Key? key,
+    required this.onSelectionChanged,
+  }) : super(key: key);
+
+  @override
+  State<MonthMultiSelectDropdown> createState() => _MonthMultiSelectDropdownState();
+}
+
+class _MonthMultiSelectDropdownState extends State<MonthMultiSelectDropdown> {
+  List<int> selectedMonths = [];
+  final List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  final GlobalKey _dropdownKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: _dropdownKey,
+      width: 105,
+      height: 40,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showMultiSelectMenu(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: const [
+            Text('Month'),
+            Icon(Icons.arrow_drop_down),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showMultiSelectMenu(BuildContext context) {
+    final RenderBox? button = _dropdownKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? overlay = Navigator.of(context).overlay?.context.findRenderObject() as RenderBox?;
+
+    if (button == null || overlay == null) return;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      color: Colors.white,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      items: [
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Container(
+            width: 280,
+            height: 400,
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setMenuState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        'เลือกเดือน',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Divider(height: 1),
+
+                    // List เดือน
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: monthNames.length,
+                        itemBuilder: (context, index) {
+                          final monthNumber = index + 1; // 1–12
+                          final monthName = monthNames[index];
+                          final isSelected = selectedMonths.contains(monthNumber);
+
+                          return CheckboxListTile(
+                            title: Text(
+                              monthName,
+                              style: TextStyle(fontSize: 14, color: Colors.black),
+                            ),
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setMenuState(() {
+                                if (value == true) {
+                                  selectedMonths.add(monthNumber);
+                                } else {
+                                  selectedMonths.remove(monthNumber);
+                                }
+                                selectedMonths.sort((a, b) => b.compareTo(a));
+                              });
+                              setState(() {});
+                              widget.onSelectionChanged(selectedMonths);
+                            },
+                            activeColor: Colors.blue,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            dense: true,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                          );
+                        },
+                      ),
+                    ),
+
+                    Divider(height: 1),
+
+                    // ปุ่มควบคุม
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              setMenuState(() {
+                                selectedMonths = List.generate(12, (i) => i + 1);
+                              });
+                              setState(() {});
+                              widget.onSelectionChanged(selectedMonths);
+                            },
+                            child: Text('เลือกทั้งหมด', style: TextStyle(fontSize: 12)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setMenuState(() {
+                                selectedMonths.clear();
+                              });
+                              setState(() {});
+                              widget.onSelectionChanged(selectedMonths);
+                            },
+                            child: Text('ล้างทั้งหมด', style: TextStyle(fontSize: 12)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
+                            child: Text('เสร็จสิ้น', style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // แสดง Chip เดือนที่เลือก
+                    if (selectedMonths.isNotEmpty)
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'เดือนที่เลือก:',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                            ),
+                            SizedBox(height: 5),
+                            Wrap(
+                              spacing: 5,
+                              children: selectedMonths.map((monthNumber) {
+                                final monthName = monthNames[monthNumber - 1];
+                                return Chip(
+                                  label: Text('$monthName'),
+                                  backgroundColor: Colors.white,
+                                  deleteIcon: Icon(Icons.close, size: 16),
+                                  onDeleted: () {
+                                    setMenuState(() {
+                                      selectedMonths.remove(monthNumber);
+                                    });
+                                    setState(() {});
+                                    widget.onSelectionChanged(selectedMonths);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

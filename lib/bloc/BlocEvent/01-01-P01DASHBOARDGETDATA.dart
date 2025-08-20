@@ -195,6 +195,11 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
       } else {
         // Navigator.pop(P01DASHBOARDMAINcontext);
         showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
+        Future.delayed(const Duration(seconds: 5), () {
+          if (Navigator.of(P01DASHBOARDMAINcontext).canPop()) {
+            Navigator.of(P01DASHBOARDMAINcontext).pop();
+          }
+        });
         output = [];
         emit(output);
       }
