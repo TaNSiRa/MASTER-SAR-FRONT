@@ -2003,18 +2003,39 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                 item.REQUESTER = value;
                               },
                             ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: SamplingDateController,
-                              focusNode: SamplingDateFocusNode,
-                              labelText: "Sampling Date",
-                              icon: Icons.calendar_month_rounded,
-                              onChanged: (value) {
-                                EditTextController(
-                                  controller: SamplingDateController,
-                                  value: value,
-                                );
-                              },
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 9,
+                                  child: buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: SamplingDateController,
+                                    focusNode: SamplingDateFocusNode,
+                                    labelText: "Sampling Date",
+                                    icon: Icons.calendar_month_rounded,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        EditTextController(
+                                          controller: SamplingDateController,
+                                          value: value,
+                                        );
+                                      });
+                                    },
+                                  ),
+                                ),
+                                if (SamplingDateController.text.isNotEmpty)
+                                  Expanded(
+                                    flex: 1,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.clear, color: Colors.grey),
+                                      onPressed: () {
+                                        setState(() {
+                                          SamplingDateController.clear();
+                                        });
+                                      },
+                                    ),
+                                  )
+                              ],
                             ),
                             buildCustomField(
                               context: P03DATATABLEMAINcontext,
@@ -3994,15 +4015,38 @@ void showAddDialog(BuildContext context) {
                                   P03DATATABLEVAR.REQUESTER = value;
                                 },
                               ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: SamplingDateController,
-                                focusNode: SamplingDateFocusNode,
-                                labelText: "Sampling Date",
-                                icon: Icons.calendar_month_rounded,
-                                onChanged: (value) {
-                                  P03DATATABLEVAR.SAMPLINGDATE = convertStringToDateTime(value).toString();
-                                },
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 9,
+                                    child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
+                                      controller: SamplingDateController,
+                                      focusNode: SamplingDateFocusNode,
+                                      labelText: "Sampling Date",
+                                      icon: Icons.calendar_month_rounded,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          P03DATATABLEVAR.SAMPLINGDATE =
+                                              convertStringToDateTime(value).toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  if (SamplingDateController.text.isNotEmpty)
+                                    Expanded(
+                                      flex: 1,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.clear, color: Colors.grey),
+                                        onPressed: () {
+                                          setState(() {
+                                            SamplingDateController.clear();
+                                            P03DATATABLEVAR.SAMPLINGDATE = '';
+                                          });
+                                        },
+                                      ),
+                                    )
+                                ],
                               ),
                               buildCustomField(
                                 context: P03DATATABLEMAINcontext,
