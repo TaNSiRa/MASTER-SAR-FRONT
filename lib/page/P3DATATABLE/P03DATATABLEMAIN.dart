@@ -2023,17 +2023,18 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                     },
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 1,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.remove, color: Colors.grey),
-                                    onPressed: () {
-                                      setState(() {
-                                        SamplingDateController.text = '-';
-                                      });
-                                    },
+                                if (SamplingDateController.text.isEmpty)
+                                  Expanded(
+                                    flex: 1,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.remove, color: Colors.grey),
+                                      onPressed: () {
+                                        setState(() {
+                                          SamplingDateController.text = '-';
+                                        });
+                                      },
+                                    ),
                                   ),
-                                ),
                                 if (SamplingDateController.text.isNotEmpty)
                                   Expanded(
                                     flex: 1,
@@ -4044,17 +4045,18 @@ void showAddDialog(BuildContext context) {
                                       },
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.remove, color: Colors.grey),
-                                      onPressed: () {
-                                        setState(() {
-                                          SamplingDateController.text = '-';
-                                        });
-                                      },
+                                  if (SamplingDateController.text.isEmpty)
+                                    Expanded(
+                                      flex: 1,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove, color: Colors.grey),
+                                        onPressed: () {
+                                          setState(() {
+                                            SamplingDateController.text = '-';
+                                          });
+                                        },
+                                      ),
                                     ),
-                                  ),
                                   if (SamplingDateController.text.isNotEmpty)
                                     Expanded(
                                       flex: 1,

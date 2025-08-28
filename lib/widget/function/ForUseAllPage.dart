@@ -185,7 +185,7 @@ Widget buildCustomField({
             controller: controller,
             focusNode: focusNode,
             validator: (value) {
-              if (labelText != "Sampling Date" && (value == null || value.isEmpty)) {
+              if (value == null || value.isEmpty) {
                 return 'Please select $labelText';
               }
               return null;
