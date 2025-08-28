@@ -1987,7 +1987,7 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                               focusNode: SectionRequestFocusNode,
                               labelText: "Section Request",
                               icon: Icons.account_tree,
-                              dropdownItems: ['QC HP', 'QC BP', 'MKT ES1'],
+                              dropdownItems: ['QC HP', 'QC BP', 'MKT ES1', 'MKT BP'],
                               onChanged: (value) {
                                 item.SECTION = value;
                               },
