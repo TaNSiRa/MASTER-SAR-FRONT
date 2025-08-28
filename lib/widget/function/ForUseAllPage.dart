@@ -471,7 +471,26 @@ Widget buildCustomField({
       },
     );
   }
-  return TextField(
+
+  if (labelText == "Remark") {
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.blue),
+        labelText: labelText,
+        labelStyle: buildTextStyle(),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+        filled: true,
+        fillColor: Colors.white,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+    );
+  }
+
+  return TextFormField(
     controller: controller,
     focusNode: focusNode,
     decoration: InputDecoration(
@@ -484,7 +503,13 @@ Widget buildCustomField({
       floatingLabelBehavior: FloatingLabelBehavior.always,
     ),
     onChanged: onChanged,
-    onSubmitted: onSubmitted,
+    onFieldSubmitted: onSubmitted,
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please fill $labelText';
+      }
+      return null;
+    },
   );
 }
 

@@ -1919,804 +1919,809 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    Stack(
-                      children: [
-                        Center(
-                          child: Text(
-                            'แก้ไขข้อมูล ${item.REQUESTNO}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    spacing: 10,
+                    children: [
+                      Stack(
+                        children: [
+                          Center(
+                            child: Text(
+                              'แก้ไขข้อมูล ${item.REQUESTNO}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          spacing: 10,
-                          children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: TypeController,
-                              focusNode: TypeFocusNode,
-                              labelText: "Type",
-                              icon: Icons.assignment,
-                              dropdownItems: ['Service lab', 'Special request'],
-                              onChanged: (value) {
-                                item.TYPE = value;
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () {
+                                Navigator.of(context).pop();
                               },
                             ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: RequestNoController,
-                              focusNode: RequestNoFocusNode,
-                              labelText: "Request No.",
-                              icon: Icons.assignment,
-                              onChanged: (value) {
-                                item.REQUESTNO = value;
-                                item.REPORTNO = value;
-                                ReportNoController.text = value;
-                              },
-                            ),
-                            buildCustomFieldforEditData(
-                              controller: ReportNoController,
-                              focusNode: ReportNoFocusNode,
-                              labelText: "Report No.",
-                              icon: Icons.assignment,
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: SectionRequestController,
-                              focusNode: SectionRequestFocusNode,
-                              labelText: "Section Request",
-                              icon: Icons.account_tree,
-                              dropdownItems: ['QC HP', 'QC BP', 'MKT ES1', 'MKT BP'],
-                              onChanged: (value) {
-                                item.SECTION = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: RequesterController,
-                              focusNode: RequesterFocusNode,
-                              labelText: "Requester",
-                              icon: Icons.person,
-                              dropdownItems: P03DATATABLEVAR.dropdownRequester,
-                              onChanged: (value) {
-                                item.REQUESTER = value;
-                              },
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 9,
-                                  child: buildCustomField(
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: TypeController,
+                                focusNode: TypeFocusNode,
+                                labelText: "Type",
+                                icon: Icons.assignment,
+                                dropdownItems: ['Service lab', 'Special request'],
+                                onChanged: (value) {
+                                  item.TYPE = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: RequestNoController,
+                                focusNode: RequestNoFocusNode,
+                                labelText: "Request No.",
+                                icon: Icons.assignment,
+                                onChanged: (value) {
+                                  item.REQUESTNO = value;
+                                  item.REPORTNO = value;
+                                  ReportNoController.text = value;
+                                },
+                              ),
+                              buildCustomFieldforEditData(
+                                controller: ReportNoController,
+                                focusNode: ReportNoFocusNode,
+                                labelText: "Report No.",
+                                icon: Icons.assignment,
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: SectionRequestController,
+                                focusNode: SectionRequestFocusNode,
+                                labelText: "Section Request",
+                                icon: Icons.account_tree,
+                                dropdownItems: ['QC HP', 'QC BP', 'MKT ES1', 'MKT BP'],
+                                onChanged: (value) {
+                                  item.SECTION = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: RequesterController,
+                                focusNode: RequesterFocusNode,
+                                labelText: "Requester",
+                                icon: Icons.person,
+                                dropdownItems: P03DATATABLEVAR.dropdownRequester,
+                                onChanged: (value) {
+                                  item.REQUESTER = value;
+                                },
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 9,
+                                    child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
+                                      controller: SamplingDateController,
+                                      focusNode: SamplingDateFocusNode,
+                                      labelText: "Sampling Date",
+                                      icon: Icons.calendar_month_rounded,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          EditTextController(
+                                            controller: SamplingDateController,
+                                            value: value,
+                                          );
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  if (SamplingDateController.text.isEmpty)
+                                    Expanded(
+                                      flex: 1,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove, color: Colors.grey),
+                                        onPressed: () {
+                                          setState(() {
+                                            SamplingDateController.text = '-';
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  if (SamplingDateController.text.isNotEmpty)
+                                    Expanded(
+                                      flex: 1,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.clear, color: Colors.grey),
+                                        onPressed: () {
+                                          setState(() {
+                                            SamplingDateController.clear();
+                                          });
+                                        },
+                                      ),
+                                    )
+                                ],
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: ReceivedDateController,
+                                focusNode: ReceivedDateFocusNode,
+                                labelText: "Received Date",
+                                icon: Icons.calendar_month_rounded,
+                                onChanged: (value) {
+                                  EditTextController(
+                                    controller: ReceivedDateController,
+                                    value: value,
+                                  );
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: CustomerNameController,
+                                focusNode: CustomerNameFocusNode,
+                                labelText: "Customer Name",
+                                icon: Icons.people,
+                                dropdownItems: P03DATATABLEVAR.dropdownCustomer,
+                                onChanged: (value) {
+                                  item.CUSTOMERNAME = value;
+                                },
+                              ),
+                              for (int i = 0; i < 10; i++) ...[
+                                if (partNameControllers[i].text != '')
+                                  buildCustomField(
                                     context: P03DATATABLEMAINcontext,
-                                    controller: SamplingDateController,
-                                    focusNode: SamplingDateFocusNode,
-                                    labelText: "Sampling Date",
-                                    icon: Icons.calendar_month_rounded,
+                                    controller: partNameControllers[i],
+                                    focusNode: partNameFocusNodes[i],
+                                    labelText: "Part Name ${i + 1}",
+                                    icon: Icons.settings,
                                     onChanged: (value) {
-                                      setState(() {
-                                        EditTextController(
-                                          controller: SamplingDateController,
-                                          value: value,
-                                        );
-                                      });
+                                      EditTextController(
+                                        controller: partNameControllers[i],
+                                        value: value,
+                                      );
+                                      partNames[i] = value;
+                                      item.PARTNAME1 = partNames[0];
+                                      item.PARTNAME2 = partNames[1];
+                                      item.PARTNAME3 = partNames[2];
+                                      item.PARTNAME4 = partNames[3];
+                                      item.PARTNAME5 = partNames[4];
+                                      item.PARTNAME6 = partNames[5];
+                                      item.PARTNAME7 = partNames[6];
+                                      item.PARTNAME8 = partNames[7];
+                                      item.PARTNAME9 = partNames[8];
+                                      item.PARTNAME10 = partNames[9];
                                     },
                                   ),
-                                ),
-                                if (SamplingDateController.text.isEmpty)
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.remove, color: Colors.grey),
-                                      onPressed: () {
-                                        setState(() {
-                                          SamplingDateController.text = '-';
-                                        });
-                                      },
-                                    ),
+                                if (partNoControllers[i].text != '')
+                                  buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: partNoControllers[i],
+                                    focusNode: partNoFocusNodes[i],
+                                    labelText: "Part No ${i + 1}",
+                                    icon: Icons.settings,
+                                    onChanged: (value) {
+                                      EditTextController(
+                                        controller: partNoControllers[i],
+                                        value: value,
+                                      );
+                                      partNos[i] = value;
+                                      item.PARTNO1 = partNos[0];
+                                      item.PARTNO2 = partNos[1];
+                                      item.PARTNO3 = partNos[2];
+                                      item.PARTNO4 = partNos[3];
+                                      item.PARTNO5 = partNos[4];
+                                      item.PARTNO6 = partNos[5];
+                                      item.PARTNO7 = partNos[6];
+                                      item.PARTNO8 = partNos[7];
+                                      item.PARTNO9 = partNos[8];
+                                      item.PARTNO10 = partNos[9];
+                                    },
                                   ),
-                                if (SamplingDateController.text.isNotEmpty)
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.clear, color: Colors.grey),
-                                      onPressed: () {
-                                        setState(() {
-                                          SamplingDateController.clear();
-                                        });
-                                      },
-                                    ),
-                                  )
+                                if (lotNoControllers[i].text != '')
+                                  buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: lotNoControllers[i],
+                                    focusNode: lotNoFocusNodes[i],
+                                    labelText: "Lot No ${i + 1}",
+                                    icon: Icons.settings,
+                                    onChanged: (value) {
+                                      EditTextController(
+                                        controller: lotNoControllers[i],
+                                        value: value,
+                                      );
+                                      lotNos[i] = value;
+                                      item.LOTNO1 = lotNos[0];
+                                      item.LOTNO2 = lotNos[1];
+                                      item.LOTNO3 = lotNos[2];
+                                      item.LOTNO4 = lotNos[3];
+                                      item.LOTNO5 = lotNos[4];
+                                      item.LOTNO6 = lotNos[5];
+                                      item.LOTNO7 = lotNos[6];
+                                      item.LOTNO8 = lotNos[7];
+                                      item.LOTNO9 = lotNos[8];
+                                      item.LOTNO10 = lotNos[9];
+                                    },
+                                  ),
+                                if (amountControllers[i].text != '')
+                                  buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: amountControllers[i],
+                                    focusNode: amountFocusNodes[i],
+                                    labelText: "Amount ${i + 1}",
+                                    icon: Icons.settings,
+                                    onChanged: (value) {
+                                      EditTextController(
+                                        controller: amountControllers[i],
+                                        value: value,
+                                      );
+                                      amounts[i] = value;
+                                      item.AMOUNT1 = amounts[0];
+                                      item.AMOUNT2 = amounts[1];
+                                      item.AMOUNT3 = amounts[2];
+                                      item.AMOUNT4 = amounts[3];
+                                      item.AMOUNT5 = amounts[4];
+                                      item.AMOUNT6 = amounts[5];
+                                      item.AMOUNT7 = amounts[6];
+                                      item.AMOUNT8 = amounts[7];
+                                      item.AMOUNT9 = amounts[8];
+                                      item.AMOUNT10 = amounts[9];
+                                    },
+                                  ),
+                                if (materialControllers[i].text != '')
+                                  buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: materialControllers[i],
+                                    focusNode: materialFocusNodes[i],
+                                    labelText: "Material ${i + 1}",
+                                    icon: Icons.settings,
+                                    onChanged: (value) {
+                                      EditTextController(
+                                        controller: materialControllers[i],
+                                        value: value,
+                                      );
+                                      materials[i] = value;
+                                      item.MATERIAL1 = materials[0];
+                                      item.MATERIAL2 = materials[1];
+                                      item.MATERIAL3 = materials[2];
+                                      item.MATERIAL4 = materials[3];
+                                      item.MATERIAL5 = materials[4];
+                                      item.MATERIAL6 = materials[5];
+                                      item.MATERIAL7 = materials[6];
+                                      item.MATERIAL8 = materials[7];
+                                      item.MATERIAL9 = materials[8];
+                                      item.MATERIAL10 = materials[9];
+                                    },
+                                  ),
+                                if (processControllers[i].text != '')
+                                  buildCustomField(
+                                    context: P03DATATABLEMAINcontext,
+                                    controller: processControllers[i],
+                                    focusNode: processFocusNodes[i],
+                                    labelText: "Process ${i + 1}",
+                                    icon: Icons.settings,
+                                    onChanged: (value) {
+                                      EditTextController(
+                                        controller: processControllers[i],
+                                        value: value,
+                                      );
+                                      processs[i] = value;
+                                      item.PROCESS1 = processs[0];
+                                      item.PROCESS2 = processs[1];
+                                      item.PROCESS3 = processs[2];
+                                      item.PROCESS4 = processs[3];
+                                      item.PROCESS5 = processs[4];
+                                      item.PROCESS6 = processs[5];
+                                      item.PROCESS7 = processs[6];
+                                      item.PROCESS8 = processs[7];
+                                      item.PROCESS9 = processs[8];
+                                      item.PROCESS10 = processs[9];
+                                    },
+                                  ),
                               ],
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: ReceivedDateController,
-                              focusNode: ReceivedDateFocusNode,
-                              labelText: "Received Date",
-                              icon: Icons.calendar_month_rounded,
-                              onChanged: (value) {
-                                EditTextController(
-                                  controller: ReceivedDateController,
-                                  value: value,
-                                );
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: CustomerNameController,
-                              focusNode: CustomerNameFocusNode,
-                              labelText: "Customer Name",
-                              icon: Icons.people,
-                              dropdownItems: P03DATATABLEVAR.dropdownCustomer,
-                              onChanged: (value) {
-                                item.CUSTOMERNAME = value;
-                              },
-                            ),
-                            for (int i = 0; i < 10; i++) ...[
-                              if (partNameControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: partNameControllers[i],
-                                  focusNode: partNameFocusNodes[i],
-                                  labelText: "Part Name ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: partNameControllers[i],
-                                      value: value,
-                                    );
-                                    partNames[i] = value;
-                                    item.PARTNAME1 = partNames[0];
-                                    item.PARTNAME2 = partNames[1];
-                                    item.PARTNAME3 = partNames[2];
-                                    item.PARTNAME4 = partNames[3];
-                                    item.PARTNAME5 = partNames[4];
-                                    item.PARTNAME6 = partNames[5];
-                                    item.PARTNAME7 = partNames[6];
-                                    item.PARTNAME8 = partNames[7];
-                                    item.PARTNAME9 = partNames[8];
-                                    item.PARTNAME10 = partNames[9];
-                                  },
-                                ),
-                              if (partNoControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: partNoControllers[i],
-                                  focusNode: partNoFocusNodes[i],
-                                  labelText: "Part No ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: partNoControllers[i],
-                                      value: value,
-                                    );
-                                    partNos[i] = value;
-                                    item.PARTNO1 = partNos[0];
-                                    item.PARTNO2 = partNos[1];
-                                    item.PARTNO3 = partNos[2];
-                                    item.PARTNO4 = partNos[3];
-                                    item.PARTNO5 = partNos[4];
-                                    item.PARTNO6 = partNos[5];
-                                    item.PARTNO7 = partNos[6];
-                                    item.PARTNO8 = partNos[7];
-                                    item.PARTNO9 = partNos[8];
-                                    item.PARTNO10 = partNos[9];
-                                  },
-                                ),
-                              if (lotNoControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: lotNoControllers[i],
-                                  focusNode: lotNoFocusNodes[i],
-                                  labelText: "Lot No ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: lotNoControllers[i],
-                                      value: value,
-                                    );
-                                    lotNos[i] = value;
-                                    item.LOTNO1 = lotNos[0];
-                                    item.LOTNO2 = lotNos[1];
-                                    item.LOTNO3 = lotNos[2];
-                                    item.LOTNO4 = lotNos[3];
-                                    item.LOTNO5 = lotNos[4];
-                                    item.LOTNO6 = lotNos[5];
-                                    item.LOTNO7 = lotNos[6];
-                                    item.LOTNO8 = lotNos[7];
-                                    item.LOTNO9 = lotNos[8];
-                                    item.LOTNO10 = lotNos[9];
-                                  },
-                                ),
-                              if (amountControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: amountControllers[i],
-                                  focusNode: amountFocusNodes[i],
-                                  labelText: "Amount ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: amountControllers[i],
-                                      value: value,
-                                    );
-                                    amounts[i] = value;
-                                    item.AMOUNT1 = amounts[0];
-                                    item.AMOUNT2 = amounts[1];
-                                    item.AMOUNT3 = amounts[2];
-                                    item.AMOUNT4 = amounts[3];
-                                    item.AMOUNT5 = amounts[4];
-                                    item.AMOUNT6 = amounts[5];
-                                    item.AMOUNT7 = amounts[6];
-                                    item.AMOUNT8 = amounts[7];
-                                    item.AMOUNT9 = amounts[8];
-                                    item.AMOUNT10 = amounts[9];
-                                  },
-                                ),
-                              if (materialControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: materialControllers[i],
-                                  focusNode: materialFocusNodes[i],
-                                  labelText: "Material ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: materialControllers[i],
-                                      value: value,
-                                    );
-                                    materials[i] = value;
-                                    item.MATERIAL1 = materials[0];
-                                    item.MATERIAL2 = materials[1];
-                                    item.MATERIAL3 = materials[2];
-                                    item.MATERIAL4 = materials[3];
-                                    item.MATERIAL5 = materials[4];
-                                    item.MATERIAL6 = materials[5];
-                                    item.MATERIAL7 = materials[6];
-                                    item.MATERIAL8 = materials[7];
-                                    item.MATERIAL9 = materials[8];
-                                    item.MATERIAL10 = materials[9];
-                                  },
-                                ),
-                              if (processControllers[i].text != '')
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: processControllers[i],
-                                  focusNode: processFocusNodes[i],
-                                  labelText: "Process ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    EditTextController(
-                                      controller: processControllers[i],
-                                      value: value,
-                                    );
-                                    processs[i] = value;
-                                    item.PROCESS1 = processs[0];
-                                    item.PROCESS2 = processs[1];
-                                    item.PROCESS3 = processs[2];
-                                    item.PROCESS4 = processs[3];
-                                    item.PROCESS5 = processs[4];
-                                    item.PROCESS6 = processs[5];
-                                    item.PROCESS7 = processs[6];
-                                    item.PROCESS8 = processs[7];
-                                    item.PROCESS9 = processs[8];
-                                    item.PROCESS10 = processs[9];
-                                  },
-                                ),
-                            ],
-                            // buildCustomField(
-                            //   context: P03DATATABLEMAINcontext,
-                            //   controller: AmountOfSampleController,
-                            //   focusNode: AmountOfSampleFocusNode,
-                            //   labelText: "Amount of Sample (Pcs)",
-                            //   icon: Icons.science,
-                            //   onChanged: (value) {
-                            //     item.AMOUNTSAMPLE = value.isNotEmpty ? int.parse(value) : 0;
-                            //   },
-                            // ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: TakePhotoController,
-                              focusNode: TakePhotoFocusNode,
-                              labelText: "Take photo (Pcs)",
-                              icon: Icons.photo_camera,
-                              onChanged: (value) {
-                                item.TAKEPHOTO = value.isNotEmpty ? int.parse(value) : 0;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: StartDateController,
-                              focusNode: StartDateFocusNode,
-                              labelText: "Start Date",
-                              icon: Icons.calendar_month_rounded,
-                              onChanged: (value) async {
-                                EditTextController(
-                                  controller: StartDateController,
-                                  value: value,
-                                );
-                                // print(StartDateController.text);
-                                // print(StartDateController.value);
-                                for (int i = 0; i < 10; i++) {
-                                  await calculateFinishDate(
-                                    startDateController: StartDateController,
-                                    timeController: timeControllers[i],
-                                    finishDateController: finishDateControllers[i],
+                              // buildCustomField(
+                              //   context: P03DATATABLEMAINcontext,
+                              //   controller: AmountOfSampleController,
+                              //   focusNode: AmountOfSampleFocusNode,
+                              //   labelText: "Amount of Sample (Pcs)",
+                              //   icon: Icons.science,
+                              //   onChanged: (value) {
+                              //     item.AMOUNTSAMPLE = value.isNotEmpty ? int.parse(value) : 0;
+                              //   },
+                              // ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: TakePhotoController,
+                                focusNode: TakePhotoFocusNode,
+                                labelText: "Take photo (Pcs)",
+                                icon: Icons.photo_camera,
+                                onChanged: (value) {
+                                  item.TAKEPHOTO = value.isNotEmpty ? int.parse(value) : 0;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: StartDateController,
+                                focusNode: StartDateFocusNode,
+                                labelText: "Start Date",
+                                icon: Icons.calendar_month_rounded,
+                                onChanged: (value) async {
+                                  EditTextController(
+                                    controller: StartDateController,
+                                    value: value,
                                   );
-                                  // print('Finish ${finishDateControllers[i]}');
-                                  DateTime? FinishDateToDateTime =
-                                      convertStringToDateTime(finishDateControllers[i].text);
-                                  if (FinishDateToDateTime != '' && FinishDateToDateTime != null) {
-                                    String CalTemp = await calculateRepDue(
-                                      startDate: DateTime(FinishDateToDateTime.year,
-                                          FinishDateToDateTime.month, FinishDateToDateTime.day),
-                                      addDays: P03DATATABLEVAR.TempAddDays,
+                                  // print(StartDateController.text);
+                                  // print(StartDateController.value);
+                                  for (int i = 0; i < 10; i++) {
+                                    await calculateFinishDate(
+                                      startDateController: StartDateController,
+                                      timeController: timeControllers[i],
+                                      finishDateController: finishDateControllers[i],
                                     );
-                                    tempDateControllers[i].text = CalTemp;
-                                    // print('temp ${tempDateControllers[i].text}');
-                                    String CalDue = await calculateRepDue(
-                                      startDate: DateTime(FinishDateToDateTime.year,
-                                          FinishDateToDateTime.month, FinishDateToDateTime.day),
-                                      addDays: P03DATATABLEVAR.DueAddDays,
-                                    );
-                                    dueDateControllers[i].text = CalDue;
-                                    // print('temp ${tempDateControllers[i].text}');
+                                    // print('Finish ${finishDateControllers[i]}');
+                                    DateTime? FinishDateToDateTime =
+                                        convertStringToDateTime(finishDateControllers[i].text);
+                                    if (FinishDateToDateTime != '' && FinishDateToDateTime != null) {
+                                      String CalTemp = await calculateRepDue(
+                                        startDate: DateTime(FinishDateToDateTime.year,
+                                            FinishDateToDateTime.month, FinishDateToDateTime.day),
+                                        addDays: P03DATATABLEVAR.TempAddDays,
+                                      );
+                                      tempDateControllers[i].text = CalTemp;
+                                      // print('temp ${tempDateControllers[i].text}');
+                                      String CalDue = await calculateRepDue(
+                                        startDate: DateTime(FinishDateToDateTime.year,
+                                            FinishDateToDateTime.month, FinishDateToDateTime.day),
+                                        addDays: P03DATATABLEVAR.DueAddDays,
+                                      );
+                                      dueDateControllers[i].text = CalDue;
+                                      // print('temp ${tempDateControllers[i].text}');
+                                    }
                                   }
-                                }
-                                setState(() {});
-                              },
-                            ),
-                            for (int i = 0; i < 10; i++)
-                              if (timeControllers[i].text != '0')
-                                Column(
-                                  spacing: 10,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: buildCustomField(
-                                            context: P03DATATABLEMAINcontext,
-                                            controller: timeControllers[i],
-                                            focusNode: timeFocusNodes[i],
-                                            labelText: "Time ${i + 1} (Hrs.)",
-                                            icon: Icons.timer_sharp,
-                                            onChanged: (value) async {
-                                              EditTextController(
-                                                controller: timeControllers[i],
-                                                value: value,
-                                              );
-                                              await calculateFinishDate(
-                                                startDateController: StartDateController,
-                                                timeController: timeControllers[i],
-                                                finishDateController: finishDateControllers[i],
-                                              );
-                                              await calculateAndSetTempDate(
-                                                finishDateController: finishDateControllers[i],
-                                                DateController: tempDateControllers[i],
-                                                addDays: P03DATATABLEVAR.TempAddDays,
-                                              );
-                                              await calculateAndSetTempDate(
-                                                finishDateController: finishDateControllers[i],
-                                                DateController: dueDateControllers[i],
-                                                addDays: P03DATATABLEVAR.DueAddDays,
-                                              );
-                                              for (int i = finishDateControllers.length - 1; i >= 0; i--) {
-                                                if (finishDateControllers[i].text.isNotEmpty) {
-                                                  await calculateAndSetTempDate(
-                                                    finishDateController: finishDateControllers[i],
-                                                    DateController: TempDate0Controller,
-                                                    addDays: P03DATATABLEVAR.TempAddDays,
-                                                  );
-                                                  await calculateAndSetTempDate(
-                                                    finishDateController: finishDateControllers[i],
-                                                    DateController: DueDate0Controller,
-                                                    addDays: P03DATATABLEVAR.DueAddDays,
-                                                  );
-                                                  break;
+                                  setState(() {});
+                                },
+                              ),
+                              for (int i = 0; i < 10; i++)
+                                if (timeControllers[i].text != '0')
+                                  Column(
+                                    spacing: 10,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: buildCustomField(
+                                              context: P03DATATABLEMAINcontext,
+                                              controller: timeControllers[i],
+                                              focusNode: timeFocusNodes[i],
+                                              labelText: "Time ${i + 1} (Hrs.)",
+                                              icon: Icons.timer_sharp,
+                                              onChanged: (value) async {
+                                                EditTextController(
+                                                  controller: timeControllers[i],
+                                                  value: value,
+                                                );
+                                                await calculateFinishDate(
+                                                  startDateController: StartDateController,
+                                                  timeController: timeControllers[i],
+                                                  finishDateController: finishDateControllers[i],
+                                                );
+                                                await calculateAndSetTempDate(
+                                                  finishDateController: finishDateControllers[i],
+                                                  DateController: tempDateControllers[i],
+                                                  addDays: P03DATATABLEVAR.TempAddDays,
+                                                );
+                                                await calculateAndSetTempDate(
+                                                  finishDateController: finishDateControllers[i],
+                                                  DateController: dueDateControllers[i],
+                                                  addDays: P03DATATABLEVAR.DueAddDays,
+                                                );
+                                                for (int i = finishDateControllers.length - 1; i >= 0; i--) {
+                                                  if (finishDateControllers[i].text.isNotEmpty) {
+                                                    await calculateAndSetTempDate(
+                                                      finishDateController: finishDateControllers[i],
+                                                      DateController: TempDate0Controller,
+                                                      addDays: P03DATATABLEVAR.TempAddDays,
+                                                    );
+                                                    await calculateAndSetTempDate(
+                                                      finishDateController: finishDateControllers[i],
+                                                      DateController: DueDate0Controller,
+                                                      addDays: P03DATATABLEVAR.DueAddDays,
+                                                    );
+                                                    break;
+                                                  }
                                                 }
-                                              }
-                                              itemTimes[i] = value.isNotEmpty ? int.parse(value) : 0;
-                                              item.TIME1 = itemTimes[0];
-                                              item.TIME2 = itemTimes[1];
-                                              item.TIME3 = itemTimes[2];
-                                              item.TIME4 = itemTimes[3];
-                                              item.TIME5 = itemTimes[4];
-                                              item.TIME6 = itemTimes[5];
-                                              item.TIME7 = itemTimes[6];
-                                              item.TIME8 = itemTimes[7];
-                                              item.TIME9 = itemTimes[8];
-                                              item.TIME10 = itemTimes[9];
-                                              setState(() {});
+                                                itemTimes[i] = value.isNotEmpty ? int.parse(value) : 0;
+                                                item.TIME1 = itemTimes[0];
+                                                item.TIME2 = itemTimes[1];
+                                                item.TIME3 = itemTimes[2];
+                                                item.TIME4 = itemTimes[3];
+                                                item.TIME5 = itemTimes[4];
+                                                item.TIME6 = itemTimes[5];
+                                                item.TIME7 = itemTimes[6];
+                                                item.TIME8 = itemTimes[7];
+                                                item.TIME9 = itemTimes[8];
+                                                item.TIME10 = itemTimes[9];
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: buildCustomField(
+                                              context: P03DATATABLEMAINcontext,
+                                              controller: finishDateControllers[i],
+                                              focusNode: finishDateFocusNodes[i],
+                                              labelText: "Finish Date ${i + 1}",
+                                              icon: Icons.calendar_month_rounded,
+                                              onChanged: (value) {
+                                                EditTextController(
+                                                  controller: finishDateControllers[i],
+                                                  value: value,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     Expanded(
+                                      //       child: buildCustomField(
+                                      //         context: P03DATATABLEMAINcontext,
+                                      //         controller: tempDateControllers[i],
+                                      //         focusNode: tempDateFocusNodes[i],
+                                      //         labelText: "Temp Report ${i + 1}",
+                                      //         icon: Icons.calendar_month_rounded,
+                                      //         onChanged: (value) {
+                                      //           EditTextController(
+                                      //             controller: tempDateControllers[i],
+                                      //             value: value,
+                                      //           );
+                                      //         },
+                                      //       ),
+                                      //     ),
+                                      //     const SizedBox(width: 10),
+                                      //     Expanded(
+                                      //       child: buildCustomField(
+                                      //         context: P03DATATABLEMAINcontext,
+                                      //         controller: dueDateControllers[i],
+                                      //         focusNode: dueDateFocusNodes[i],
+                                      //         labelText: "Due Report ${i + 1}",
+                                      //         icon: Icons.calendar_month_rounded,
+                                      //         onChanged: (value) {
+                                      //           EditTextController(
+                                      //             controller: dueDateControllers[i],
+                                      //             value: value,
+                                      //           );
+                                      //         },
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
+                                    ],
+                                  ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
+                                      controller: TempDate0Controller,
+                                      focusNode: TempDate0FocusNode,
+                                      labelText: "Temp Report",
+                                      icon: Icons.calendar_month_rounded,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: buildCustomField(
+                                      context: P03DATATABLEMAINcontext,
+                                      controller: DueDate0Controller,
+                                      focusNode: DueDate0FocusNode,
+                                      labelText: "Due Report",
+                                      icon: Icons.calendar_month_rounded,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              buildCustomFieldforEditData(
+                                controller: InstrumentController,
+                                focusNode: InstrumentFocusNode,
+                                labelText: "Instrument",
+                                icon: Icons.analytics_outlined,
+                                dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
+                                onChanged: (value) {
+                                  item.INSTRUMENT = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: MethodController,
+                                focusNode: MethodFocusNode,
+                                labelText: "Method",
+                                icon: Icons.precision_manufacturing,
+                                dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
+                                onChanged: (value) {
+                                  item.METHOD = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: InchargeController,
+                                focusNode: InchargeFocusNode,
+                                labelText: "Incharge",
+                                icon: Icons.person,
+                                dropdownItems: P03DATATABLEVAR.dropdownIncharge,
+                                onChanged: (value) {
+                                  item.INCHARGE = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: ApprovedDateController,
+                                focusNode: ApprovedDateFocusNode,
+                                labelText: "Approved Date",
+                                icon: Icons.calendar_month_rounded,
+                                onChanged: (value) {
+                                  EditTextController(
+                                    controller: ApprovedDateController,
+                                    value: value,
+                                  );
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: ApprovedByController,
+                                focusNode: ApprovedByFocusNode,
+                                labelText: "Approved By",
+                                icon: Icons.assignment,
+                                dropdownItems: P03DATATABLEVAR.dropdownApprover,
+                                onChanged: (value) {
+                                  item.APPROVEDBY = value;
+                                },
+                              ),
+                              buildCustomFieldforEditData(
+                                controller: StatusController,
+                                focusNode: StatusFocusNode,
+                                labelText: "Status",
+                                icon: Icons.info,
+                                dropdownItems: ['RECEIVED', 'RESERVED'],
+                                onChanged: (value) {
+                                  P03DATATABLEVAR.STATUS = value;
+                                },
+                              ),
+                              buildCustomField(
+                                context: P03DATATABLEMAINcontext,
+                                controller: RemarkController,
+                                focusNode: RemarkFocusNode,
+                                labelText: "Remark",
+                                icon: Icons.comment,
+                                onChanged: (value) {
+                                  item.REMARK = value;
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: 10,
+                                children: [
+                                  if (item.STATUS == 'RECEIVED' && USERDATA.UserLV >= 5)
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await showStartConfirmationDialog(
+                                            context: context,
+                                            onConfirm: () async {
+                                              updateMultipleDatesAll();
+                                              P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                              // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                              _StatJobToAPI();
+                                              // initSocketConnection();
+                                              // sendDataToServer('EditJob');
+                                              // await EditDataToAPI();
+                                              // await initSocketConnection();
+                                              // await sendDataToServer('EditJob');
                                             },
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.pink,
+                                          shadowColor: Colors.pinkAccent,
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                            side: BorderSide(color: Colors.pink, width: 2),
                                           ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                         ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: buildCustomField(
-                                            context: P03DATATABLEMAINcontext,
-                                            controller: finishDateControllers[i],
-                                            focusNode: finishDateFocusNodes[i],
-                                            labelText: "Finish Date ${i + 1}",
-                                            icon: Icons.calendar_month_rounded,
-                                            onChanged: (value) {
-                                              EditTextController(
-                                                controller: finishDateControllers[i],
-                                                value: value,
-                                              );
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          spacing: 5,
+                                          children: const [
+                                            Text(
+                                              'START JOB',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.start_rounded,
+                                              color: Colors.pink,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (item.STATUS == 'RECEIVED')
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          if (_formKey.currentState!.validate()) {
+                                            await showEditConfirmationDialog(
+                                              context: context,
+                                              onConfirm: () async {
+                                                updateMultipleDatesAll();
+                                                P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                                // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                                _EditDataToAPI();
+                                                // initSocketConnection();
+                                                // sendDataToServer('EditJob');
+                                                // await EditDataToAPI();
+                                                // await initSocketConnection();
+                                                // await sendDataToServer('EditJob');
+                                              },
+                                            );
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.amber,
+                                          shadowColor: Colors.amberAccent,
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                            side: BorderSide(color: Colors.amber, width: 2),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          spacing: 5,
+                                          children: const [
+                                            Text(
+                                              'ยืนยันการแก้ไข',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.edit_note_rounded,
+                                              color: Colors.amber,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (item.STATUS == 'START' && USERDATA.UserLV >= 5)
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await showFinishConfirmationDialog(
+                                            context: context,
+                                            onConfirm: () async {
+                                              updateMultipleDatesAll();
+                                              P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                              // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                              _FinishJobToAPI();
+                                              // initSocketConnection();
+                                              // sendDataToServer('FinishJob');
+                                              // await EditDataToAPI();
+                                              // await initSocketConnection();
+                                              // await sendDataToServer('CancelJob');
                                             },
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.green,
+                                          shadowColor: Colors.greenAccent,
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                            side: BorderSide(color: Colors.green, width: 2),
                                           ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                         ),
-                                      ],
-                                    ),
-                                    // Row(
-                                    //   children: [
-                                    //     Expanded(
-                                    //       child: buildCustomField(
-                                    //         context: P03DATATABLEMAINcontext,
-                                    //         controller: tempDateControllers[i],
-                                    //         focusNode: tempDateFocusNodes[i],
-                                    //         labelText: "Temp Report ${i + 1}",
-                                    //         icon: Icons.calendar_month_rounded,
-                                    //         onChanged: (value) {
-                                    //           EditTextController(
-                                    //             controller: tempDateControllers[i],
-                                    //             value: value,
-                                    //           );
-                                    //         },
-                                    //       ),
-                                    //     ),
-                                    //     const SizedBox(width: 10),
-                                    //     Expanded(
-                                    //       child: buildCustomField(
-                                    //         context: P03DATATABLEMAINcontext,
-                                    //         controller: dueDateControllers[i],
-                                    //         focusNode: dueDateFocusNodes[i],
-                                    //         labelText: "Due Report ${i + 1}",
-                                    //         icon: Icons.calendar_month_rounded,
-                                    //         onChanged: (value) {
-                                    //           EditTextController(
-                                    //             controller: dueDateControllers[i],
-                                    //             value: value,
-                                    //           );
-                                    //         },
-                                    //       ),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                  ],
-                                ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: buildCustomField(
-                                    context: P03DATATABLEMAINcontext,
-                                    controller: TempDate0Controller,
-                                    focusNode: TempDate0FocusNode,
-                                    labelText: "Temp Report",
-                                    icon: Icons.calendar_month_rounded,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: buildCustomField(
-                                    context: P03DATATABLEMAINcontext,
-                                    controller: DueDate0Controller,
-                                    focusNode: DueDate0FocusNode,
-                                    labelText: "Due Report",
-                                    icon: Icons.calendar_month_rounded,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            buildCustomFieldforEditData(
-                              controller: InstrumentController,
-                              focusNode: InstrumentFocusNode,
-                              labelText: "Instrument",
-                              icon: Icons.analytics_outlined,
-                              dropdownItems: ['SST No.1', 'SST No.2', 'SST No.3', 'SST No.4'],
-                              onChanged: (value) {
-                                item.INSTRUMENT = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: MethodController,
-                              focusNode: MethodFocusNode,
-                              labelText: "Method",
-                              icon: Icons.precision_manufacturing,
-                              dropdownItems: ['ASTM-B117', 'ISO-9227', 'Other'],
-                              onChanged: (value) {
-                                item.METHOD = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: InchargeController,
-                              focusNode: InchargeFocusNode,
-                              labelText: "Incharge",
-                              icon: Icons.person,
-                              dropdownItems: P03DATATABLEVAR.dropdownIncharge,
-                              onChanged: (value) {
-                                item.INCHARGE = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: ApprovedDateController,
-                              focusNode: ApprovedDateFocusNode,
-                              labelText: "Approved Date",
-                              icon: Icons.calendar_month_rounded,
-                              onChanged: (value) {
-                                EditTextController(
-                                  controller: ApprovedDateController,
-                                  value: value,
-                                );
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: ApprovedByController,
-                              focusNode: ApprovedByFocusNode,
-                              labelText: "Approved By",
-                              icon: Icons.assignment,
-                              dropdownItems: P03DATATABLEVAR.dropdownApprover,
-                              onChanged: (value) {
-                                item.APPROVEDBY = value;
-                              },
-                            ),
-                            buildCustomFieldforEditData(
-                              controller: StatusController,
-                              focusNode: StatusFocusNode,
-                              labelText: "Status",
-                              icon: Icons.info,
-                              dropdownItems: ['RECEIVED', 'RESERVED'],
-                              onChanged: (value) {
-                                P03DATATABLEVAR.STATUS = value;
-                              },
-                            ),
-                            buildCustomField(
-                              context: P03DATATABLEMAINcontext,
-                              controller: RemarkController,
-                              focusNode: RemarkFocusNode,
-                              labelText: "Remark",
-                              icon: Icons.comment,
-                              onChanged: (value) {
-                                item.REMARK = value;
-                              },
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              spacing: 10,
-                              children: [
-                                if (item.STATUS == 'RECEIVED' && USERDATA.UserLV >= 5)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await showStartConfirmationDialog(
-                                          context: context,
-                                          onConfirm: () async {
-                                            updateMultipleDatesAll();
-                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                            _StatJobToAPI();
-                                            // initSocketConnection();
-                                            // sendDataToServer('EditJob');
-                                            // await EditDataToAPI();
-                                            // await initSocketConnection();
-                                            // await sendDataToServer('EditJob');
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.pink,
-                                        shadowColor: Colors.pinkAccent,
-                                        elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                          side: BorderSide(color: Colors.pink, width: 2),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        spacing: 5,
-                                        children: const [
-                                          Text(
-                                            'START JOB',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          spacing: 5,
+                                          children: const [
+                                            Text(
+                                              'Finish Job',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          Icon(
-                                            Icons.start_rounded,
-                                            color: Colors.pink,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                if (item.STATUS == 'RECEIVED')
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await showEditConfirmationDialog(
-                                          context: context,
-                                          onConfirm: () async {
-                                            updateMultipleDatesAll();
-                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                            _EditDataToAPI();
-                                            // initSocketConnection();
-                                            // sendDataToServer('EditJob');
-                                            // await EditDataToAPI();
-                                            // await initSocketConnection();
-                                            // await sendDataToServer('EditJob');
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.amber,
-                                        shadowColor: Colors.amberAccent,
-                                        elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                          side: BorderSide(color: Colors.amber, width: 2),
-                                        ),
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        spacing: 5,
-                                        children: const [
-                                          Text(
-                                            'ยืนยันการแก้ไข',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                            Icon(
+                                              Icons.done_outline_rounded,
+                                              color: Colors.green,
                                             ),
-                                          ),
-                                          Icon(
-                                            Icons.edit_note_rounded,
-                                            color: Colors.amber,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                if (item.STATUS == 'START' && USERDATA.UserLV >= 5)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await showFinishConfirmationDialog(
-                                          context: context,
-                                          onConfirm: () async {
-                                            updateMultipleDatesAll();
-                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                            _FinishJobToAPI();
-                                            // initSocketConnection();
-                                            // sendDataToServer('FinishJob');
-                                            // await EditDataToAPI();
-                                            // await initSocketConnection();
-                                            // await sendDataToServer('CancelJob');
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.green,
-                                        shadowColor: Colors.greenAccent,
-                                        elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                          side: BorderSide(color: Colors.green, width: 2),
+                                          ],
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        spacing: 5,
-                                        children: const [
-                                          Text(
-                                            'Finish Job',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.done_outline_rounded,
-                                            color: Colors.green,
-                                          ),
-                                        ],
                                       ),
                                     ),
-                                  ),
-                                if ((item.STATUS == 'RECEIVED' || item.STATUS == 'START') &&
-                                    USERDATA.UserLV >= 5)
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        await showCancelConfirmationDialog(
-                                          context: context,
-                                          onConfirm: () async {
-                                            updateMultipleDatesAll();
-                                            P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                            // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                            _CancelJobToAPI();
-                                            // initSocketConnection();
-                                            // sendDataToServer('CancelJob');
-                                            // await EditDataToAPI();
-                                            // await initSocketConnection();
-                                            // await sendDataToServer('CancelJob');
-                                          },
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        foregroundColor: Colors.red,
-                                        shadowColor: Colors.redAccent,
-                                        elevation: 5,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
-                                          side: BorderSide(color: Colors.red, width: 2),
+                                  if ((item.STATUS == 'RECEIVED' || item.STATUS == 'START') &&
+                                      USERDATA.UserLV >= 5)
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          await showCancelConfirmationDialog(
+                                            context: context,
+                                            onConfirm: () async {
+                                              updateMultipleDatesAll();
+                                              P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                              // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                              _CancelJobToAPI();
+                                              // initSocketConnection();
+                                              // sendDataToServer('CancelJob');
+                                              // await EditDataToAPI();
+                                              // await initSocketConnection();
+                                              // await sendDataToServer('CancelJob');
+                                            },
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.red,
+                                          shadowColor: Colors.redAccent,
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                            side: BorderSide(color: Colors.red, width: 2),
+                                          ),
+                                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                         ),
-                                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        spacing: 5,
-                                        children: const [
-                                          Text(
-                                            'ยกเลิกงาน',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          spacing: 5,
+                                          children: const [
+                                            Text(
+                                              'ยกเลิกงาน',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          Icon(
-                                            Icons.cancel,
-                                            color: Colors.red,
-                                          ),
-                                        ],
+                                            Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -4084,126 +4089,444 @@ void showAddDialog(BuildContext context) {
                               ),
 
                               for (int i = 0; i < _visiblePartNameCount + 1 && i < 10; i++) ...[
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: partNameControllers[i],
-                                  focusNode: partNameFocusNodes[i],
-                                  labelText: "Part Name ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    partNameVAR[i] = value;
-                                    P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
-                                    P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
-                                    P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
-                                    P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
-                                    P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
-                                    P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
-                                    P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
-                                    P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
-                                    P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
-                                    P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: partNameControllers[i],
+                                        focusNode: partNameFocusNodes[i],
+                                        labelText: "Part Name ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          partNameVAR[i] = value;
+                                          P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
+                                          P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
+                                          P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
+                                          P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
+                                          P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
+                                          P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
+                                          P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
+                                          P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
+                                          P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
+                                          P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (partNameControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              partNameControllers[i].text = '-';
+                                              partNameVAR[i] = '-';
+                                              P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
+                                              P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
+                                              P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
+                                              P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
+                                              P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
+                                              P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
+                                              P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
+                                              P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
+                                              P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
+                                              P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (partNameControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              partNameControllers[i].clear();
+                                              partNameVAR[i] = '';
+                                              P03DATATABLEVAR.PARTNAME1 = partNameVAR[0];
+                                              P03DATATABLEVAR.PARTNAME2 = partNameVAR[1];
+                                              P03DATATABLEVAR.PARTNAME3 = partNameVAR[2];
+                                              P03DATATABLEVAR.PARTNAME4 = partNameVAR[3];
+                                              P03DATATABLEVAR.PARTNAME5 = partNameVAR[4];
+                                              P03DATATABLEVAR.PARTNAME6 = partNameVAR[5];
+                                              P03DATATABLEVAR.PARTNAME7 = partNameVAR[6];
+                                              P03DATATABLEVAR.PARTNAME8 = partNameVAR[7];
+                                              P03DATATABLEVAR.PARTNAME9 = partNameVAR[8];
+                                              P03DATATABLEVAR.PARTNAME10 = partNameVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
                                 // for (int i = 0; i < _visiblePartNoCount + 1 && i < 10; i++)
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: partNoControllers[i],
-                                  focusNode: partNoFocusNodes[i],
-                                  labelText: "Part No ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    partNoVAR[i] = value;
-                                    P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
-                                    P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
-                                    P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
-                                    P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
-                                    P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
-                                    P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
-                                    P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
-                                    P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
-                                    P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
-                                    P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: partNoControllers[i],
+                                        focusNode: partNoFocusNodes[i],
+                                        labelText: "Part No ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          partNoVAR[i] = value;
+                                          P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
+                                          P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
+                                          P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
+                                          P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
+                                          P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
+                                          P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
+                                          P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
+                                          P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
+                                          P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
+                                          P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (partNoControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              partNoControllers[i].text = '-';
+                                              partNoVAR[i] = '-';
+                                              P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
+                                              P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
+                                              P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
+                                              P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
+                                              P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
+                                              P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
+                                              P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
+                                              P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
+                                              P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
+                                              P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (partNoControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              partNoControllers[i].clear();
+                                              partNoVAR[i] = '';
+                                              P03DATATABLEVAR.PARTNO1 = partNoVAR[0];
+                                              P03DATATABLEVAR.PARTNO2 = partNoVAR[1];
+                                              P03DATATABLEVAR.PARTNO3 = partNoVAR[2];
+                                              P03DATATABLEVAR.PARTNO4 = partNoVAR[3];
+                                              P03DATATABLEVAR.PARTNO5 = partNoVAR[4];
+                                              P03DATATABLEVAR.PARTNO6 = partNoVAR[5];
+                                              P03DATATABLEVAR.PARTNO7 = partNoVAR[6];
+                                              P03DATATABLEVAR.PARTNO8 = partNoVAR[7];
+                                              P03DATATABLEVAR.PARTNO9 = partNoVAR[8];
+                                              P03DATATABLEVAR.PARTNO10 = partNoVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: lotNoControllers[i],
-                                  focusNode: lotNoFocusNodes[i],
-                                  labelText: "Lot No ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    lotNoVAR[i] = value;
-                                    P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
-                                    P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
-                                    P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
-                                    P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
-                                    P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
-                                    P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
-                                    P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
-                                    P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
-                                    P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
-                                    P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: lotNoControllers[i],
+                                        focusNode: lotNoFocusNodes[i],
+                                        labelText: "Lot No ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          lotNoVAR[i] = value;
+                                          P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
+                                          P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
+                                          P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
+                                          P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
+                                          P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
+                                          P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
+                                          P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
+                                          P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
+                                          P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
+                                          P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (lotNoControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              lotNoControllers[i].text = '-';
+                                              lotNoVAR[i] = '-';
+                                              P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
+                                              P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
+                                              P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
+                                              P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
+                                              P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
+                                              P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
+                                              P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
+                                              P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
+                                              P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
+                                              P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (lotNoControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              lotNoControllers[i].clear();
+                                              lotNoVAR[i] = '';
+                                              P03DATATABLEVAR.LOTNO1 = lotNoVAR[0];
+                                              P03DATATABLEVAR.LOTNO2 = lotNoVAR[1];
+                                              P03DATATABLEVAR.LOTNO3 = lotNoVAR[2];
+                                              P03DATATABLEVAR.LOTNO4 = lotNoVAR[3];
+                                              P03DATATABLEVAR.LOTNO5 = lotNoVAR[4];
+                                              P03DATATABLEVAR.LOTNO6 = lotNoVAR[5];
+                                              P03DATATABLEVAR.LOTNO7 = lotNoVAR[6];
+                                              P03DATATABLEVAR.LOTNO8 = lotNoVAR[7];
+                                              P03DATATABLEVAR.LOTNO9 = lotNoVAR[8];
+                                              P03DATATABLEVAR.LOTNO10 = lotNoVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: amountControllers[i],
-                                  focusNode: amountFocusNodes[i],
-                                  labelText: "Amount ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    amountVAR[i] = value;
-                                    P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
-                                    P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
-                                    P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
-                                    P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
-                                    P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
-                                    P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
-                                    P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
-                                    P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
-                                    P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
-                                    P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: amountControllers[i],
+                                        focusNode: amountFocusNodes[i],
+                                        labelText: "Amount ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          amountVAR[i] = value;
+                                          P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
+                                          P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
+                                          P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
+                                          P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
+                                          P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
+                                          P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
+                                          P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
+                                          P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
+                                          P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
+                                          P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (amountControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              amountControllers[i].text = '-';
+                                              amountVAR[i] = '-';
+                                              P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
+                                              P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
+                                              P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
+                                              P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
+                                              P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
+                                              P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
+                                              P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
+                                              P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
+                                              P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
+                                              P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (amountControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              amountControllers[i].clear();
+                                              amountVAR[i] = '';
+                                              P03DATATABLEVAR.AMOUNT1 = amountVAR[0];
+                                              P03DATATABLEVAR.AMOUNT2 = amountVAR[1];
+                                              P03DATATABLEVAR.AMOUNT3 = amountVAR[2];
+                                              P03DATATABLEVAR.AMOUNT4 = amountVAR[3];
+                                              P03DATATABLEVAR.AMOUNT5 = amountVAR[4];
+                                              P03DATATABLEVAR.AMOUNT6 = amountVAR[5];
+                                              P03DATATABLEVAR.AMOUNT7 = amountVAR[6];
+                                              P03DATATABLEVAR.AMOUNT8 = amountVAR[7];
+                                              P03DATATABLEVAR.AMOUNT9 = amountVAR[8];
+                                              P03DATATABLEVAR.AMOUNT10 = amountVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: materialControllers[i],
-                                  focusNode: materialFocusNodes[i],
-                                  labelText: "Material ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    materialVAR[i] = value;
-                                    P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
-                                    P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
-                                    P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
-                                    P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
-                                    P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
-                                    P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
-                                    P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
-                                    P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
-                                    P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
-                                    P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: materialControllers[i],
+                                        focusNode: materialFocusNodes[i],
+                                        labelText: "Material ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          materialVAR[i] = value;
+                                          P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
+                                          P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
+                                          P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
+                                          P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
+                                          P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
+                                          P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
+                                          P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
+                                          P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
+                                          P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
+                                          P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (materialControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              materialControllers[i].text = '-';
+                                              materialVAR[i] = '-';
+                                              P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
+                                              P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
+                                              P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
+                                              P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
+                                              P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
+                                              P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
+                                              P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
+                                              P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
+                                              P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
+                                              P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (materialControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              materialControllers[i].clear();
+                                              materialVAR[i] = '';
+                                              P03DATATABLEVAR.MATERIAL1 = materialVAR[0];
+                                              P03DATATABLEVAR.MATERIAL2 = materialVAR[1];
+                                              P03DATATABLEVAR.MATERIAL3 = materialVAR[2];
+                                              P03DATATABLEVAR.MATERIAL4 = materialVAR[3];
+                                              P03DATATABLEVAR.MATERIAL5 = materialVAR[4];
+                                              P03DATATABLEVAR.MATERIAL6 = materialVAR[5];
+                                              P03DATATABLEVAR.MATERIAL7 = materialVAR[6];
+                                              P03DATATABLEVAR.MATERIAL8 = materialVAR[7];
+                                              P03DATATABLEVAR.MATERIAL9 = materialVAR[8];
+                                              P03DATATABLEVAR.MATERIAL10 = materialVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
-                                buildCustomField(
-                                  context: P03DATATABLEMAINcontext,
-                                  controller: processControllers[i],
-                                  focusNode: processFocusNodes[i],
-                                  labelText: "Process ${i + 1}",
-                                  icon: Icons.settings,
-                                  onChanged: (value) {
-                                    processVAR[i] = value;
-                                    P03DATATABLEVAR.PROCESS1 = processVAR[0];
-                                    P03DATATABLEVAR.PROCESS2 = processVAR[1];
-                                    P03DATATABLEVAR.PROCESS3 = processVAR[2];
-                                    P03DATATABLEVAR.PROCESS4 = processVAR[3];
-                                    P03DATATABLEVAR.PROCESS5 = processVAR[4];
-                                    P03DATATABLEVAR.PROCESS6 = processVAR[5];
-                                    P03DATATABLEVAR.PROCESS7 = processVAR[6];
-                                    P03DATATABLEVAR.PROCESS8 = processVAR[7];
-                                    P03DATATABLEVAR.PROCESS9 = processVAR[8];
-                                    P03DATATABLEVAR.PROCESS10 = processVAR[9];
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: buildCustomField(
+                                        context: P03DATATABLEMAINcontext,
+                                        controller: processControllers[i],
+                                        focusNode: processFocusNodes[i],
+                                        labelText: "Process ${i + 1}",
+                                        icon: Icons.settings,
+                                        onChanged: (value) {
+                                          processVAR[i] = value;
+                                          P03DATATABLEVAR.PROCESS1 = processVAR[0];
+                                          P03DATATABLEVAR.PROCESS2 = processVAR[1];
+                                          P03DATATABLEVAR.PROCESS3 = processVAR[2];
+                                          P03DATATABLEVAR.PROCESS4 = processVAR[3];
+                                          P03DATATABLEVAR.PROCESS5 = processVAR[4];
+                                          P03DATATABLEVAR.PROCESS6 = processVAR[5];
+                                          P03DATATABLEVAR.PROCESS7 = processVAR[6];
+                                          P03DATATABLEVAR.PROCESS8 = processVAR[7];
+                                          P03DATATABLEVAR.PROCESS9 = processVAR[8];
+                                          P03DATATABLEVAR.PROCESS10 = processVAR[9];
+                                        },
+                                      ),
+                                    ),
+                                    if (processControllers[i].text.isEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              processControllers[i].text = '-';
+                                              processVAR[i] = '-';
+                                              P03DATATABLEVAR.PROCESS1 = processVAR[0];
+                                              P03DATATABLEVAR.PROCESS2 = processVAR[1];
+                                              P03DATATABLEVAR.PROCESS3 = processVAR[2];
+                                              P03DATATABLEVAR.PROCESS4 = processVAR[3];
+                                              P03DATATABLEVAR.PROCESS5 = processVAR[4];
+                                              P03DATATABLEVAR.PROCESS6 = processVAR[5];
+                                              P03DATATABLEVAR.PROCESS7 = processVAR[6];
+                                              P03DATATABLEVAR.PROCESS8 = processVAR[7];
+                                              P03DATATABLEVAR.PROCESS9 = processVAR[8];
+                                              P03DATATABLEVAR.PROCESS10 = processVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    if (processControllers[i].text.isNotEmpty)
+                                      Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.clear, color: Colors.grey),
+                                          onPressed: () {
+                                            setState(() {
+                                              processControllers[i].clear();
+                                              processVAR[i] = '';
+                                              P03DATATABLEVAR.PROCESS1 = processVAR[0];
+                                              P03DATATABLEVAR.PROCESS2 = processVAR[1];
+                                              P03DATATABLEVAR.PROCESS3 = processVAR[2];
+                                              P03DATATABLEVAR.PROCESS4 = processVAR[3];
+                                              P03DATATABLEVAR.PROCESS5 = processVAR[4];
+                                              P03DATATABLEVAR.PROCESS6 = processVAR[5];
+                                              P03DATATABLEVAR.PROCESS7 = processVAR[6];
+                                              P03DATATABLEVAR.PROCESS8 = processVAR[7];
+                                              P03DATATABLEVAR.PROCESS9 = processVAR[8];
+                                              P03DATATABLEVAR.PROCESS10 = processVAR[9];
+                                            });
+                                          },
+                                        ),
+                                      )
+                                  ],
                                 ),
                               ],
                               if (_visiblePartNameCount < 9)
