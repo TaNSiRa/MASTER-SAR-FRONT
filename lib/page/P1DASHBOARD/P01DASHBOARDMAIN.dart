@@ -1761,9 +1761,9 @@ void checkForNotification(BuildContext context) {
       try {
         DateTime startDate = DateFormat('dd-MM-yy HH:mm').parse(item['STARTDATE']!);
         final difference = now.difference(startDate).inSeconds;
-        if (difference >= (1799.5) && difference <= (1800)) {
+        if (difference >= (599.5) && difference <= (600)) {
           showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item['STARTDATE']!,
-              item['CHECKBOX']!, "กรุณานำงานเข้า", 0, "รอนำงานเข้า");
+              item['CHECKBOX']!, "อีก 10 นาที กรุณานำงานเข้า", 0, "รอนำงานเข้า");
           continue;
         }
       } catch (e) {
@@ -1781,7 +1781,7 @@ void checkForNotification(BuildContext context) {
           // print(now);
           // print(finishDate);
           // print(difference);
-          if (difference >= (1799.5) && difference <= (1800)) {
+          if (difference >= (599.5) && difference <= (600)) {
             double percentage = (i / totalFinishDates) * 100;
             if (i == 10) {
               showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
@@ -1797,7 +1797,7 @@ void checkForNotification(BuildContext context) {
                 break;
               } else {
                 showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
-                    "หยุดครั้งที่ $i / $totalFinishDates", percentage, item[key2]!);
+                    "อีก 10 นาที หยุดครั้งที่ $i / $totalFinishDates", percentage, item[key2]!);
                 break;
               }
             }

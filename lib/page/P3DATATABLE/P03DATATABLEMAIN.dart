@@ -2463,30 +2463,32 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                   item.INCHARGE = value;
                                 },
                               ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: ApprovedDateController,
-                                focusNode: ApprovedDateFocusNode,
-                                labelText: "Approved Date",
-                                icon: Icons.calendar_month_rounded,
-                                onChanged: (value) {
-                                  EditTextController(
-                                    controller: ApprovedDateController,
-                                    value: value,
-                                  );
-                                },
-                              ),
-                              buildCustomField(
-                                context: P03DATATABLEMAINcontext,
-                                controller: ApprovedByController,
-                                focusNode: ApprovedByFocusNode,
-                                labelText: "Approved By",
-                                icon: Icons.assignment,
-                                dropdownItems: P03DATATABLEVAR.dropdownApprover,
-                                onChanged: (value) {
-                                  item.APPROVEDBY = value;
-                                },
-                              ),
+                              if (USERDATA.UserLV >= 5) ...[
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: ApprovedDateController,
+                                  focusNode: ApprovedDateFocusNode,
+                                  labelText: "Approved Date",
+                                  icon: Icons.calendar_month_rounded,
+                                  onChanged: (value) {
+                                    EditTextController(
+                                      controller: ApprovedDateController,
+                                      value: value,
+                                    );
+                                  },
+                                ),
+                                buildCustomField(
+                                  context: P03DATATABLEMAINcontext,
+                                  controller: ApprovedByController,
+                                  focusNode: ApprovedByFocusNode,
+                                  labelText: "Approved By",
+                                  icon: Icons.assignment,
+                                  dropdownItems: P03DATATABLEVAR.dropdownApprover,
+                                  onChanged: (value) {
+                                    item.APPROVEDBY = value;
+                                  },
+                                ),
+                              ],
                               buildCustomFieldforEditData(
                                 controller: StatusController,
                                 focusNode: StatusFocusNode,
@@ -2516,20 +2518,22 @@ void showEditDialog(BuildContext context, P03DATATABLEGETDATAclass item) {
                                       padding: const EdgeInsets.all(8.0),
                                       child: ElevatedButton(
                                         onPressed: () async {
-                                          await showStartConfirmationDialog(
-                                            context: context,
-                                            onConfirm: () async {
-                                              updateMultipleDatesAll();
-                                              P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
-                                              // print(P03DATATABLEVAR.SendEditDataToAPI);
-                                              _StatJobToAPI();
-                                              // initSocketConnection();
-                                              // sendDataToServer('EditJob');
-                                              // await EditDataToAPI();
-                                              // await initSocketConnection();
-                                              // await sendDataToServer('EditJob');
-                                            },
-                                          );
+                                          if (_formKey.currentState!.validate()) {
+                                            await showStartConfirmationDialog(
+                                              context: context,
+                                              onConfirm: () async {
+                                                updateMultipleDatesAll();
+                                                P03DATATABLEVAR.SendEditDataToAPI = jsonEncode(item.toJson());
+                                                // print(P03DATATABLEVAR.SendEditDataToAPI);
+                                                _StatJobToAPI();
+                                                // initSocketConnection();
+                                                // sendDataToServer('EditJob');
+                                                // await EditDataToAPI();
+                                                // await initSocketConnection();
+                                                // await sendDataToServer('EditJob');
+                                              },
+                                            );
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.white,
