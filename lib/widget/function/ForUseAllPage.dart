@@ -564,6 +564,20 @@ String formatDate(String? date) {
   }
 }
 
+String formatSamplingDate(String? date) {
+  if (date == null || date.isEmpty) return '-';
+  try {
+    DateTime parsedDate = DateTime.parse(date);
+    // if (parsedDate.hour == 0 && parsedDate.minute == 0 && parsedDate.second == 0) {
+    //   return DateFormat('dd-MM-yy').format(parsedDate);
+    // } else {
+    return DateFormat('dd-MM-yy HH:mm').format(parsedDate);
+    // }
+  } catch (e) {
+    return '';
+  }
+}
+
 DateTime? convertStringToDateTime(String input) {
   try {
     if (input == '') {
