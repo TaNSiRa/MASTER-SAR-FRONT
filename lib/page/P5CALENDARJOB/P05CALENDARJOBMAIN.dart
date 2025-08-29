@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, use_build_context_synchronously, unnecessary_to_list_in_spreads, avoid_web_libraries_in_flutter, avoid_print, deprecated_member_use
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +11,7 @@ import '../../bloc/BlocEvent/05-01-P05CALENDARJOBGETDATA.dart';
 import '../../data/global.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/function/ForUseAllPage.dart';
+import '../P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import 'P05CALENDARJOBVAR.dart';
 
 late BuildContext P05CALENDARJOBMAINcontext;
@@ -30,6 +34,14 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
     super.initState();
     context.read<P05CALENDARJOBGETDATA_Bloc>().add(P05CALENDARJOBGETDATA_GET());
     PageName = 'CALENDAR JOB';
+    timer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    // socket.dispose();
+    super.dispose();
   }
 
   List<Map<String, dynamic>> getJobsForDate(DateTime targetDate, List<P05CALENDARJOBGETDATAclass> data) {
@@ -37,29 +49,37 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
 
     for (var item in data) {
       DateTime? startDate;
-      List<DateTime?> finishDates = [];
+      List<Map<String, dynamic>> finishDateMaps = []; // เก็บคู่ finishDate + time
 
       try {
         startDate = convertStringToDateTime(item.STARTDATE);
 
-        List<String?> finishDateStrings = [
-          item.FINISHDATE1,
-          item.FINISHDATE2,
-          item.FINISHDATE3,
-          item.FINISHDATE4,
-          item.FINISHDATE5,
-          item.FINISHDATE6,
-          item.FINISHDATE7,
-          item.FINISHDATE8,
-          item.FINISHDATE9,
-          item.FINISHDATE10,
+        // สร้าง list map ของ finishDate+time
+        List<Map<String, dynamic>> finishDateAndTimes = [
+          {'date': item.FINISHDATE1, 'time': item.TIME1},
+          {'date': item.FINISHDATE2, 'time': item.TIME2},
+          {'date': item.FINISHDATE3, 'time': item.TIME3},
+          {'date': item.FINISHDATE4, 'time': item.TIME4},
+          {'date': item.FINISHDATE5, 'time': item.TIME5},
+          {'date': item.FINISHDATE6, 'time': item.TIME6},
+          {'date': item.FINISHDATE7, 'time': item.TIME7},
+          {'date': item.FINISHDATE8, 'time': item.TIME8},
+          {'date': item.FINISHDATE9, 'time': item.TIME9},
+          {'date': item.FINISHDATE10, 'time': item.TIME10},
         ];
 
-        for (var dateStr in finishDateStrings) {
+        for (var map in finishDateAndTimes) {
+          var dateStr = map['date'] as String?;
           if (dateStr != null && dateStr.trim().isNotEmpty) {
             DateTime? finishDate = convertStringToDateTime(dateStr);
             if (finishDate != null) {
-              finishDates.add(finishDate);
+              String onlyTime =
+                  "${finishDate.hour.toString().padLeft(2, '0')}:${finishDate.minute.toString().padLeft(2, '0')}";
+              finishDateMaps.add({
+                'date': finishDate,
+                'time': map['time'],
+                'onlyTime': onlyTime,
+              });
             }
           }
         }
@@ -74,29 +94,48 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
       DateTime startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
 
       List<String> statusesForDay = [];
+      List<dynamic> timesForDay = [];
+      List<String> onlyTimesForDay = [];
 
       if (targetDateOnly.isAtSameMomentAs(startDateOnly)) {
         statusesForDay.add('START');
       }
 
-      for (int i = 0; i < finishDates.length; i++) {
-        DateTime? finishDate = finishDates[i];
-        if (finishDate != null) {
-          DateTime finishDateOnly = DateTime(finishDate.year, finishDate.month, finishDate.day);
-          if (targetDateOnly.isAtSameMomentAs(finishDateOnly)) {
-            if (i == finishDates.length - 1) {
-              statusesForDay.add('FINISH');
-            } else {
-              statusesForDay.add('STOP');
-            }
+      for (int i = 0; i < finishDateMaps.length; i++) {
+        var finishDate = finishDateMaps[i]['date'] as DateTime;
+        var timeValue = finishDateMaps[i]['time'];
+        var onlyTime = finishDateMaps[i]['onlyTime'] as String;
+
+        DateTime finishDateOnly = DateTime(finishDate.year, finishDate.month, finishDate.day);
+
+        if (targetDateOnly.isAtSameMomentAs(finishDateOnly)) {
+          if (i == finishDateMaps.length - 1) {
+            statusesForDay.add('FINISH');
+          } else {
+            statusesForDay.add('STOP');
           }
+          // เพิ่ม time (ถ้าเป็น int นาที -> เก็บ int, ถ้าอยากแปลงเป็น HH:mm ก็ format เพิ่มได้)
+          timesForDay.add(timeValue);
+          onlyTimesForDay.add(onlyTime);
         }
       }
 
       if (statusesForDay.isNotEmpty) {
+        String? startTimeStr;
+        if (item.STARTDATE.trim().isNotEmpty) {
+          DateTime? startDateTime = convertStringToDateTime(item.STARTDATE);
+          if (startDateTime != null) {
+            startTimeStr =
+                "${startDateTime.hour.toString().padLeft(2, '0')}:${startDateTime.minute.toString().padLeft(2, '0')}";
+          }
+        }
         jobsForDate.add({
           'request_no': item.REQUESTNO,
+          'status': item.STATUS,
           'statuses': statusesForDay,
+          'times': timesForDay,
+          'onlyTimes': onlyTimesForDay,
+          'startTime': startTimeStr,
         });
       }
     }
@@ -107,6 +146,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
   @override
   Widget build(BuildContext context) {
     P05CALENDARJOBMAINcontext = context;
+    startChecking(P05CALENDARJOBMAINcontext);
     List<P05CALENDARJOBGETDATAclass> _datain = widget.data ?? [];
     List<P05CALENDARJOBGETDATAclass> monthData = _datain.where((data) {
       DateTime? start;
@@ -554,15 +594,43 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                               color: Colors.transparent,
                                             ),
                                             child: SingleChildScrollView(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: jobsForDate.map((job) {
-                                                  return Container(
-                                                    margin: const EdgeInsets.only(bottom: 2),
-                                                    child: Row(
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
+                                              scrollDirection: Axis.horizontal,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: jobsForDate.map((job) {
+                                                    // print(job);
+                                                    return Container(
+                                                      margin: const EdgeInsets.only(bottom: 2),
+                                                      child: Row(
+                                                        children: [
+                                                          if (job['status'] != 'RECEIVED' ||
+                                                              (job['status'] == 'RECEIVED' &&
+                                                                  job['statuses'][0] != 'START')) ...[
+                                                            ...job['statuses'].map<Widget>((status) {
+                                                              return Container(
+                                                                margin: const EdgeInsets.only(right: 1),
+                                                                width: 6,
+                                                                height: 6,
+                                                                decoration: BoxDecoration(
+                                                                  color: getStatusColor(status),
+                                                                  shape: BoxShape.circle,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: getStatusColor(status)
+                                                                          .withOpacity(0.3),
+                                                                      spreadRadius: 0,
+                                                                      blurRadius: 2,
+                                                                      offset: const Offset(0, 1),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          ],
+                                                          const SizedBox(width: 2),
+                                                          Text(
                                                             job['request_no'],
                                                             style: TextStyle(
                                                               fontSize: 14,
@@ -575,32 +643,59 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
                                                             ),
                                                             overflow: TextOverflow.ellipsis,
                                                           ),
-                                                        ),
-                                                        const SizedBox(width: 2),
-                                                        ...job['statuses'].map<Widget>((status) {
-                                                          return Container(
-                                                            margin: const EdgeInsets.only(right: 1),
-                                                            width: 6,
-                                                            height: 6,
-                                                            decoration: BoxDecoration(
-                                                              color: getStatusColor(status),
-                                                              shape: BoxShape.circle,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color:
-                                                                      getStatusColor(status).withOpacity(0.3),
-                                                                  spreadRadius: 0,
-                                                                  blurRadius: 2,
-                                                                  offset: const Offset(0, 1),
-                                                                ),
-                                                              ],
+                                                          if (job['statuses'][0] == 'START') ...[
+                                                            const SizedBox(width: 2),
+                                                            Text(
+                                                              '(${job['startTime']})',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: isToday
+                                                                    ? const Color(0xFF374151)
+                                                                    : isHoliday(date)
+                                                                        ? const Color(0xFFD63384)
+                                                                        : const Color(0xFF374151),
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
                                                             ),
-                                                          );
-                                                        }).toList(),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }).toList(),
+                                                          ],
+                                                          const SizedBox(width: 2),
+                                                          ...job['times'].map<Widget>((status) {
+                                                            return Text(
+                                                              '($status)',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: isToday
+                                                                    ? const Color(0xFF374151)
+                                                                    : isHoliday(date)
+                                                                        ? const Color(0xFFD63384)
+                                                                        : const Color(0xFF374151),
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            );
+                                                          }).toList(),
+                                                          const SizedBox(width: 2),
+                                                          ...job['onlyTimes'].map<Widget>((status) {
+                                                            return Text(
+                                                              '($status)',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: isToday
+                                                                    ? const Color(0xFF374151)
+                                                                    : isHoliday(date)
+                                                                        ? const Color(0xFFD63384)
+                                                                        : const Color(0xFF374151),
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            );
+                                                          }).toList(),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
                                               ),
                                             ),
                                           ),

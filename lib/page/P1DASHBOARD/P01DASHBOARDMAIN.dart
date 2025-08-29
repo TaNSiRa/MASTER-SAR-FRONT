@@ -48,7 +48,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
 
     // dashboardBloc = context.read<P01DASHBOARDGETDATA_Bloc>();
     StartDateToDateTimeGlobal = DateTime.now();
-    timer?.cancel();
+    // timer?.cancel();
     startChecking(context);
     timerRefreshUI = Timer.periodic(Duration(seconds: 5), (timer) {
       // print('refresh...');
@@ -65,6 +65,7 @@ class _P01DASHBOARDMAINState extends State<P01DASHBOARDMAIN> {
   @override
   void dispose() {
     timerRefreshUI?.cancel();
+    timer?.cancel();
     // socket.dispose();
     super.dispose();
   }
@@ -1752,7 +1753,7 @@ void startChecking(BuildContext context) {
 void checkForNotification(BuildContext context) {
   final now = DateTime.now();
   // print(ForAlarm);
-  // print('in Checking...');
+  print('in Checking...');
   for (var item in ForAlarm) {
     // print('repeat...');
     int totalFinishDates = countNonEmptyFinishDates(item);
@@ -1761,9 +1762,24 @@ void checkForNotification(BuildContext context) {
       try {
         DateTime startDate = DateFormat('dd-MM-yy HH:mm').parse(item['STARTDATE']!);
         final difference = now.difference(startDate).inSeconds;
-        if (difference >= (599.5) && difference <= (600)) {
-          showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item['STARTDATE']!,
-              item['CHECKBOX']!, "อีก 10 นาที กรุณานำงานเข้า", 0, "รอนำงานเข้า");
+        if (item['REQUESTNO'] == 'test') {
+          print(now);
+          print(startDate);
+          print(difference);
+          print('before 10 min');
+        }
+        if (difference >= (-600) && difference <= (-599.5)) {
+          // print('innnn');
+          showAlert(
+              context,
+              item['INSTRUMENT']!,
+              item['CUSTOMERNAME']!,
+              item['STARTDATE']!,
+              item['CHECKBOX']!,
+              "อีก 10 นาที กรุณานำงานเข้า",
+              0,
+              "รอนำงานเข้า",
+              'assets/alertalarm/alarmIn.wav');
           continue;
         }
       } catch (e) {
@@ -1778,14 +1794,16 @@ void checkForNotification(BuildContext context) {
         try {
           DateTime finishDate = DateFormat('dd-MM-yy HH:mm').parse(dateString);
           final difference = finishDate.difference(now).inSeconds;
-          // print(now);
-          // print(finishDate);
-          // print(difference);
+          if (item['REQUESTNO'] == 'test') {
+            print(now);
+            print(finishDate);
+            print(difference);
+          }
           if (difference >= (599.5) && difference <= (600)) {
             double percentage = (i / totalFinishDates) * 100;
             if (i == 10) {
               showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
-                  "ถึงเวลาเอางานออก", percentage, "ครบแล้ว");
+                  "ถึงเวลาเอางานออก", percentage, "ครบแล้ว", "assets/alertalarm/alarmOut.wav");
               break;
             } else {
               String key2 = 'FINISHDATE${i + 1}';
@@ -1793,11 +1811,19 @@ void checkForNotification(BuildContext context) {
 
               if (dateString2 == null || dateString2.isEmpty) {
                 showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
-                    "ถึงเวลาเอางานออก", percentage, "ครบแล้ว");
+                    "ถึงเวลาเอางานออก", percentage, "ครบแล้ว", "assets/alertalarm/alarmOut.wav");
                 break;
               } else {
-                showAlert(context, item['INSTRUMENT']!, item['CUSTOMERNAME']!, item[key]!, item['CHECKBOX']!,
-                    "อีก 10 นาที หยุดครั้งที่ $i / $totalFinishDates", percentage, item[key2]!);
+                showAlert(
+                    context,
+                    item['INSTRUMENT']!,
+                    item['CUSTOMERNAME']!,
+                    item[key]!,
+                    item['CHECKBOX']!,
+                    "อีก 10 นาที หยุดครั้งที่ $i / $totalFinishDates",
+                    percentage,
+                    item[key2]!,
+                    "assets/alertalarm/alarmOut.wav");
                 break;
               }
             }
@@ -1823,14 +1849,14 @@ int countNonEmptyFinishDates(Map<String, String> item) {
 }
 
 void showAlert(BuildContext context, String instrument, String customerName, String finishDate,
-    String checkbox, String StopFinish, double percentage, String NextFinish) {
+    String checkbox, String StopFinish, double percentage, String NextFinish, String? alarm) {
   final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer();
   bool isMuted = false;
   bool isPlaying = true;
 
   void startAlarm() {
     _audioPlayer.open(
-      Audio('assets/alertalarm/alarm.wav'),
+      Audio(alarm ?? 'assets/alertalarm/alarm.wav'),
       autoStart: true,
       loopMode: LoopMode.single,
       showNotification: false,
