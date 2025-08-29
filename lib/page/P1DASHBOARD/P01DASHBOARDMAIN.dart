@@ -1763,10 +1763,10 @@ void checkForNotification(BuildContext context) {
         DateTime startDate = DateFormat('dd-MM-yy HH:mm').parse(item['STARTDATE']!);
         final difference = now.difference(startDate).inSeconds;
         if (item['REQUESTNO'] == 'test') {
-          print(now);
-          print(startDate);
-          print(difference);
-          print('before 10 min');
+          // print(now);
+          // print(startDate);
+          // print(difference);
+          // print('before 10 min');
         }
         if (difference >= (-600) && difference <= (-599.5)) {
           // print('innnn');
@@ -1795,9 +1795,9 @@ void checkForNotification(BuildContext context) {
           DateTime finishDate = DateFormat('dd-MM-yy HH:mm').parse(dateString);
           final difference = finishDate.difference(now).inSeconds;
           if (item['REQUESTNO'] == 'test') {
-            print(now);
-            print(finishDate);
-            print(difference);
+            // print(now);
+            // print(finishDate);
+            // print(difference);
           }
           if (difference >= (599.5) && difference <= (600)) {
             double percentage = (i / totalFinishDates) * 100;
