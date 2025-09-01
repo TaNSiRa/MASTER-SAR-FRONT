@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, non_constant_identifier_names, file_names, no_leading_underscores_for_local_identifiers, use_build_context_synchronously, unnecessary_to_list_in_spreads, avoid_web_libraries_in_flutter, avoid_print, deprecated_member_use
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

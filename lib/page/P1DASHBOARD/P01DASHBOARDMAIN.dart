@@ -1508,11 +1508,11 @@ Future<void> fetchInstrumentData() async {
       // Navigator.pop(P01DASHBOARDMAINcontext);
     } else {
       // Navigator.pop();
-      showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
+      // showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
     }
   } catch (e) {
     print("Error: $e");
-    showErrorPopup(P01DASHBOARDMAINcontext, e.toString());
+    // showErrorPopup(P01DASHBOARDMAINcontext, e.toString());
   } finally {
     // Navigator.pop(P01DASHBOARDMAINcontext);
   }

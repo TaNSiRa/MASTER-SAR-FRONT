@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/global.dart';
 import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
 import '../../page/P1DASHBOARD/P01DASHBOARDVAR.dart';
-import '../../widget/common/ErrorPopup.dart';
 import '../../widget/function/ForUseAllPage.dart';
 
 //-------------------------------------------------
@@ -194,27 +193,27 @@ class P01DASHBOARDGETDATA_Bloc extends Bloc<P01DASHBOARDGETDATA_Event, List<P01D
         emit(output);
       } else {
         // Navigator.pop(P01DASHBOARDMAINcontext);
-        showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
-        Future.delayed(const Duration(seconds: 5), () {
-          if (Navigator.of(P01DASHBOARDMAINcontext).canPop()) {
-            Navigator.of(P01DASHBOARDMAINcontext).pop();
-          }
-        });
+        // showErrorPopup(P01DASHBOARDMAINcontext, response.toString());
+        // Future.delayed(const Duration(seconds: 5), () {
+        //   if (Navigator.of(P01DASHBOARDMAINcontext).canPop()) {
+        //     Navigator.of(P01DASHBOARDMAINcontext).pop();
+        //   }
+        // });
         output = [];
         emit(output);
       }
     } on DioException catch (e) {
       // Navigator.pop(P01DASHBOARDMAINcontext);
       if (e.type == DioExceptionType.sendTimeout) {
-        showErrorPopup(P01DASHBOARDMAINcontext, "Send timeout");
+        // showErrorPopup(P01DASHBOARDMAINcontext, "Send timeout");
       } else if (e.type == DioExceptionType.receiveTimeout) {
-        showErrorPopup(P01DASHBOARDMAINcontext, "Receive timeout");
+        // showErrorPopup(P01DASHBOARDMAINcontext, "Receive timeout");
       } else {
-        showErrorPopup(P01DASHBOARDMAINcontext, e.message ?? "Unknown Dio error");
+        // showErrorPopup(P01DASHBOARDMAINcontext, e.message ?? "Unknown Dio error");
       }
     } catch (e) {
       Navigator.pop(P01DASHBOARDMAINcontext);
-      showErrorPopup(P01DASHBOARDMAINcontext, e.toString());
+      // showErrorPopup(P01DASHBOARDMAINcontext, e.toString());
     }
   }
 
