@@ -86,6 +86,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/lottie/
+    - assets/fonts/
     - assets/alertalarm/alarm.wav
     - assets/alertalarm/alarmIn.wav
     - assets/alertalarm/alarmOut.wav
