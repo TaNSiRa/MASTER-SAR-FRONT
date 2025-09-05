@@ -29,7 +29,12 @@ Future<void> main() async {
   // HydratedBloc.storage = await HydratedStorage.build(
   //   storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getTemporaryDirectory(),
   // );
-  runApp(const MyApp());
+  runApp(
+    const DefaultTextStyle(
+      style: TextStyle(fontFamily: 'NotoSansThai'),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
