@@ -120,7 +120,6 @@ class MainBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainBodyContext = context;
-    initSocketConnection();
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(56),

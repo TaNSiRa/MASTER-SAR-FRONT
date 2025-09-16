@@ -7,9 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/BlocEvent/LoginEvent.dart';
+import '../../bloc/Cubit/ChangePageEventCUBIT.dart';
 import '../../data/global.dart';
 import '../../mainBody.dart';
-import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
+import '../../page/P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
+import '../../page/page1.dart';
 // import 'package:tpk_login_arsa_01/script/bloc/login/login_bloc.dart';
 // import 'package:tpk_login_arsa_01/script/bloc/login/login_event.dart';
 
@@ -36,6 +38,7 @@ class _App_BarState extends State<App_Bar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Logo2(),
+          if (PageName.contains('Master detail')) BackButton(),
           Logo1(),
           Spacer(),
           //Text(MediaQuery.of(context).size.width.toString()),
@@ -70,6 +73,35 @@ class Logo2 extends StatelessWidget {
           ),
           child: const Icon(
             Icons.menu_rounded,
+            size: 30,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BackButton extends StatelessWidget {
+  const BackButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18),
+      child: InkWell(
+        onTap: () {
+          MainBodyContext.read<ChangePage_Bloc>().ChangePage_nodrower('', const Page1());
+        },
+        child: Container(
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(
+            Icons.arrow_back_rounded,
             size: 30,
             color: Colors.black,
           ),
@@ -162,7 +194,7 @@ class Icon_profile extends StatelessWidget {
     return InkWell(
       onTap: () {
         LoginContext.read<Login_Bloc>().add(Logout());
-        timer?.cancel();
+        // timer?.cancel();
       },
       child: const Icon(
         Icons.logout,

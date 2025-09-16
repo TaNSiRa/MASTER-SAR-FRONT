@@ -100,7 +100,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                             end: Alignment.bottomRight,
                           ).createShader(bounds),
                           child: const Text(
-                            'Salt Spray Monitoring System : LOGIN',
+                            'MASTER-SAR : LOGIN',
                             style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
@@ -112,8 +112,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         TextField(
                           focusNode: userFocusNode,
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.person, color: Colors.blue),
+                            prefixIcon: const Icon(Icons.person, color: Colors.blue),
                             labelText: "User ID",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
@@ -125,8 +124,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                             logindata.userID = value;
                           },
                           onSubmitted: (value) {
-                            FocusScope.of(context)
-                                .requestFocus(passwordFocusNode);
+                            FocusScope.of(context).requestFocus(passwordFocusNode);
                           },
                         ),
                         const SizedBox(height: 20),
@@ -134,13 +132,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           focusNode: passwordFocusNode,
                           obscureText: _isObscure,
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.blue),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.blue),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                _isObscure ? Icons.visibility : Icons.visibility_off,
                                 color: Colors.blue,
                               ),
                               onPressed: () {

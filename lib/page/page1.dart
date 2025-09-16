@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/BlocEvent/01-01-P01DASHBOARDGETDATA.dart';
-import 'P1DASHBOARD/P01DASHBOARDMAIN.dart';
+import '../bloc/BlocEvent/01-01-P01GETALLCUSTOMER.dart';
+import 'P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
 
 //---------------------------------------------------------
 
@@ -22,9 +22,8 @@ class Page1blockget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => P01DASHBOARDGETDATA_Bloc(),
-        child: BlocBuilder<P01DASHBOARDGETDATA_Bloc,
-            List<P01DASHBOARDGETDATAclass>>(
+        create: (_) => P01ALLCUSTOMERGETDATA_Bloc(),
+        child: BlocBuilder<P01ALLCUSTOMERGETDATA_Bloc, List<P01ALLCUSTOMERGETDATAclass>>(
           builder: (context, data) {
             return Page1Body(
               data: data,
@@ -39,10 +38,10 @@ class Page1Body extends StatelessWidget {
     super.key,
     this.data,
   });
-  List<P01DASHBOARDGETDATAclass>? data;
+  List<P01ALLCUSTOMERGETDATAclass>? data;
   @override
   Widget build(BuildContext context) {
-    return P01DASHBOARDMAIN(
+    return P01ALLCUSTOMERMAIN(
       data: data,
     );
   }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../data/global.dart';
-import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
+import '../../page/P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
 
 late IO.Socket socket;
-// late P01DASHBOARDGETDATA_Bloc dashboardBloc;
+// late P01ALLCUSTOMERGETDATA_Bloc dashboardBloc;
 
 void initSocketConnection() {
   socket = IO.io(ToServer, <String, dynamic>{
@@ -23,10 +23,10 @@ void initSocketConnection() {
   // รับข้อมูลเพื่อรีเฟรช UI
   socket.on('Close popup', (data) {
     print('Close popup: $data');
-    // Navigator.pop(P01DASHBOARDMAINcontext);
-    Navigator.of(P01DASHBOARDMAINcontext).popUntil((route) => route.isFirst);
-    // P01DASHBOARDMAINcontext.read<P01DASHBOARDGETDATA_Bloc>().add(P01DASHBOARDGETDATA_GET());
-    // dashboardBloc.add(P01DASHBOARDGETDATA_GET());
+    // Navigator.pop(P01ALLCUSTOMERMAINcontext);
+    Navigator.of(P01ALLCUSTOMERMAINcontext).popUntil((route) => route.isFirst);
+    // P01ALLCUSTOMERMAINcontext.read<P01ALLCUSTOMERGETDATA_Bloc>().add(P01ALLCUSTOMERGETDATA_GET());
+    // dashboardBloc.add(P01ALLCUSTOMERGETDATA_GET());
   });
 
   // disconnect

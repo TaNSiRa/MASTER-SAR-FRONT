@@ -123,7 +123,7 @@ void FreeLoadingTan(BuildContext contextin) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            'assets/lottie/loading.json',
+            'assets/lottie/loadingGlobal.json',
             fit: BoxFit.contain,
             repeat: true,
             height: 300,

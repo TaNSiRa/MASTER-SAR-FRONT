@@ -10,7 +10,7 @@ import '../../bloc/BlocEvent/05-01-P05CALENDARJOBGETDATA.dart';
 import '../../data/global.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/function/ForUseAllPage.dart';
-import '../P1DASHBOARD/P01DASHBOARDMAIN.dart';
+import '../P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
 import 'P05CALENDARJOBVAR.dart';
 
 late BuildContext P05CALENDARJOBMAINcontext;
@@ -33,12 +33,12 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
     super.initState();
     context.read<P05CALENDARJOBGETDATA_Bloc>().add(P05CALENDARJOBGETDATA_GET());
     PageName = 'CALENDAR JOB';
-    timer?.cancel();
+    // timer?.cancel();
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    // timer?.cancel();
     // socket.dispose();
     super.dispose();
   }
@@ -145,7 +145,7 @@ class _P05CALENDARJOBMAINState extends State<P05CALENDARJOBMAIN> {
   @override
   Widget build(BuildContext context) {
     P05CALENDARJOBMAINcontext = context;
-    startChecking(P05CALENDARJOBMAINcontext);
+    // startChecking(P05CALENDARJOBMAINcontext);
     List<P05CALENDARJOBGETDATAclass> _datain = widget.data ?? [];
     List<P05CALENDARJOBGETDATAclass> monthData = _datain.where((data) {
       DateTime? start;

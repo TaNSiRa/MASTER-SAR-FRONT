@@ -133,7 +133,7 @@ Widget _buildSuccessDialog(BuildContext context, String textIn) {
             ),
             SizedBox(height: 10),
             Text(
-              "สำเร็จ!",
+              "Success!",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

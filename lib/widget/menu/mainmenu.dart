@@ -7,7 +7,7 @@ import '../../bloc/BlocEvent/LoginEvent.dart';
 import '../../bloc/Cubit/ChangePageEventCUBIT.dart';
 import '../../data/global.dart';
 import '../../mainBody.dart';
-import '../../page/P1DASHBOARD/P01DASHBOARDMAIN.dart';
+import '../../page/P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
 import '../../page/page1.dart';
 import '../../page/page10.dart';
 import '../../page/page3.dart';
@@ -140,67 +140,67 @@ class Data_Menu_mainmenu extends StatelessWidget {
                 child: Column(
                   children: [
                     menu_normal(
-                      name: "DASHBOARD",
+                      name: "All Customer",
                       page: const Page1(),
                       Lv: 1,
                       icon: Icons.dashboard,
                     ),
-                    menu_normal(
-                      name: "SALT SPRAY STATUS",
-                      page: const Page3(),
-                      Lv: 1,
-                      icon: Icons.water_drop,
-                    ),
-                    menu_normal(
-                      name: "INSTRUMENT ANALYTICS",
-                      page: const Page9(),
-                      Lv: 1,
-                      icon: Icons.analytics_outlined,
-                    ),
-                    menu_dropdown(
-                      name: "CALENDAR",
-                      icon: Icons.calendar_today,
-                      items: [
-                        DropdownMenuItem(
-                          name: "CALENDAR INSTRUMENT",
-                          page: const Page4(),
-                          icon: Icons.calendar_today,
-                        ),
-                        DropdownMenuItem(
-                          name: "CALENDAR JOB",
-                          page: const Page5(),
-                          icon: Icons.event_note,
-                        ),
-                      ],
-                    ),
-                    menu_dropdown(
-                      name: "EDIT",
-                      icon: Icons.edit,
-                      items: [
-                        DropdownMenuItem(
-                          name: "EDIT CUSTOMER",
-                          page: const Page6(),
-                          icon: Icons.person_outline,
-                        ),
-                        DropdownMenuItem(
-                          name: "EDIT REQUESTER",
-                          page: const Page10(),
-                          icon: Icons.person_3_outlined,
-                        ),
-                        if (USERDATA.UserLV >= 99 || USERDATA.Permission == 'Admin')
-                          DropdownMenuItem(
-                            name: "EDIT USER",
-                            page: const Page8(),
-                            icon: Icons.people_rounded,
-                          ),
-                      ],
-                    ),
-                    menu_normal(
-                      name: "CHANGE PASSWORD",
-                      page: const Page7(),
-                      Lv: 1,
-                      icon: Icons.lock_reset,
-                    ),
+                    // menu_normal(
+                    //   name: "SALT SPRAY STATUS",
+                    //   page: const Page3(),
+                    //   Lv: 1,
+                    //   icon: Icons.water_drop,
+                    // ),
+                    // menu_normal(
+                    //   name: "INSTRUMENT ANALYTICS",
+                    //   page: const Page9(),
+                    //   Lv: 1,
+                    //   icon: Icons.analytics_outlined,
+                    // ),
+                    // menu_dropdown(
+                    //   name: "CALENDAR",
+                    //   icon: Icons.calendar_today,
+                    //   items: [
+                    //     DropdownMenuItem(
+                    //       name: "CALENDAR INSTRUMENT",
+                    //       page: const Page4(),
+                    //       icon: Icons.calendar_today,
+                    //     ),
+                    //     DropdownMenuItem(
+                    //       name: "CALENDAR JOB",
+                    //       page: const Page5(),
+                    //       icon: Icons.event_note,
+                    //     ),
+                    //   ],
+                    // ),
+                    // menu_dropdown(
+                    //   name: "EDIT",
+                    //   icon: Icons.edit,
+                    //   items: [
+                    //     DropdownMenuItem(
+                    //       name: "EDIT CUSTOMER",
+                    //       page: const Page6(),
+                    //       icon: Icons.person_outline,
+                    //     ),
+                    //     DropdownMenuItem(
+                    //       name: "EDIT REQUESTER",
+                    //       page: const Page10(),
+                    //       icon: Icons.person_3_outlined,
+                    //     ),
+                    //     if (USERDATA.UserLV >= 99 || USERDATA.Permission == 'Admin')
+                    //       DropdownMenuItem(
+                    //         name: "EDIT USER",
+                    //         page: const Page8(),
+                    //         icon: Icons.people_rounded,
+                    //       ),
+                    //   ],
+                    // ),
+                    // menu_normal(
+                    //   name: "CHANGE PASSWORD",
+                    //   page: const Page7(),
+                    //   Lv: 1,
+                    //   icon: Icons.lock_reset,
+                    // ),
                   ],
                 ),
               ),
@@ -447,7 +447,7 @@ class menu_logout extends StatelessWidget {
     return InkWell(
       onTap: () {
         LoginContext.read<Login_Bloc>().add(Logout());
-        timer?.cancel();
+        // timer?.cancel();
       },
       borderRadius: BorderRadius.circular(15),
       child: Container(
