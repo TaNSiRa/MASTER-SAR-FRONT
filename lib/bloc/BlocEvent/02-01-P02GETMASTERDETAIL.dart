@@ -156,7 +156,10 @@ class P02MASTERDETAILGETDATA_Bloc extends Bloc<P02MASTERDETAILGETDATA_Event, P02
           toAdd.MasterLab = output;
         }
 
-        if (P02MASTERDETAILVAR.dropdownUser.isEmpty) {
+        if (P02MASTERDETAILVAR.dropdownUser.isEmpty ||
+            P02MASTERDETAILVAR.dropdownGroupName.isEmpty ||
+            P02MASTERDETAILVAR.dropdownSampleGroup.isEmpty ||
+            P02MASTERDETAILVAR.dropdownSampleType.isEmpty) {
           await getDropdown(P02MASTERDETAILMAINcontext);
         }
 

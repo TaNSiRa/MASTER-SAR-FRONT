@@ -15,10 +15,13 @@ import '../../bloc/Cubit/ChangePageEventCUBIT.dart';
 import '../../data/global.dart';
 
 import '../../mainBody.dart';
+import '../../widget/common/Advancedropdown.dart';
 import '../../widget/common/ComInputTextTan.dart';
 import '../P02MASTERDETAIL/P02MASTERDETAILVAR.dart';
 import '../page2.dart';
+import 'Function/api.dart';
 import 'Function/buildColumn.dart';
+import 'Function/exportExcel.dart';
 import 'Function/showDialog.dart';
 import 'P01ALLCUSTOMERVAR.dart';
 
@@ -58,13 +61,26 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
     P01ALLCUSTOMERMAINcontext = context;
     List<P01ALLCUSTOMERGETDATAclass> _datain = widget.data ?? [];
 
+    List<P01ALLCUSTOMERGETDATAclass> filteredData = _datain.where((data) {
+      final matchType =
+          (P01ALLCUSTOMERVAR.DropDownType == 'All' || data.TYPE == P01ALLCUSTOMERVAR.DropDownType);
+
+      final matchGroup =
+          (P01ALLCUSTOMERVAR.DropDownGroup == 'All' || data.GROUP == P01ALLCUSTOMERVAR.DropDownGroup);
+
+      final matchMKTGroup = (P01ALLCUSTOMERVAR.DropDownMKTGroup == 'All' ||
+          data.MKTGROUP == P01ALLCUSTOMERVAR.DropDownMKTGroup);
+
+      return matchType && matchGroup && matchMKTGroup;
+    }).toList();
+
     List<P01ALLCUSTOMERGETDATAclass> _datasearch = [];
     _datasearch.addAll(
-      _datain.where(
+      filteredData.where(
         (data) =>
             data.CustFull.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
             data.CustShort.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
-            data.GroupNameTS.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
+            data.Incharge.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
             data.TYPE.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
             data.GROUP.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
             data.MKTGROUP.toLowerCase().contains(P01ALLCUSTOMERVAR.search.toLowerCase()) ||
@@ -110,8 +126,8 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                 ascending ? a.CustShort.compareTo(b.CustShort) : b.CustShort.compareTo(a.CustShort));
             break;
           case 3:
-            dataToSort.sort((a, b) =>
-                ascending ? a.GroupNameTS.compareTo(b.GroupNameTS) : b.GroupNameTS.compareTo(a.GroupNameTS));
+            dataToSort.sort(
+                (a, b) => ascending ? a.Incharge.compareTo(b.Incharge) : b.Incharge.compareTo(a.Incharge));
             break;
           case 4:
             dataToSort.sort((a, b) => ascending ? a.TYPE.compareTo(b.TYPE) : b.TYPE.compareTo(a.TYPE));
@@ -173,6 +189,193 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                         },
                       ),
                       SizedBox(width: 10),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<P01ALLCUSTOMERGETDATA_Bloc>().add(P01ALLCUSTOMERGETDATA_GET());
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(10),
+                              ),
+                              child: const Icon(
+                                Icons.refresh_rounded,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'Refresh',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                String? result = await showSelectionDialog(context, 'Export Excel');
+                                if (result == 'MasterKPI') {
+                                  exportToExcelKPI(_datasearch);
+                                } else if (result == 'MasterTS') {
+                                  await getMasterTS(context);
+                                  exportToExcelTS(P01ALLCUSTOMERVAR.masterTS);
+                                } else if (result == 'MasterLab') {
+                                  await getMasterLab(context);
+                                  exportToExcelLab(P01ALLCUSTOMERVAR.masterLab);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(10),
+                              ),
+                              child: const Icon(
+                                Icons.download,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'Export Excel',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                showAddDialog(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(10),
+                              ),
+                              child: const Icon(
+                                Icons.person_add_alt_rounded,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              'New Customer',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'TYPE',
+                              textAlign: TextAlign.start,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          AdvanceDropDown(
+                            hint: "TYPE",
+                            listdropdown: const [
+                              MapEntry("All", "All"),
+                              MapEntry("A", "A"),
+                              MapEntry("B", "B"),
+                            ],
+                            onChangeinside: (d, k) {
+                              setState(() {
+                                P01ALLCUSTOMERVAR.DropDownType = d;
+                              });
+                            },
+                            value: P01ALLCUSTOMERVAR.DropDownType,
+                            height: 30,
+                            width: 100,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'GROUP',
+                              textAlign: TextAlign.start,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          AdvanceDropDown(
+                            hint: "GROUP",
+                            listdropdown: const [
+                              MapEntry("All", "All"),
+                              MapEntry("KAC", "KAC"),
+                              MapEntry("MEDIUM", "MEDIUM"),
+                            ],
+                            onChangeinside: (d, k) {
+                              setState(() {
+                                P01ALLCUSTOMERVAR.DropDownGroup = d;
+                              });
+                            },
+                            value: P01ALLCUSTOMERVAR.DropDownGroup,
+                            height: 30,
+                            width: 100,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              'MKT GROUP',
+                              textAlign: TextAlign.start,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          AdvanceDropDown(
+                            hint: "MKT GROUP",
+                            listdropdown: const [
+                              MapEntry("All", "All"),
+                              MapEntry("1", "1"),
+                              MapEntry("2", "2"),
+                              MapEntry("5", "5"),
+                              MapEntry("6", "6"),
+                            ],
+                            onChangeinside: (d, k) {
+                              setState(() {
+                                P01ALLCUSTOMERVAR.DropDownMKTGroup = d;
+                              });
+                            },
+                            value: P01ALLCUSTOMERVAR.DropDownMKTGroup,
+                            height: 30,
+                            width: 100,
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: 10),
                       MouseRegion(
                         onEnter: (_) {
                           setState(() {
@@ -191,6 +394,9 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                               P01ALLCUSTOMERVAR.isHoveredClear = false;
                               P01ALLCUSTOMERVAR.iscontrol = true;
                               P01ALLCUSTOMERVAR.search = '';
+                              P01ALLCUSTOMERVAR.DropDownType = 'All';
+                              P01ALLCUSTOMERVAR.DropDownGroup = 'All';
+                              P01ALLCUSTOMERVAR.DropDownMKTGroup = 'All';
                             });
                           },
                           child: AnimatedContainer(
@@ -253,59 +459,6 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<P01ALLCUSTOMERGETDATA_Bloc>().add(P01ALLCUSTOMERGETDATA_GET());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(10),
-                              ),
-                              child: const Icon(
-                                Icons.refresh_rounded,
-                                color: Colors.blue,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Refresh',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                exportToExcel(_datasearch);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(10),
-                              ),
-                              child: const Icon(
-                                Icons.download,
-                                color: Colors.blue,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Export Excel',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -335,7 +488,7 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                         buildStyledColumn('No.'),
                         buildSortableColumn('CustFull', 1, sortData),
                         buildSortableColumn('CustShort', 2, sortData),
-                        buildSortableColumn('Group Name TS', 3, sortData),
+                        buildSortableColumn('Incharge', 3, sortData),
                         buildSortableColumn('Type', 4, sortData),
                         buildSortableColumn('Group', 5, sortData),
                         buildSortableColumn('MKT Group', 6, sortData),
@@ -376,7 +529,7 @@ class SampleDataSource extends DataTableSource {
           )),
           DataCell(Text(item.CustFull, style: const TextStyle(fontSize: 12))),
           DataCell(Text(item.CustShort, style: const TextStyle(fontSize: 12))),
-          DataCell(Text(item.GroupNameTS, style: const TextStyle(fontSize: 12))),
+          DataCell(Text(item.Incharge, style: const TextStyle(fontSize: 12))),
           DataCell(Text(item.TYPE, style: const TextStyle(fontSize: 12))),
           DataCell(Text(item.GROUP, style: const TextStyle(fontSize: 12))),
           DataCell(Text(item.MKTGROUP, style: const TextStyle(fontSize: 12))),
@@ -393,78 +546,4 @@ class SampleDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
-}
-
-Future<void> exportToExcel(List<P01ALLCUSTOMERGETDATAclass> filteredData) async {
-  final workbook = xlsio.Workbook();
-  final sheet = workbook.worksheets[0];
-  sheet.name = 'MASTER SAR';
-
-  // ✅ Header
-  sheet.importList([
-    'No.',
-    'CustFull',
-    'CustShort',
-    'Group Name TS',
-    'Type',
-    'Group',
-    'MKT Group',
-    'Frequency',
-    'Report Items',
-  ], 1, 1, false);
-
-  // ✅ Style
-  final centerStyleHeader = workbook.styles.add('centerStyleHeader');
-  centerStyleHeader.hAlign = xlsio.HAlignType.center;
-  centerStyleHeader.vAlign = xlsio.VAlignType.center;
-  centerStyleHeader.bold = true;
-
-  final centerStyleData = workbook.styles.add('centerStyleData');
-  centerStyleData.hAlign = xlsio.HAlignType.center;
-  centerStyleData.vAlign = xlsio.VAlignType.center;
-
-  // ✅ Apply style to header row
-  final headerRange = sheet.getRangeByIndex(1, 1, 1, 9);
-  headerRange.cellStyle = centerStyleHeader;
-
-  // ✅ Fill data
-  int currentRow = 2;
-  for (var item in filteredData) {
-    sheet.getRangeByIndex(currentRow, 1).setText((currentRow - 1).toString());
-    sheet.getRangeByIndex(currentRow, 2).setText(item.CustFull);
-    sheet.getRangeByIndex(currentRow, 3).setText(item.CustShort);
-    sheet.getRangeByIndex(currentRow, 4).setText(item.GroupNameTS);
-    sheet.getRangeByIndex(currentRow, 5).setText(item.TYPE);
-    sheet.getRangeByIndex(currentRow, 6).setText(item.GROUP);
-    sheet.getRangeByIndex(currentRow, 7).setText(item.MKTGROUP);
-    sheet.getRangeByIndex(currentRow, 8).setText(item.FRE);
-    sheet.getRangeByIndex(currentRow, 9).setText(item.REPORTITEMS);
-
-    // Apply style row data
-    final dataRange = sheet.getRangeByIndex(currentRow, 1, currentRow, 9);
-    dataRange.cellStyle = centerStyleData;
-
-    currentRow++;
-  }
-
-  // ✅ Save
-  final List<int> bytes = workbook.saveAsStream();
-  workbook.dispose();
-
-  if (kIsWeb) {
-    final blob = html.Blob([bytes]);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute("download", "MasterSAR.xlsx")
-      ..click();
-    html.Url.revokeObjectUrl(url);
-  } else {
-    if (await Permission.storage.request().isGranted) {
-      final directory = await getExternalStorageDirectory();
-      final path = '${directory!.path}/MasterSAR.xlsx';
-      final file = io.File(path);
-      await file.writeAsBytes(bytes, flush: true);
-      print('✅ Saved to $path');
-    }
-  }
 }

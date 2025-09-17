@@ -302,7 +302,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               ),
                             ] else ...[
                               IconButton(
-                                icon: Icon(Icons.copy_rounded, color: Colors.grey),
+                                icon: Icon(Icons.add_to_photos_rounded, color: Colors.grey),
                                 onPressed: () {
                                   setState(() {
                                     final sameSampleRows =
@@ -408,7 +408,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           child: isEditing
                               ? dataInputCell(
                                   value: e.GroupNameTS,
-                                  dropdownItems: P02MASTERDETAILVAR.dropdownGroupNameTS,
+                                  dropdownItems: P02MASTERDETAILVAR.dropdownGroupName,
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -431,7 +431,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           child: isEditing
                               ? dataInputCell(
                                   value: e.SampleGroup,
-                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroupTS,
+                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroup,
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -454,7 +454,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           child: isEditing
                               ? dataInputCell(
                                   value: e.SampleType,
-                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleTypeTS,
+                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleType,
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -926,26 +926,33 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                             ),
                             if (!e.isNewRow) ...[
                               IconButton(
-                                icon: Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                                icon: deletingRows.contains(e.Id)
+                                    ? Icon(Icons.undo, color: Colors.black)
+                                    : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
                                 onPressed: () {
                                   setState(() {
-                                    ConfirmationDialog.show(
-                                      context,
-                                      icon: Icons.delete_forever_rounded,
-                                      iconColor: Colors.red,
-                                      title: 'Delete data',
-                                      content: 'Did you delete the data?',
-                                      confirmText: 'Confirm',
-                                      confirmButtonColor: Colors.red,
-                                      cancelText: 'Cancel',
-                                      cancelButtonColor: Colors.red,
-                                      onConfirm: () async {
-                                        setState(() {
-                                          deletingRows.add(e.Id);
-                                          // data.MasterTS.remove(e);
-                                        });
-                                      },
-                                    );
+                                    if (deletingRows.contains(e.Id)) {
+                                      deletingRows.remove(e.Id);
+                                    } else {
+                                      ConfirmationDialog.show(
+                                        context,
+                                        icon: Icons.delete_forever_rounded,
+                                        iconColor: Colors.red,
+                                        title: 'Delete data',
+                                        content:
+                                            'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                                        confirmText: 'Confirm',
+                                        confirmButtonColor: Colors.red,
+                                        cancelText: 'Cancel',
+                                        cancelButtonColor: Colors.red,
+                                        onConfirm: () async {
+                                          setState(() {
+                                            deletingRows.add(e.Id);
+                                            // data.MasterTS.remove(e);
+                                          });
+                                        },
+                                      );
+                                    }
                                   });
                                 },
                               ),
@@ -1041,7 +1048,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               ),
                             ] else ...[
                               IconButton(
-                                icon: Icon(Icons.copy_rounded, color: Colors.grey),
+                                icon: Icon(Icons.add_to_photos_rounded, color: Colors.grey),
                                 onPressed: () {
                                   setState(() {
                                     final sameSampleRows =
@@ -1218,7 +1225,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           child: isEditing
                               ? dataInputCell(
                                   value: e.SampleGroup,
-                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroupLab,
+                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroup,
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterLab) {
@@ -1241,7 +1248,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           child: isEditing
                               ? dataInputCell(
                                   value: e.SampleType,
-                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleTypeLab,
+                                  dropdownItems: P02MASTERDETAILVAR.dropdownSampleType,
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterLab) {
@@ -1801,26 +1808,33 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                             ),
                             if (!e.isNewRow) ...[
                               IconButton(
-                                icon: Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                                icon: deletingRows.contains(e.Id)
+                                    ? Icon(Icons.undo, color: Colors.black)
+                                    : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
                                 onPressed: () {
                                   setState(() {
-                                    ConfirmationDialog.show(
-                                      context,
-                                      icon: Icons.delete_forever_rounded,
-                                      iconColor: Colors.red,
-                                      title: 'Delete data',
-                                      content: 'Did you delete the data?',
-                                      confirmText: 'Confirm',
-                                      confirmButtonColor: Colors.red,
-                                      cancelText: 'Cancel',
-                                      cancelButtonColor: Colors.red,
-                                      onConfirm: () async {
-                                        setState(() {
-                                          deletingRows.add(e.Id);
-                                          // data.MasterTS.remove(e);
-                                        });
-                                      },
-                                    );
+                                    if (deletingRows.contains(e.Id)) {
+                                      deletingRows.remove(e.Id);
+                                    } else {
+                                      ConfirmationDialog.show(
+                                        context,
+                                        icon: Icons.delete_forever_rounded,
+                                        iconColor: Colors.red,
+                                        title: 'Delete data',
+                                        content:
+                                            'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                                        confirmText: 'Confirm',
+                                        confirmButtonColor: Colors.red,
+                                        cancelText: 'Cancel',
+                                        cancelButtonColor: Colors.red,
+                                        onConfirm: () async {
+                                          setState(() {
+                                            deletingRows.add(e.Id);
+                                            // data.MasterTS.remove(e);
+                                          });
+                                        },
+                                      );
+                                    }
                                   });
                                 },
                               ),

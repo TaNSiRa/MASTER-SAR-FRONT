@@ -34,8 +34,8 @@ Future<void> getDropdown(BuildContext context) async {
       Navigator.pop(context);
     }
 
-    final responseGroupNameTS = await Dio().post(
-      "$ToServer/02MASTERSAR/getGroupNameTS",
+    final responseDropdown = await Dio().post(
+      "$ToServer/02MASTERSAR/getDropdown",
       data: {},
       options: Options(
         validateStatus: (status) {
@@ -46,56 +46,81 @@ Future<void> getDropdown(BuildContext context) async {
       ),
     );
 
-    if (responseGroupNameTS.statusCode == 200 && responseGroupNameTS.data is List) {
-      List data = responseGroupNameTS.data;
-      P02MASTERDETAILVAR.dropdownGroupNameTS =
-          data.map((item) => item['GroupNameTS'].toString()).where((name) => name.isNotEmpty).toList();
+    if (responseDropdown.statusCode == 200 && responseDropdown.data is Map) {
+      var data = responseDropdown.data as Map;
+
+      P02MASTERDETAILVAR.dropdownGroupName = List<String>.from(data['groupNameTS'] ?? []);
+
+      P02MASTERDETAILVAR.dropdownSampleGroup = List<String>.from(data['sampleGroup'] ?? []);
+
+      P02MASTERDETAILVAR.dropdownSampleType = List<String>.from(data['sampleType'] ?? []);
     } else {
-      showErrorPopup(context, responseGroupNameTS.toString());
+      showErrorPopup(context, responseDropdown.toString());
       Navigator.pop(context);
     }
 
-    final responseSampleGroup = await Dio().post(
-      "$ToServer/02MASTERSAR/getSampleGroupTS",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-    );
+    // final responseGroupNameTS = await Dio().post(
+    //   "$ToServer/02MASTERSAR/getGroupNameTS",
+    //   data: {},
+    //   options: Options(
+    //     validateStatus: (status) {
+    //       return true;
+    //     },
+    //     sendTimeout: const Duration(seconds: 5),
+    //     receiveTimeout: const Duration(seconds: 5),
+    //   ),
+    // );
 
-    if (responseSampleGroup.statusCode == 200 && responseSampleGroup.data is List) {
-      List data = responseSampleGroup.data;
-      P02MASTERDETAILVAR.dropdownSampleGroupTS =
-          data.map((item) => item['SampleGroup'].toString()).where((name) => name.isNotEmpty).toList();
-    } else {
-      showErrorPopup(context, responseSampleGroup.toString());
-      Navigator.pop(context);
-    }
+    // if (responseGroupNameTS.statusCode == 200 && responseGroupNameTS.data is List) {
+    //   List data = responseGroupNameTS.data;
+    //   P02MASTERDETAILVAR.dropdownGroupNameTS =
+    //       data.map((item) => item['GroupNameTS'].toString()).where((name) => name.isNotEmpty).toList();
+    // } else {
+    //   showErrorPopup(context, responseGroupNameTS.toString());
+    //   Navigator.pop(context);
+    // }
 
-    final responseSampleType = await Dio().post(
-      "$ToServer/02MASTERSAR/getSampleTypeTS",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-    );
+    // final responseSampleGroup = await Dio().post(
+    //   "$ToServer/02MASTERSAR/getSampleGroupTS",
+    //   data: {},
+    //   options: Options(
+    //     validateStatus: (status) {
+    //       return true;
+    //     },
+    //     sendTimeout: const Duration(seconds: 5),
+    //     receiveTimeout: const Duration(seconds: 5),
+    //   ),
+    // );
 
-    if (responseSampleType.statusCode == 200 && responseSampleType.data is List) {
-      List data = responseSampleType.data;
-      P02MASTERDETAILVAR.dropdownSampleTypeTS =
-          data.map((item) => item['SampleType'].toString()).where((name) => name.isNotEmpty).toList();
-    } else {
-      showErrorPopup(context, responseSampleType.toString());
-      Navigator.pop(context);
-    }
+    // if (responseSampleGroup.statusCode == 200 && responseSampleGroup.data is List) {
+    //   List data = responseSampleGroup.data;
+    //   P02MASTERDETAILVAR.dropdownSampleGroupTS =
+    //       data.map((item) => item['SampleGroup'].toString()).where((name) => name.isNotEmpty).toList();
+    // } else {
+    //   showErrorPopup(context, responseSampleGroup.toString());
+    //   Navigator.pop(context);
+    // }
+
+    // final responseSampleType = await Dio().post(
+    //   "$ToServer/02MASTERSAR/getSampleTypeTS",
+    //   data: {},
+    //   options: Options(
+    //     validateStatus: (status) {
+    //       return true;
+    //     },
+    //     sendTimeout: const Duration(seconds: 5),
+    //     receiveTimeout: const Duration(seconds: 5),
+    //   ),
+    // );
+
+    // if (responseSampleType.statusCode == 200 && responseSampleType.data is List) {
+    //   List data = responseSampleType.data;
+    //   P02MASTERDETAILVAR.dropdownSampleTypeTS =
+    //       data.map((item) => item['SampleType'].toString()).where((name) => name.isNotEmpty).toList();
+    // } else {
+    //   showErrorPopup(context, responseSampleType.toString());
+    //   Navigator.pop(context);
+    // }
 
     final responseItemTS = await Dio().post(
       "$ToServer/02MASTERSAR/getItemTS",
@@ -118,47 +143,47 @@ Future<void> getDropdown(BuildContext context) async {
       Navigator.pop(context);
     }
 
-    final responseSampleGroupLab = await Dio().post(
-      "$ToServer/02MASTERSAR/getSampleGroupTS",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-    );
+    // final responseSampleGroupLab = await Dio().post(
+    //   "$ToServer/02MASTERSAR/getSampleGroupTS",
+    //   data: {},
+    //   options: Options(
+    //     validateStatus: (status) {
+    //       return true;
+    //     },
+    //     sendTimeout: const Duration(seconds: 5),
+    //     receiveTimeout: const Duration(seconds: 5),
+    //   ),
+    // );
 
-    if (responseSampleGroupLab.statusCode == 200 && responseSampleGroupLab.data is List) {
-      List data = responseSampleGroupLab.data;
-      P02MASTERDETAILVAR.dropdownSampleGroupLab =
-          data.map((item) => item['SampleGroup'].toString()).where((name) => name.isNotEmpty).toList();
-    } else {
-      showErrorPopup(context, responseSampleGroupLab.toString());
-      Navigator.pop(context);
-    }
+    // if (responseSampleGroupLab.statusCode == 200 && responseSampleGroupLab.data is List) {
+    //   List data = responseSampleGroupLab.data;
+    //   P02MASTERDETAILVAR.dropdownSampleGroupLab =
+    //       data.map((item) => item['SampleGroup'].toString()).where((name) => name.isNotEmpty).toList();
+    // } else {
+    //   showErrorPopup(context, responseSampleGroupLab.toString());
+    //   Navigator.pop(context);
+    // }
 
-    final responseSampleTypeLab = await Dio().post(
-      "$ToServer/02MASTERSAR/getSampleTypeTS",
-      data: {},
-      options: Options(
-        validateStatus: (status) {
-          return true;
-        },
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-    );
+    // final responseSampleTypeLab = await Dio().post(
+    //   "$ToServer/02MASTERSAR/getSampleTypeTS",
+    //   data: {},
+    //   options: Options(
+    //     validateStatus: (status) {
+    //       return true;
+    //     },
+    //     sendTimeout: const Duration(seconds: 5),
+    //     receiveTimeout: const Duration(seconds: 5),
+    //   ),
+    // );
 
-    if (responseSampleTypeLab.statusCode == 200 && responseSampleTypeLab.data is List) {
-      List data = responseSampleTypeLab.data;
-      P02MASTERDETAILVAR.dropdownSampleTypeLab =
-          data.map((item) => item['SampleType'].toString()).where((name) => name.isNotEmpty).toList();
-    } else {
-      showErrorPopup(context, responseSampleTypeLab.toString());
-      Navigator.pop(context);
-    }
+    // if (responseSampleTypeLab.statusCode == 200 && responseSampleTypeLab.data is List) {
+    //   List data = responseSampleTypeLab.data;
+    //   P02MASTERDETAILVAR.dropdownSampleTypeLab =
+    //       data.map((item) => item['SampleType'].toString()).where((name) => name.isNotEmpty).toList();
+    // } else {
+    //   showErrorPopup(context, responseSampleTypeLab.toString());
+    //   Navigator.pop(context);
+    // }
 
     final responseItemLab = await Dio().post(
       "$ToServer/02MASTERSAR/getItemLab",

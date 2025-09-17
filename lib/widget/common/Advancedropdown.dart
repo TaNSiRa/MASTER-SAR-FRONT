@@ -49,13 +49,10 @@ class _AdvanceDropDownState extends State<AdvanceDropDown> {
   String? _showstrKEY;
   @override
   Widget build(BuildContext context) {
-    List<MapEntry<String, String>> _listdropdown =
-        widget.listdropdown ?? []; //MapEntry("", "")
+    List<MapEntry<String, String>> _listdropdown = widget.listdropdown ?? []; //MapEntry("", "")
 
     //AdvanceDropDownOB(text: "DYNAMIC", value: "DYNAMIC-V")
-    List<DropdownMenuItem<String>> menuItems = [
-      const DropdownMenuItem(child: Text(""), value: "")
-    ];
+    List<DropdownMenuItem<String>> menuItems = [const DropdownMenuItem(child: Text(""), value: "")];
 
     List outputZ = [];
     if (widget.value != '') {
@@ -79,25 +76,21 @@ class _AdvanceDropDownState extends State<AdvanceDropDown> {
             alignment: Alignment.centerLeft,
             child: Text(widget.sLabel,
                 style: TxtStyle(
-                    color: widget.sLabelCO ?? CustomTheme.colorGrey,
-                    fontSize: widget.sLabelFS ?? 10)),
+                    color: widget.sLabelCO ?? CustomTheme.colorGrey, fontSize: widget.sLabelFS ?? 10)),
           ),
         if (widget.sLabel.isNotEmpty) const ComSpaceHeight(nHeight: 4),
         Container(
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            color: widget.isEnable ?? false
-                ? Color(0xffededed)
-                : widget.BgCO ?? Colors.white,
+            color: widget.isEnable ?? false ? Color(0xffededed) : widget.BgCO ?? Colors.white,
             border: Border.all(color: widget.borderCO ?? Colors.blueAccent),
-            borderRadius:
-                BorderRadius.all(Radius.circular(widget.borderRaio ?? 8.0)),
+            borderRadius: BorderRadius.all(Radius.circular(widget.borderRaio ?? 8.0)),
           ),
           child: Padding(
-            padding: EdgeInsetsDirectional.only(
-                start: widget.startedge ?? 5, end: 5),
+            padding: EdgeInsetsDirectional.only(start: widget.startedge ?? 5, end: 5),
             child: DropdownButton<String>(
+              dropdownColor: Colors.white,
               // borderRadius: BorderRadius.all(Radius.circular(10)),
               // disabledHint: Text("123"),
               hint: Text(widget.hint ?? 'Select something'),
@@ -112,8 +105,7 @@ class _AdvanceDropDownState extends State<AdvanceDropDown> {
                       height: 24,
                       width: 24,
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(_img), fit: BoxFit.fitHeight),
+                        image: DecorationImage(image: AssetImage(_img), fit: BoxFit.fitHeight),
                       ),
                     )
                   : null,
