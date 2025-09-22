@@ -7,6 +7,7 @@ import '../../bloc/BlocEvent/02-01-P02GETMASTERDETAIL.dart';
 import '../../data/global.dart';
 import '../../widget/function/ShowDialog.dart';
 import 'Function/api.dart';
+import 'Function/controlRange.dart';
 import 'Function/text.dart';
 import 'P02MASTERDETAILVAR.dart';
 
@@ -28,6 +29,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
   Set<String> editingRows = {};
   Set<String> changedCells = {};
   Set<String> deletingRows = {};
+  Map<String, Map<String, String>> originalRowData = {};
 
   @override
   void initState() {
@@ -36,7 +38,380 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
     editingRows.clear();
     deletingRows.clear();
     changedCells.clear();
+    originalRowData.clear();
     // PageName = 'Master detail';
+  }
+
+// Add method to store original row data when starting edit
+  void _storeOriginalRowData(String rowId, dynamic rowData) {
+    if (rowData is MasterTSclass) {
+      originalRowData[rowId] = {
+        'Incharge': rowData.Incharge,
+        'SampleNo': rowData.SampleNo,
+        'GroupNameTS': rowData.GroupNameTS,
+        'SampleGroup': rowData.SampleGroup,
+        'SampleType': rowData.SampleType,
+        'SampleTank': rowData.SampleTank,
+        'SampleName': rowData.SampleName,
+        'ProcessReportName': rowData.ProcessReportName,
+        'ItemNo': rowData.ItemNo,
+        'ItemName': rowData.ItemName,
+        'ItemReportName': rowData.ItemReportName,
+        'StdFactor': rowData.StdFactor,
+        'StdMin': rowData.StdMin,
+        'StdSymbol': rowData.StdSymbol,
+        'StdMax': rowData.StdMax,
+        'ControlRange': rowData.ControlRange,
+        'SubLeader': rowData.SubLeader,
+        'GL': rowData.GL,
+        'JP': rowData.JP,
+        'DGM': rowData.DGM,
+        'PatternReport': rowData.PatternReport,
+        'ReportOrder': rowData.ReportOrder,
+        'TYPE': rowData.TYPE,
+        'GROUP': rowData.GROUP,
+        'MKTGROUP': rowData.MKTGROUP,
+        'FRE': rowData.FRE,
+        'REPORTITEMS': rowData.REPORTITEMS,
+      };
+    } else if (rowData is MasterLabclass) {
+      originalRowData[rowId] = {
+        'Branch': rowData.Branch,
+        'Code': rowData.Code,
+        'Incharge': rowData.Incharge,
+        'FrequencyRequest': rowData.FrequencyRequest,
+        'SampleNo': rowData.SampleNo,
+        'SampleGroup': rowData.SampleGroup,
+        'SampleType': rowData.SampleType,
+        'SampleTank': rowData.SampleTank,
+        'SampleName': rowData.SampleName,
+        'SampleAmount': rowData.SampleAmount,
+        'ProcessReportName': rowData.ProcessReportName,
+        'Frequency': rowData.Frequency,
+        'ItemNo': rowData.ItemNo,
+        'InstrumentName': rowData.InstrumentName,
+        'ItemName': rowData.ItemName,
+        'ItemReportName': rowData.ItemReportName,
+        'Position': rowData.Position,
+        'Mag': rowData.Mag,
+        'Temp': rowData.Temp,
+        'StdMinL': rowData.StdMinL,
+        'StdMaxL': rowData.StdMaxL,
+        'StdFactor': rowData.StdFactor,
+        'Std1': rowData.Std1,
+        'Std2': rowData.Std2,
+        'Std3': rowData.Std3,
+        'Std4': rowData.Std4,
+        'Std5': rowData.Std5,
+        'Std6': rowData.Std6,
+        'Std7': rowData.Std7,
+        'Std8': rowData.Std8,
+        'Std9': rowData.Std9,
+        'StdMin': rowData.StdMin,
+        'StdSymbol': rowData.StdSymbol,
+        'StdMax': rowData.StdMax,
+        'ControlRange': rowData.ControlRange,
+        'ReportOrder': rowData.ReportOrder,
+      };
+    }
+  }
+
+  // Add method to restore original row data
+  void _restoreOriginalRowData(String rowId, dynamic rowData, P02MASTERDETAILGETDATAclass data) {
+    final originalData = originalRowData[rowId];
+    if (originalData == null) return;
+
+    if (rowData is MasterTSclass) {
+      rowData.Incharge = originalData['Incharge'] ?? '';
+      rowData.SampleNo = originalData['SampleNo'] ?? '';
+      rowData.GroupNameTS = originalData['GroupNameTS'] ?? '';
+      rowData.SampleGroup = originalData['SampleGroup'] ?? '';
+      rowData.SampleType = originalData['SampleType'] ?? '';
+      rowData.SampleTank = originalData['SampleTank'] ?? '';
+      rowData.SampleName = originalData['SampleName'] ?? '';
+      rowData.ProcessReportName = originalData['ProcessReportName'] ?? '';
+      rowData.ItemNo = originalData['ItemNo'] ?? '';
+      rowData.ItemName = originalData['ItemName'] ?? '';
+      rowData.ItemReportName = originalData['ItemReportName'] ?? '';
+      rowData.StdFactor = originalData['StdFactor'] ?? '';
+      rowData.StdMin = originalData['StdMin'] ?? '';
+      rowData.StdSymbol = originalData['StdSymbol'] ?? '';
+      rowData.StdMax = originalData['StdMax'] ?? '';
+      rowData.ControlRange = originalData['ControlRange'] ?? '';
+      rowData.SubLeader = originalData['SubLeader'] ?? '';
+      rowData.GL = originalData['GL'] ?? '';
+      rowData.JP = originalData['JP'] ?? '';
+      rowData.DGM = originalData['DGM'] ?? '';
+      rowData.PatternReport = originalData['PatternReport'] ?? '';
+      rowData.ReportOrder = originalData['ReportOrder'] ?? '';
+      rowData.TYPE = originalData['TYPE'] ?? '';
+      rowData.GROUP = originalData['GROUP'] ?? '';
+      rowData.MKTGROUP = originalData['MKTGROUP'] ?? '';
+      rowData.FRE = originalData['FRE'] ?? '';
+      rowData.REPORTITEMS = originalData['REPORTITEMS'] ?? '';
+
+      // Also restore for related rows with same sample
+      for (var item in data.MasterTS) {
+        if (item.SampleNo == rowData.SampleNo && item.Id != rowId) {
+          item.Incharge = originalData['Incharge'] ?? '';
+          item.GroupNameTS = originalData['GroupNameTS'] ?? '';
+          item.SampleGroup = originalData['SampleGroup'] ?? '';
+          item.SampleType = originalData['SampleType'] ?? '';
+          item.SampleTank = originalData['SampleTank'] ?? '';
+          item.SampleName = originalData['SampleName'] ?? '';
+          item.ProcessReportName = originalData['ProcessReportName'] ?? '';
+          item.SubLeader = originalData['SubLeader'] ?? '';
+          item.GL = originalData['GL'] ?? '';
+          item.JP = originalData['JP'] ?? '';
+          item.DGM = originalData['DGM'] ?? '';
+          item.PatternReport = originalData['PatternReport'] ?? '';
+          item.TYPE = originalData['TYPE'] ?? '';
+          item.GROUP = originalData['GROUP'] ?? '';
+          item.MKTGROUP = originalData['MKTGROUP'] ?? '';
+          item.FRE = originalData['FRE'] ?? '';
+          item.REPORTITEMS = originalData['REPORTITEMS'] ?? '';
+        }
+      }
+    } else if (rowData is MasterLabclass) {
+      rowData.Branch = originalData['Branch'] ?? '';
+      rowData.Code = originalData['Code'] ?? '';
+      rowData.Incharge = originalData['Incharge'] ?? '';
+      rowData.FrequencyRequest = originalData['FrequencyRequest'] ?? '';
+      rowData.SampleNo = originalData['SampleNo'] ?? '';
+      rowData.SampleGroup = originalData['SampleGroup'] ?? '';
+      rowData.SampleType = originalData['SampleType'] ?? '';
+      rowData.SampleTank = originalData['SampleTank'] ?? '';
+      rowData.SampleName = originalData['SampleName'] ?? '';
+      rowData.SampleAmount = originalData['SampleAmount'] ?? '';
+      rowData.ProcessReportName = originalData['ProcessReportName'] ?? '';
+      rowData.Frequency = originalData['Frequency'] ?? '';
+      rowData.ItemNo = originalData['ItemNo'] ?? '';
+      rowData.InstrumentName = originalData['InstrumentName'] ?? '';
+      rowData.ItemName = originalData['ItemName'] ?? '';
+      rowData.ItemReportName = originalData['ItemReportName'] ?? '';
+      rowData.Position = originalData['Position'] ?? '';
+      rowData.Mag = originalData['Mag'] ?? '';
+      rowData.Temp = originalData['Temp'] ?? '';
+      rowData.StdMinL = originalData['StdMinL'] ?? '';
+      rowData.StdMaxL = originalData['StdMaxL'] ?? '';
+      rowData.StdFactor = originalData['StdFactor'] ?? '';
+      rowData.Std1 = originalData['Std1'] ?? '';
+      rowData.Std2 = originalData['Std2'] ?? '';
+      rowData.Std3 = originalData['Std3'] ?? '';
+      rowData.Std4 = originalData['Std4'] ?? '';
+      rowData.Std5 = originalData['Std5'] ?? '';
+      rowData.Std6 = originalData['Std6'] ?? '';
+      rowData.Std7 = originalData['Std7'] ?? '';
+      rowData.Std8 = originalData['Std8'] ?? '';
+      rowData.Std9 = originalData['Std9'] ?? '';
+      rowData.StdMin = originalData['StdMin'] ?? '';
+      rowData.StdSymbol = originalData['StdSymbol'] ?? '';
+      rowData.StdMax = originalData['StdMax'] ?? '';
+      rowData.ControlRange = originalData['ControlRange'] ?? '';
+      rowData.ReportOrder = originalData['ReportOrder'] ?? '';
+
+      // Also restore for related rows with same sample
+      for (var item in data.MasterLab) {
+        if (item.SampleNo == rowData.SampleNo && item.Id != rowId) {
+          item.Branch = originalData['Branch'] ?? '';
+          item.Code = originalData['Code'] ?? '';
+          item.Incharge = originalData['Incharge'] ?? '';
+          item.FrequencyRequest = originalData['FrequencyRequest'] ?? '';
+          item.SampleGroup = originalData['SampleGroup'] ?? '';
+          item.SampleType = originalData['SampleType'] ?? '';
+          item.SampleTank = originalData['SampleTank'] ?? '';
+          item.SampleName = originalData['SampleName'] ?? '';
+          item.SampleAmount = originalData['SampleAmount'] ?? '';
+          item.ProcessReportName = originalData['ProcessReportName'] ?? '';
+        }
+      }
+    }
+
+    // Remove changed cells for this row
+    changedCells.removeWhere((cellId) => cellId.startsWith('${rowId}_'));
+
+    // Also remove for related rows
+    if (rowData is MasterTSclass) {
+      for (var item in data.MasterTS) {
+        if (item.SampleNo == rowData.SampleNo) {
+          changedCells.removeWhere((cellId) => cellId.startsWith('${item.Id}_'));
+        }
+      }
+    } else if (rowData is MasterLabclass) {
+      for (var item in data.MasterLab) {
+        if (item.SampleNo == rowData.SampleNo) {
+          changedCells.removeWhere((cellId) => cellId.startsWith('${item.Id}_'));
+        }
+      }
+    }
+  }
+
+  // Add method to check if value has changed from original
+  bool _hasValueChanged(String rowId, String fieldName, String currentValue) {
+    final originalData = originalRowData[rowId];
+    if (originalData == null) return false;
+    return originalData[fieldName] != currentValue;
+  }
+
+  // Modified Actions DataCell for MasterTS table
+  DataCell _buildMasterTSActionsCell(MasterTSclass e, P02MASTERDETAILGETDATAclass data) {
+    final isEditing = editingRows.contains(e.Id);
+
+    return DataCell(
+      Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              isEditing ? Icons.check : Icons.edit,
+              color: Colors.blueAccent,
+            ),
+            onPressed: () {
+              setState(() {
+                if (isEditing) {
+                  editingRows.remove(e.Id);
+                  originalRowData.remove(e.Id); // Clean up original data
+                } else {
+                  _storeOriginalRowData(e.Id, e); // Store original data
+                  editingRows.add(e.Id);
+                }
+              });
+            },
+          ),
+          // Cancel edit button (only show when editing and not a new row)
+          if (isEditing && !e.isNewRow) ...[
+            IconButton(
+              icon: Icon(Icons.cancel, color: Colors.orange),
+              tooltip: 'Cancel Edit',
+              onPressed: () {
+                setState(() {
+                  _restoreOriginalRowData(e.Id, e, data);
+                  editingRows.remove(e.Id);
+                  originalRowData.remove(e.Id);
+                });
+              },
+            ),
+          ],
+          if (!e.isNewRow) ...[
+            IconButton(
+              icon: deletingRows.contains(e.Id)
+                  ? Icon(Icons.undo, color: Colors.black)
+                  : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+              onPressed: () {
+                setState(() {
+                  if (deletingRows.contains(e.Id)) {
+                    deletingRows.remove(e.Id);
+                  } else {
+                    ConfirmationDialog.show(
+                      context,
+                      icon: Icons.delete_forever_rounded,
+                      iconColor: Colors.red,
+                      title: 'Delete data',
+                      content:
+                          'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                      confirmText: 'Confirm',
+                      confirmButtonColor: Colors.red,
+                      cancelText: 'Cancel',
+                      cancelButtonColor: Colors.red,
+                      onConfirm: () async {
+                        setState(() {
+                          deletingRows.add(e.Id);
+                        });
+                      },
+                    );
+                  }
+                });
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // Modified Actions DataCell for MasterLab table
+  DataCell _buildMasterLabActionsCell(MasterLabclass e, P02MASTERDETAILGETDATAclass data) {
+    final isEditing = editingRows.contains(e.Id);
+
+    return DataCell(
+      Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              isEditing ? Icons.check : Icons.edit,
+              color: Colors.blueAccent,
+            ),
+            onPressed: () {
+              setState(() {
+                if (isEditing) {
+                  editingRows.remove(e.Id);
+                  originalRowData.remove(e.Id); // Clean up original data
+                } else {
+                  _storeOriginalRowData(e.Id, e); // Store original data
+                  editingRows.add(e.Id);
+                }
+              });
+            },
+          ),
+          // Cancel edit button (only show when editing and not a new row)
+          if (isEditing && !e.isNewRow) ...[
+            IconButton(
+              icon: Icon(Icons.cancel, color: Colors.orange),
+              tooltip: 'Cancel Edit',
+              onPressed: () {
+                setState(() {
+                  _restoreOriginalRowData(e.Id, e, data);
+                  editingRows.remove(e.Id);
+                  originalRowData.remove(e.Id);
+                });
+              },
+            ),
+          ],
+          if (!e.isNewRow) ...[
+            IconButton(
+              icon: deletingRows.contains(e.Id)
+                  ? Icon(Icons.undo, color: Colors.black)
+                  : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+              onPressed: () {
+                setState(() {
+                  if (deletingRows.contains(e.Id)) {
+                    deletingRows.remove(e.Id);
+                  } else {
+                    ConfirmationDialog.show(
+                      context,
+                      icon: Icons.delete_forever_rounded,
+                      iconColor: Colors.red,
+                      title: 'Delete data',
+                      content:
+                          'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                      confirmText: 'Confirm',
+                      confirmButtonColor: Colors.red,
+                      cancelText: 'Cancel',
+                      cancelButtonColor: Colors.red,
+                      onConfirm: () async {
+                        setState(() {
+                          deletingRows.add(e.Id);
+                        });
+                      },
+                    );
+                  }
+                });
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // Example of how to modify the Container color logic for a field
+  Container _buildEditableCell(String rowId, String fieldName, String currentValue, Widget child) {
+    bool showHighlight =
+        changedCells.contains('${rowId}_${fieldName}') && _hasValueChanged(rowId, fieldName, currentValue);
+
+    return Container(
+      color: showHighlight ? Colors.yellow.withOpacity(0.5) : Colors.transparent,
+      child: child,
+    );
   }
 
   @override
@@ -362,11 +737,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                       DataCell(dataText(e.CustFull)),
                       DataCell(dataText(e.CustShort)),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Incharge')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Incharge',
+                          e.Incharge,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Incharge,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -382,12 +757,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Incharge),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleNo')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleNo',
+                          e.SampleNo,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleNo,
                                   onChanged: (value) {
@@ -400,12 +776,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleNo),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_GroupNameTS')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'GroupNameTS',
+                          e.GroupNameTS,
+                          isEditing
                               ? dataInputCell(
                                   value: e.GroupNameTS,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownGroupName,
@@ -423,12 +800,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.GroupNameTS),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleGroup')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleGroup',
+                          e.SampleGroup,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleGroup,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroup,
@@ -446,12 +824,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleGroup),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleType')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleType',
+                          e.SampleType,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleType,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownSampleType,
@@ -469,12 +848,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleType),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleTank')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleTank',
+                          e.SampleTank,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleTank,
                                   onChanged: (value) {
@@ -491,12 +871,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleTank),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleName',
+                          e.SampleName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleName,
                                   onChanged: (value) {
@@ -513,12 +894,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ProcessReportName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ProcessReportName',
+                          e.ProcessReportName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ProcessReportName,
                                   onChanged: (value) {
@@ -535,12 +917,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ProcessReportName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemNo')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemNo',
+                          e.ItemNo,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemNo,
                                   onChanged: (value) {
@@ -553,12 +936,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemNo),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemName',
+                          e.ItemName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemName,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownItemTS,
@@ -572,12 +956,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemReportName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemReportName',
+                          e.ItemReportName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemReportName,
                                   onChanged: (value) {
@@ -590,12 +975,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemReportName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdFactor')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdFactor',
+                          e.StdFactor,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdFactor,
                                   onChanged: (value) {
@@ -608,84 +994,86 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.StdFactor),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMin')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMin',
+                          e.StdMin,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMin,
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdMin = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdMin');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdMin),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdSymbol')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdSymbol',
+                          e.StdSymbol,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdSymbol,
+                                  dropdownItems: ['-', '<', '>'],
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdSymbol = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdSymbol');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdSymbol),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMax')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMax',
+                          e.StdMax,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMax,
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdMax = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdMax');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdMax),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ControlRange')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
-                              ? dataInputCell(
-                                  value: e.ControlRange,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      e.ControlRange = value;
-                                      changedCells.add('${e.Id}_ControlRange');
-                                    });
-                                  },
-                                )
-                              : dataText(e.ControlRange),
+                        _buildEditableCell(
+                          e.Id,
+                          'ControlRange',
+                          e.ControlRange,
+                          dataText(e.ControlRange), // ไม่ต้องแก้ตรงนี้ ให้โชว์ค่าที่ถูก build แล้ว
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SubLeader')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SubLeader',
+                          e.SubLeader,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SubLeader,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -701,12 +1089,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SubLeader),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_GL')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'GL',
+                          e.GL,
+                          isEditing
                               ? dataInputCell(
                                   value: e.GL,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -722,12 +1111,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.GL),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_JP')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'JP',
+                          e.JP,
+                          isEditing
                               ? dataInputCell(
                                   value: e.JP,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -743,12 +1133,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.JP),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_DGM')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'DGM',
+                          e.DGM,
+                          isEditing
                               ? dataInputCell(
                                   value: e.DGM,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -764,12 +1155,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.DGM),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_PatternReport')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'PatternReport',
+                          e.PatternReport,
+                          isEditing
                               ? dataInputCell(
                                   value: e.PatternReport,
                                   onChanged: (value) {
@@ -784,12 +1176,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.PatternReport),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ReportOrder')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ReportOrder',
+                          e.ReportOrder,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ReportOrder,
                                   onChanged: (value) {
@@ -802,12 +1195,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ReportOrder),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_TYPE')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'TYPE',
+                          e.TYPE,
+                          isEditing
                               ? dataInputCell(
                                   value: e.TYPE,
                                   dropdownItems: ['A', 'B'],
@@ -823,12 +1217,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.TYPE),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_GROUP')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'GROUP',
+                          e.GROUP,
+                          isEditing
                               ? dataInputCell(
                                   value: e.GROUP,
                                   dropdownItems: ['KAC', 'MEDIUM'],
@@ -844,12 +1239,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.GROUP),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_MKTGROUP')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'MKTGROUP',
+                          e.MKTGROUP,
+                          isEditing
                               ? dataInputCell(
                                   value: e.MKTGROUP,
                                   dropdownItems: ['1', '2', '5', '6'],
@@ -865,12 +1261,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.MKTGROUP),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_FRE')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'FRE',
+                          e.FRE,
+                          isEditing
                               ? dataInputCell(
                                   value: e.FRE,
                                   dropdownItems: ['1<', '1', '2', '3', '4'],
@@ -886,12 +1283,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.FRE),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_REPORTITEMS')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'REPORTITEMS',
+                          e.REPORTITEMS,
+                          isEditing
                               ? dataInputCell(
                                   value: e.REPORTITEMS,
                                   onChanged: (value) {
@@ -906,60 +1304,61 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.REPORTITEMS),
                         ),
                       ),
-                      DataCell(
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                isEditing ? Icons.check : Icons.edit,
-                                color: Colors.blueAccent,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  if (isEditing) {
-                                    editingRows.remove(e.Id);
-                                  } else {
-                                    editingRows.add(e.Id);
-                                  }
-                                });
-                              },
-                            ),
-                            if (!e.isNewRow) ...[
-                              IconButton(
-                                icon: deletingRows.contains(e.Id)
-                                    ? Icon(Icons.undo, color: Colors.black)
-                                    : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
-                                onPressed: () {
-                                  setState(() {
-                                    if (deletingRows.contains(e.Id)) {
-                                      deletingRows.remove(e.Id);
-                                    } else {
-                                      ConfirmationDialog.show(
-                                        context,
-                                        icon: Icons.delete_forever_rounded,
-                                        iconColor: Colors.red,
-                                        title: 'Delete data',
-                                        content:
-                                            'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
-                                        confirmText: 'Confirm',
-                                        confirmButtonColor: Colors.red,
-                                        cancelText: 'Cancel',
-                                        cancelButtonColor: Colors.red,
-                                        onConfirm: () async {
-                                          setState(() {
-                                            deletingRows.add(e.Id);
-                                            // data.MasterTS.remove(e);
-                                          });
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
+                      _buildMasterTSActionsCell(e, data),
+                      // DataCell(
+                      //   Row(
+                      //     children: [
+                      //       IconButton(
+                      //         icon: Icon(
+                      //           isEditing ? Icons.check : Icons.edit,
+                      //           color: Colors.blueAccent,
+                      //         ),
+                      //         onPressed: () {
+                      //           setState(() {
+                      //             if (isEditing) {
+                      //               editingRows.remove(e.Id);
+                      //             } else {
+                      //               editingRows.add(e.Id);
+                      //             }
+                      //           });
+                      //         },
+                      //       ),
+                      //       if (!e.isNewRow) ...[
+                      //         IconButton(
+                      //           icon: deletingRows.contains(e.Id)
+                      //               ? Icon(Icons.undo, color: Colors.black)
+                      //               : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                      //           onPressed: () {
+                      //             setState(() {
+                      //               if (deletingRows.contains(e.Id)) {
+                      //                 deletingRows.remove(e.Id);
+                      //               } else {
+                      //                 ConfirmationDialog.show(
+                      //                   context,
+                      //                   icon: Icons.delete_forever_rounded,
+                      //                   iconColor: Colors.red,
+                      //                   title: 'Delete data',
+                      //                   content:
+                      //                       'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                      //                   confirmText: 'Confirm',
+                      //                   confirmButtonColor: Colors.red,
+                      //                   cancelText: 'Cancel',
+                      //                   cancelButtonColor: Colors.red,
+                      //                   onConfirm: () async {
+                      //                     setState(() {
+                      //                       deletingRows.add(e.Id);
+                      //                       // data.MasterTS.remove(e);
+                      //                     });
+                      //                   },
+                      //                 );
+                      //               }
+                      //             });
+                      //           },
+                      //         ),
+                      //       ],
+                      //     ],
+                      //   ),
+                      // ),
                     ]);
               }).toList() ??
               [],
@@ -1117,11 +1516,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                       DataCell(dataText(e.CustFull)),
                       DataCell(dataText(e.CustShort)),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Branch')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Branch',
+                          e.Branch,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Branch,
                                   dropdownItems: ['BANGPOO', 'RAYONG'],
@@ -1138,11 +1537,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Code')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Code',
+                          e.Code,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Code,
                                   dropdownItems: ['MKT', 'ENV', 'KAN', 'CHE', 'ISN', 'GAS', 'PHO'],
@@ -1159,11 +1558,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Incharge')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Incharge',
+                          e.Incharge,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Incharge,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownUser,
@@ -1180,11 +1579,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_FrequencyRequest')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'FrequencyRequest',
+                          e.FrequencyRequest,
+                          isEditing
                               ? dataInputCell(
                                   value: e.FrequencyRequest,
                                   onChanged: (value) {
@@ -1200,11 +1599,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleNo')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleNo',
+                          e.SampleNo,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleNo,
                                   onChanged: (value) {
@@ -1218,11 +1617,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleGroup')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleGroup',
+                          e.SampleGroup,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleGroup,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownSampleGroup,
@@ -1241,11 +1640,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                         ),
                       ),
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleType')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleType',
+                          e.SampleType,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleType,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownSampleType,
@@ -1263,12 +1662,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleType),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleTank')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleTank',
+                          e.SampleTank,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleTank,
                                   onChanged: (value) {
@@ -1285,12 +1685,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleTank),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleName',
+                          e.SampleName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleName,
                                   onChanged: (value) {
@@ -1307,12 +1708,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_SampleAmount')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'SampleAmount',
+                          e.SampleAmount,
+                          isEditing
                               ? dataInputCell(
                                   value: e.SampleAmount,
                                   onChanged: (value) {
@@ -1329,12 +1731,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.SampleAmount),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ProcessReportName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ProcessReportName',
+                          e.ProcessReportName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ProcessReportName,
                                   onChanged: (value) {
@@ -1351,12 +1754,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ProcessReportName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Frequency')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Frequency',
+                          e.Frequency,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Frequency,
                                   onChanged: (value) {
@@ -1369,12 +1773,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Frequency),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemNo')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemNo',
+                          e.ItemNo,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemNo,
                                   onChanged: (value) {
@@ -1387,13 +1792,15 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemNo),
                         ),
                       ),
+
                       DataCell(dataText(e.InstrumentName)),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemName',
+                          e.ItemName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemName,
                                   dropdownItems: P02MASTERDETAILVAR.dropdownItemLab,
@@ -1410,12 +1817,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ItemReportName')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ItemReportName',
+                          e.ItemReportName,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ItemReportName,
                                   onChanged: (value) {
@@ -1428,12 +1836,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ItemReportName),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Position')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Position',
+                          e.Position,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Position,
                                   onChanged: (value) {
@@ -1446,12 +1855,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Position),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Mag')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Mag',
+                          e.Mag,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Mag,
                                   onChanged: (value) {
@@ -1464,12 +1874,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Mag),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Temp')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Temp',
+                          e.Temp,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Temp,
                                   onChanged: (value) {
@@ -1482,12 +1893,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Temp),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMinL')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMinL',
+                          e.StdMinL,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMinL,
                                   onChanged: (value) {
@@ -1500,12 +1912,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.StdMinL),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMaxL')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMaxL',
+                          e.StdMaxL,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMaxL,
                                   onChanged: (value) {
@@ -1518,12 +1931,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.StdMaxL),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdFactor')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdFactor',
+                          e.StdFactor,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdFactor,
                                   onChanged: (value) {
@@ -1536,12 +1950,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.StdFactor),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std1')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std1',
+                          e.Std1,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std1,
                                   onChanged: (value) {
@@ -1554,12 +1969,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std1),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std2')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std2',
+                          e.Std2,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std2,
                                   onChanged: (value) {
@@ -1572,12 +1988,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std2),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std3')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std3',
+                          e.Std3,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std3,
                                   onChanged: (value) {
@@ -1590,12 +2007,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std3),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std4')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std4',
+                          e.Std4,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std4,
                                   onChanged: (value) {
@@ -1608,12 +2026,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std4),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std5')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std5',
+                          e.Std5,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std5,
                                   onChanged: (value) {
@@ -1626,12 +2045,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std5),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std6')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std6',
+                          e.Std6,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std6,
                                   onChanged: (value) {
@@ -1644,12 +2064,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std6),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std7')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std7',
+                          e.Std7,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std7,
                                   onChanged: (value) {
@@ -1662,12 +2083,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std7),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std8')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std8',
+                          e.Std8,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std8,
                                   onChanged: (value) {
@@ -1680,12 +2102,13 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std8),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_Std9')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'Std9',
+                          e.Std9,
+                          isEditing
                               ? dataInputCell(
                                   value: e.Std9,
                                   onChanged: (value) {
@@ -1698,84 +2121,86 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.Std9),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMin')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMin',
+                          e.StdMin,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMin,
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdMin = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdMin');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdMin),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdSymbol')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdSymbol',
+                          e.StdSymbol,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdSymbol,
+                                  dropdownItems: ['-', '<', '>'],
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdSymbol = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdSymbol');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdSymbol),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_StdMax')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'StdMax',
+                          e.StdMax,
+                          isEditing
                               ? dataInputCell(
                                   value: e.StdMax,
                                   onChanged: (value) {
                                     setState(() {
                                       e.StdMax = value;
+                                      e.ControlRange = buildControlRange(e.StdMin, e.StdSymbol, e.StdMax);
                                       changedCells.add('${e.Id}_StdMax');
+                                      changedCells.add('${e.Id}_ControlRange');
                                     });
                                   },
                                 )
                               : dataText(e.StdMax),
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ControlRange')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
-                              ? dataInputCell(
-                                  value: e.ControlRange,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      e.ControlRange = value;
-                                      changedCells.add('${e.Id}_ControlRange');
-                                    });
-                                  },
-                                )
-                              : dataText(e.ControlRange),
+                        _buildEditableCell(
+                          e.Id,
+                          'ControlRange',
+                          e.ControlRange,
+                          dataText(e.ControlRange), // ไม่ต้องแก้ตรงนี้ ให้โชว์ค่าที่ถูก build แล้ว
                         ),
                       ),
+
                       DataCell(
-                        Container(
-                          color: changedCells.contains('${e.Id}_ReportOrder')
-                              ? Colors.yellow.withOpacity(0.5)
-                              : Colors.transparent,
-                          child: isEditing
+                        _buildEditableCell(
+                          e.Id,
+                          'ReportOrder',
+                          e.ReportOrder,
+                          isEditing
                               ? dataInputCell(
                                   value: e.ReportOrder,
                                   onChanged: (value) {
@@ -1788,60 +2213,61 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                               : dataText(e.ReportOrder),
                         ),
                       ),
-                      DataCell(
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                isEditing ? Icons.check : Icons.edit,
-                                color: Colors.blueAccent,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  if (isEditing) {
-                                    editingRows.remove(e.Id);
-                                  } else {
-                                    editingRows.add(e.Id);
-                                  }
-                                });
-                              },
-                            ),
-                            if (!e.isNewRow) ...[
-                              IconButton(
-                                icon: deletingRows.contains(e.Id)
-                                    ? Icon(Icons.undo, color: Colors.black)
-                                    : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
-                                onPressed: () {
-                                  setState(() {
-                                    if (deletingRows.contains(e.Id)) {
-                                      deletingRows.remove(e.Id);
-                                    } else {
-                                      ConfirmationDialog.show(
-                                        context,
-                                        icon: Icons.delete_forever_rounded,
-                                        iconColor: Colors.red,
-                                        title: 'Delete data',
-                                        content:
-                                            'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
-                                        confirmText: 'Confirm',
-                                        confirmButtonColor: Colors.red,
-                                        cancelText: 'Cancel',
-                                        cancelButtonColor: Colors.red,
-                                        onConfirm: () async {
-                                          setState(() {
-                                            deletingRows.add(e.Id);
-                                            // data.MasterTS.remove(e);
-                                          });
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
+                      _buildMasterLabActionsCell(e, data)
+                      // DataCell(
+                      //   Row(
+                      //     children: [
+                      //       IconButton(
+                      //         icon: Icon(
+                      //           isEditing ? Icons.check : Icons.edit,
+                      //           color: Colors.blueAccent,
+                      //         ),
+                      //         onPressed: () {
+                      //           setState(() {
+                      //             if (isEditing) {
+                      //               editingRows.remove(e.Id);
+                      //             } else {
+                      //               editingRows.add(e.Id);
+                      //             }
+                      //           });
+                      //         },
+                      //       ),
+                      //       if (!e.isNewRow) ...[
+                      //         IconButton(
+                      //           icon: deletingRows.contains(e.Id)
+                      //               ? Icon(Icons.undo, color: Colors.black)
+                      //               : Icon(Icons.delete_forever_rounded, color: Colors.redAccent),
+                      //           onPressed: () {
+                      //             setState(() {
+                      //               if (deletingRows.contains(e.Id)) {
+                      //                 deletingRows.remove(e.Id);
+                      //               } else {
+                      //                 ConfirmationDialog.show(
+                      //                   context,
+                      //                   icon: Icons.delete_forever_rounded,
+                      //                   iconColor: Colors.red,
+                      //                   title: 'Delete data',
+                      //                   content:
+                      //                       'When deleting data, please edit the new ReportOrder.\nAre you sure you want to delete?',
+                      //                   confirmText: 'Confirm',
+                      //                   confirmButtonColor: Colors.red,
+                      //                   cancelText: 'Cancel',
+                      //                   cancelButtonColor: Colors.red,
+                      //                   onConfirm: () async {
+                      //                     setState(() {
+                      //                       deletingRows.add(e.Id);
+                      //                       // data.MasterTS.remove(e);
+                      //                     });
+                      //                   },
+                      //                 );
+                      //               }
+                      //             });
+                      //           },
+                      //         ),
+                      //       ],
+                      //     ],
+                      //   ),
+                      // ),
                     ]);
               }).toList() ??
               [],

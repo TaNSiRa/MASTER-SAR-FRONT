@@ -47,7 +47,7 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
   Future<bool> _checkOldPassword(String oldPassword) async {
     try {
       final response = await Dio().post(
-        "$ToServer/02SALTSPRAY/CheckOldPassword",
+        "$ToServer/02MASTERSAR/CheckOldPassword",
         data: {
           'UserName': USERDATA.ID,
           'OldPassword': oldPassword,
@@ -88,7 +88,7 @@ class _P07CHANGEPASSWORDMAINState extends State<P07CHANGEPASSWORDMAIN> {
   Future<bool> _updatePassword(String newPassword) async {
     try {
       final response = await Dio().post(
-        "$ToServer/02SALTSPRAY/UpdatePassword",
+        "$ToServer/02MASTERSAR/UpdatePassword",
         data: {
           'UserName': USERDATA.ID,
           'NewPassword': newPassword,

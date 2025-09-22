@@ -195,12 +195,12 @@ class Data_Menu_mainmenu extends StatelessWidget {
                     //       ),
                     //   ],
                     // ),
-                    // menu_normal(
-                    //   name: "CHANGE PASSWORD",
-                    //   page: const Page7(),
-                    //   Lv: 1,
-                    //   icon: Icons.lock_reset,
-                    // ),
+                    menu_normal(
+                      name: "CHANGE PASSWORD",
+                      page: const Page7(),
+                      Lv: 1,
+                      icon: Icons.lock_reset,
+                    ),
                   ],
                 ),
               ),
