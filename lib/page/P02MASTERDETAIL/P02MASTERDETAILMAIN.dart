@@ -30,6 +30,8 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
   Set<String> changedCells = {};
   Set<String> deletingRows = {};
   Map<String, Map<String, String>> originalRowData = {};
+  bool isInitialLoadTS = true;
+  bool isInitialLoadLab = true;
 
   @override
   void initState() {
@@ -273,10 +275,12 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                   originalRowData.remove(e.Id); // Clean up original data
                 } else {
                   // _storeOriginalRowData(e.Id, e); // Store original data
-                  for (var row in data.MasterTS) {
-                    _storeOriginalRowData(row.Id, row);
+                  if (isInitialLoadTS) {
+                    for (var row in data.MasterTS) {
+                      _storeOriginalRowData(row.Id, row);
+                    }
+                    isInitialLoadTS = false;
                   }
-
                   editingRows.add(e.Id);
                 }
               });
@@ -348,13 +352,17 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
             onPressed: () {
               setState(() {
                 if (isEditing) {
-                  editingRows.remove(e.Id);
-                  originalRowData.remove(e.Id); // Clean up original data
+                  // editingRows.remove(e.Id);
+                  // originalRowData.remove(e.Id); // Clean up original data
                 } else {
                   // _storeOriginalRowData(e.Id, e); // Store original data
-                  for (var row in data.MasterLab) {
-                    _storeOriginalRowData(row.Id, row);
+                  if (isInitialLoadLab) {
+                    for (var row in data.MasterLab) {
+                      _storeOriginalRowData(row.Id, row);
+                    }
+                    isInitialLoadLab = false;
                   }
+
                   editingRows.add(e.Id);
                 }
               });
