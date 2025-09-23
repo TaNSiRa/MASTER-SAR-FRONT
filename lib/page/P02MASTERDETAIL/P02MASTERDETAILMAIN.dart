@@ -153,24 +153,24 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
       // Also restore for related rows with same sample
       for (var item in data.MasterTS) {
         if (item.SampleNo == rowData.SampleNo && item.Id != rowId) {
-          item.Incharge = originalData['Incharge'] ?? '';
           item.GroupNameTS = originalData['GroupNameTS'] ?? '';
           item.SampleGroup = originalData['SampleGroup'] ?? '';
           item.SampleType = originalData['SampleType'] ?? '';
           item.SampleTank = originalData['SampleTank'] ?? '';
           item.SampleName = originalData['SampleName'] ?? '';
           item.ProcessReportName = originalData['ProcessReportName'] ?? '';
-          item.SubLeader = originalData['SubLeader'] ?? '';
-          item.GL = originalData['GL'] ?? '';
-          item.JP = originalData['JP'] ?? '';
-          item.DGM = originalData['DGM'] ?? '';
-          item.PatternReport = originalData['PatternReport'] ?? '';
-          item.TYPE = originalData['TYPE'] ?? '';
-          item.GROUP = originalData['GROUP'] ?? '';
-          item.MKTGROUP = originalData['MKTGROUP'] ?? '';
-          item.FRE = originalData['FRE'] ?? '';
-          item.REPORTITEMS = originalData['REPORTITEMS'] ?? '';
         }
+        item.Incharge = originalData['Incharge'] ?? '';
+        item.SubLeader = originalData['SubLeader'] ?? '';
+        item.GL = originalData['GL'] ?? '';
+        item.JP = originalData['JP'] ?? '';
+        item.DGM = originalData['DGM'] ?? '';
+        item.PatternReport = originalData['PatternReport'] ?? '';
+        item.TYPE = originalData['TYPE'] ?? '';
+        item.GROUP = originalData['GROUP'] ?? '';
+        item.MKTGROUP = originalData['MKTGROUP'] ?? '';
+        item.FRE = originalData['FRE'] ?? '';
+        item.REPORTITEMS = originalData['REPORTITEMS'] ?? '';
       }
     } else if (rowData is MasterLabclass) {
       rowData.Branch = originalData['Branch'] ?? '';
@@ -213,10 +213,6 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
       // Also restore for related rows with same sample
       for (var item in data.MasterLab) {
         if (item.SampleNo == rowData.SampleNo && item.Id != rowId) {
-          item.Branch = originalData['Branch'] ?? '';
-          item.Code = originalData['Code'] ?? '';
-          item.Incharge = originalData['Incharge'] ?? '';
-          item.FrequencyRequest = originalData['FrequencyRequest'] ?? '';
           item.SampleGroup = originalData['SampleGroup'] ?? '';
           item.SampleType = originalData['SampleType'] ?? '';
           item.SampleTank = originalData['SampleTank'] ?? '';
@@ -224,6 +220,10 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
           item.SampleAmount = originalData['SampleAmount'] ?? '';
           item.ProcessReportName = originalData['ProcessReportName'] ?? '';
         }
+        item.Branch = originalData['Branch'] ?? '';
+        item.Code = originalData['Code'] ?? '';
+        item.Incharge = originalData['Incharge'] ?? '';
+        item.FrequencyRequest = originalData['FrequencyRequest'] ?? '';
       }
     }
 
@@ -249,6 +249,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
   // Add method to check if value has changed from original
   bool _hasValueChanged(String rowId, String fieldName, String currentValue) {
     final originalData = originalRowData[rowId];
+    // print("Row: $rowId | field: $fieldName | original: ${originalData?[fieldName]} | current: $currentValue");
     if (originalData == null) return false;
     return originalData[fieldName] != currentValue;
   }
@@ -271,7 +272,11 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                   editingRows.remove(e.Id);
                   originalRowData.remove(e.Id); // Clean up original data
                 } else {
-                  _storeOriginalRowData(e.Id, e); // Store original data
+                  // _storeOriginalRowData(e.Id, e); // Store original data
+                  for (var row in data.MasterTS) {
+                    _storeOriginalRowData(row.Id, row);
+                  }
+
                   editingRows.add(e.Id);
                 }
               });
@@ -346,7 +351,10 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                   editingRows.remove(e.Id);
                   originalRowData.remove(e.Id); // Clean up original data
                 } else {
-                  _storeOriginalRowData(e.Id, e); // Store original data
+                  // _storeOriginalRowData(e.Id, e); // Store original data
+                  for (var row in data.MasterLab) {
+                    _storeOriginalRowData(row.Id, row);
+                  }
                   editingRows.add(e.Id);
                 }
               });
@@ -405,9 +413,8 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
 
   // Example of how to modify the Container color logic for a field
   Container _buildEditableCell(String rowId, String fieldName, String currentValue, Widget child) {
-    bool showHighlight =
-        changedCells.contains('${rowId}_${fieldName}') && _hasValueChanged(rowId, fieldName, currentValue);
-
+    bool showHighlight = _hasValueChanged(rowId, fieldName, currentValue);
+    // print(changedCells);
     return Container(
       color: showHighlight ? Colors.yellow.withOpacity(0.5) : Colors.transparent,
       child: child,
