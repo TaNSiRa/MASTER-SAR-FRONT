@@ -352,8 +352,8 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
             onPressed: () {
               setState(() {
                 if (isEditing) {
-                  // editingRows.remove(e.Id);
-                  // originalRowData.remove(e.Id); // Clean up original data
+                  editingRows.remove(e.Id);
+                  originalRowData.remove(e.Id); // Clean up original data
                 } else {
                   // _storeOriginalRowData(e.Id, e); // Store original data
                   if (isInitialLoadLab) {
@@ -672,9 +672,12 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                 return DataRow(
                     color: MaterialStateProperty.resolveWith<Color?>((states) {
                       if (deletingRows.contains(e.Id)) {
-                        return Colors.redAccent.withOpacity(0.5); // สีแดงชั่วคราว
+                        return Colors.redAccent.withOpacity(0.5);
                       }
-                      return Colors.white; // ปกติ
+                      if (e.isNewRow) {
+                        return Colors.greenAccent.withOpacity(0.3); // Green for new rows
+                      }
+                      return Colors.white;
                     }),
                     cells: [
                       DataCell(
@@ -1443,6 +1446,9 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                     color: MaterialStateProperty.resolveWith<Color?>((states) {
                       if (deletingRows.contains(e.Id)) {
                         return Colors.redAccent.withOpacity(0.5);
+                      }
+                      if (e.isNewRow) {
+                        return Colors.greenAccent.withOpacity(0.3); // Green for new rows
                       }
                       return Colors.white;
                     }),
