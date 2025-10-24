@@ -1222,7 +1222,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           isEditing
                               ? dataInputCell(
                                   value: e.TYPE,
-                                  dropdownItems: ['A', 'B'],
+                                  dropdownItems: ['-', 'A', 'B'],
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -1244,7 +1244,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           isEditing
                               ? dataInputCell(
                                   value: e.GROUP,
-                                  dropdownItems: ['KAC', 'MEDIUM'],
+                                  dropdownItems: ['-', 'KAC', 'MEDIUM'],
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -1266,7 +1266,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           isEditing
                               ? dataInputCell(
                                   value: e.MKTGROUP,
-                                  dropdownItems: ['1', '2', '5', '6'],
+                                  dropdownItems: ['-', '1', '2', '5', '6'],
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
@@ -1288,7 +1288,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           isEditing
                               ? dataInputCell(
                                   value: e.FRE,
-                                  dropdownItems: ['1<', '1', '2', '3', '4'],
+                                  dropdownItems: ['-', '1<', '1', '2', '3', '4'],
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {
