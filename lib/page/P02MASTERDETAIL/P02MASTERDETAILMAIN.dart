@@ -1288,7 +1288,7 @@ class _P02MASTERDETAILMAINState extends State<P02MASTERDETAILMAIN> {
                           isEditing
                               ? dataInputCell(
                                   value: e.FRE,
-                                  dropdownItems: ['-', '1<', '1', '2', '3', '4'],
+                                  dropdownItems: ['-', '<1', '1', '2', '3', '4'],
                                   onChanged: (value) {
                                     setState(() {
                                       for (var item in data.MasterTS) {

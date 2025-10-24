@@ -115,7 +115,7 @@ void showAddDialog(BuildContext context) {
                               labelText: "Type",
                               icon: Icons.category,
                               value: newData.TYPE,
-                              dropdownItems: ["A", "B"],
+                              dropdownItems: ["-", "A", "B"],
                               onChanged: (value) {
                                 newData.TYPE = value;
                               },
@@ -124,7 +124,7 @@ void showAddDialog(BuildContext context) {
                               labelText: "Group",
                               icon: Icons.group_work,
                               value: newData.GROUP,
-                              dropdownItems: ["KAC", "MEDIUM"],
+                              dropdownItems: ["-", "KAC", "MEDIUM"],
                               onChanged: (value) {
                                 newData.GROUP = value;
                               },
@@ -133,7 +133,7 @@ void showAddDialog(BuildContext context) {
                               labelText: "MKT Group",
                               icon: Icons.campaign,
                               value: newData.MKTGROUP,
-                              dropdownItems: ["1", "2", "5", "6"],
+                              dropdownItems: ["-", "1", "2", "5", "6"],
                               onChanged: (value) {
                                 newData.MKTGROUP = value;
                               },
@@ -142,7 +142,7 @@ void showAddDialog(BuildContext context) {
                               labelText: "Frequency",
                               icon: Icons.schedule,
                               value: newData.FRE,
-                              dropdownItems: ["1<", "1", "2", "3", "4"],
+                              dropdownItems: ["-", "<1", "1", "2", "3", "4"],
                               onChanged: (value) {
                                 newData.FRE = value;
                               },
