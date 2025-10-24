@@ -12,6 +12,56 @@ import '../../../widget/function/SaveNull.dart';
 import '../P01ALLCUSTOMERMAIN.dart';
 import '../P01ALLCUSTOMERVAR.dart';
 
+Future<void> getMasterSarStatus(BuildContext context) async {
+  try {
+    final response = await Dio().post(
+      "$ToServer/02MASTERSAR/masterStatus",
+      data: {},
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+    );
+    if (response.statusCode == 200) {
+      P01ALLCUSTOMERVAR.master_Status = response.data[0]['status'].toString();
+    } else {
+      showErrorPopup(context, response.toString());
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(context, e.toString());
+  }
+}
+
+Future<void> updateMasterSarStatus(BuildContext context) async {
+  try {
+    final response = await Dio().post(
+      "$ToServer/02MASTERSAR/updateMasterStatus",
+      data: {
+        "status": P01ALLCUSTOMERVAR.master_Status,
+      },
+      options: Options(
+        validateStatus: (status) {
+          return true;
+        },
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+    );
+    if (response.statusCode == 200) {
+      showSuccessPopup(context, '${response.data['message']}');
+    } else {
+      showErrorPopup(context, response.toString());
+    }
+  } catch (e) {
+    print("Error: $e");
+    showErrorPopup(context, e.toString());
+  }
+}
+
 Future<void> addNewCustomer(BuildContext context) async {
   try {
     FreeLoadingTan(context);

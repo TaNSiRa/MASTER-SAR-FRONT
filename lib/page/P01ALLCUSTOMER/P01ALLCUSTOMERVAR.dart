@@ -13,4 +13,6 @@ class P01ALLCUSTOMERVAR {
   static String DropDownMKTGroup = 'All';
   static List<P01MASTERTSclass> masterTS = [];
   static List<P01MASTERLABclass> masterLab = [];
+  static String master_Status = 'Not access';
+  static bool isHoveredAccess = false;
 }

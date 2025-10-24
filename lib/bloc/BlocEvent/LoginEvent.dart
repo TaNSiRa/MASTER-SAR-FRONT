@@ -65,12 +65,14 @@ class Login_Bloc extends Bloc<LoginEvent, String> {
       // print(databuff);
       if (databuff['return'] == 'OK') {
         token =
-            '{"ID":"${databuff['UserName'].toString()}","NAME":"${databuff['NAME'].toString()}","LV":"${databuff['Roleid'].toString()}","Section":"${databuff['Section'].toString()}","Branch":"${databuff['Branch'].toString()}"}';
+            '{"ID":"${databuff['UserName'].toString()}","NAME":"${databuff['NAME'].toString()}","LV":"${databuff['Roleid'].toString()}","Section":"${databuff['Section'].toString()}","Branch":"${databuff['Branch'].toString()}","Permission":"${databuff['Permission'].toString()}"}';
+        print(token);
         USERDATA.ID = databuff['UserName'].toString();
         USERDATA.NAME = databuff['NAME'].toString();
         USERDATA.UserLV = int.parse(databuff['Roleid'].toString());
         USERDATA.Section = databuff['Section'].toString();
         USERDATA.Branch = databuff['Branch'].toString();
+        USERDATA.Permission = databuff['Permission'].toString();
       } else {
         token = (prefs.getString('tokenSP') ?? '');
         USERDATA.UserLV = 0;
@@ -108,12 +110,14 @@ class Login_Bloc extends Bloc<LoginEvent, String> {
       USERDATA.NAME = databuff['NAME'].toString();
       USERDATA.Section = databuff['Section'].toString();
       USERDATA.Branch = databuff['Branch'].toString();
+      USERDATA.Permission = databuff['Permission'].toString();
     } else {
       USERDATA.ID = '';
       USERDATA.UserLV = 0;
       USERDATA.NAME = '';
       USERDATA.Section = '';
       USERDATA.Branch = '';
+      USERDATA.Permission = '';
     }
     emit(token);
   }
@@ -126,6 +130,7 @@ class Login_Bloc extends Bloc<LoginEvent, String> {
     USERDATA.NAME = '';
     USERDATA.Section = '';
     USERDATA.Branch = '';
+    USERDATA.Permission = '';
 
     tokenSP = prefs.setString("tokenSP", token).then((bool success) {
       return state;

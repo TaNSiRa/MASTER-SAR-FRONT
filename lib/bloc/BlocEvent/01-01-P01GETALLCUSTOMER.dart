@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newmaster/widget/common/Loading.dart';
 import '../../data/global.dart';
+import '../../page/P01ALLCUSTOMER/Function/api.dart';
 import '../../page/P01ALLCUSTOMER/P01ALLCUSTOMERMAIN.dart';
 import '../../widget/common/ErrorPopup.dart';
 import '../../widget/function/ForUseAllPage.dart';
@@ -76,6 +77,9 @@ class P01ALLCUSTOMERGETDATA_Bloc extends Bloc<P01ALLCUSTOMERGETDATA_Event, List<
             REPORTITEMS: savenull(data['REPORTITEMS']),
           );
         }).toList();
+
+        await getMasterSarStatus(P01ALLCUSTOMERMAINcontext);
+
         Navigator.pop(P01ALLCUSTOMERMAINcontext);
 
         output = outputdata;

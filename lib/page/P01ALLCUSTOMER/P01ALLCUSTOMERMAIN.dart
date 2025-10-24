@@ -17,6 +17,7 @@ import '../../data/global.dart';
 import '../../mainBody.dart';
 import '../../widget/common/Advancedropdown.dart';
 import '../../widget/common/ComInputTextTan.dart';
+import '../../widget/function/ShowDialog.dart';
 import '../P02MASTERDETAIL/P02MASTERDETAILVAR.dart';
 import '../page2.dart';
 import 'Function/api.dart';
@@ -154,355 +155,548 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
 
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Theme(
-          data: Theme.of(context).copyWith(
-            cardTheme: const CardThemeData(color: Colors.white),
-          ),
-          child: SingleChildScrollView(
-            controller: _controllerIN01,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        body: (P01ALLCUSTOMERVAR.master_Status == 'Not access' && USERDATA.Permission != 'Admin')
+            ? Center(
+                child: Container(
+                  padding: EdgeInsets.all(40),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.orange.shade700, width: 2),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      ComInputTextTan(
-                        sPlaceholder: "Search...",
-                        isSideIcon: true,
-                        height: 40,
-                        width: 400,
-                        isContr: P01ALLCUSTOMERVAR.iscontrol,
-                        fnContr: (input) {
-                          P01ALLCUSTOMERVAR.iscontrol = input;
-                        },
-                        sValue: P01ALLCUSTOMERVAR.search,
-                        returnfunc: (String s) {
-                          P01ALLCUSTOMERVAR.search = s;
-                          Future.delayed(const Duration(seconds: 1), () {
-                            if (P01ALLCUSTOMERVAR.search == s) {
-                              setState(() {
+                      Icon(
+                        Icons.lock_clock,
+                        size: 80,
+                        color: Colors.orange.shade700,
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'ยังไม่ถึงรอบในการแก้ไข Master',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange.shade900,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'กรุณารอการเปิดสิทธิ์จากผู้ดูแลระบบ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.orange.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Theme(
+                data: Theme.of(context).copyWith(
+                  cardTheme: const CardThemeData(color: Colors.white),
+                ),
+                child: SingleChildScrollView(
+                  controller: _controllerIN01,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ComInputTextTan(
+                              sPlaceholder: "Search...",
+                              isSideIcon: true,
+                              height: 40,
+                              width: 400,
+                              isContr: P01ALLCUSTOMERVAR.iscontrol,
+                              fnContr: (input) {
+                                P01ALLCUSTOMERVAR.iscontrol = input;
+                              },
+                              sValue: P01ALLCUSTOMERVAR.search,
+                              returnfunc: (String s) {
                                 P01ALLCUSTOMERVAR.search = s;
-                              });
-                            }
-                          });
-                        },
-                      ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<P01ALLCUSTOMERGETDATA_Bloc>().add(P01ALLCUSTOMERGETDATA_GET());
+                                Future.delayed(const Duration(seconds: 1), () {
+                                  if (P01ALLCUSTOMERVAR.search == s) {
+                                    setState(() {
+                                      P01ALLCUSTOMERVAR.search = s;
+                                    });
+                                  }
+                                });
                               },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(10),
-                              ),
-                              child: const Icon(
-                                Icons.refresh_rounded,
-                                color: Colors.blue,
-                                size: 30,
-                              ),
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Refresh',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                String? result = await showSelectionDialog(context, 'Export Excel');
-                                if (result == 'MasterKPI') {
-                                  exportToExcelKPI(_datasearch);
-                                } else if (result == 'MasterTS') {
-                                  await getMasterTS(context);
-                                  exportToExcelTS(P01ALLCUSTOMERVAR.masterTS);
-                                } else if (result == 'MasterLab') {
-                                  await getMasterLab(context);
-                                  exportToExcelLab(P01ALLCUSTOMERVAR.masterLab);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(10),
-                              ),
-                              child: const Icon(
-                                Icons.download,
-                                color: Colors.blue,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Export Excel',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                showAddDialog(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(10),
-                              ),
-                              child: const Icon(
-                                Icons.person_add_alt_rounded,
-                                color: Colors.blue,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'New Customer',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'TYPE',
-                              textAlign: TextAlign.start,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          AdvanceDropDown(
-                            hint: "TYPE",
-                            listdropdown: const [
-                              MapEntry("All", "All"),
-                              MapEntry("A", "A"),
-                              MapEntry("B", "B"),
-                            ],
-                            onChangeinside: (d, k) {
-                              setState(() {
-                                P01ALLCUSTOMERVAR.DropDownType = d;
-                              });
-                            },
-                            value: P01ALLCUSTOMERVAR.DropDownType,
-                            height: 30,
-                            width: 100,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'GROUP',
-                              textAlign: TextAlign.start,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          AdvanceDropDown(
-                            hint: "GROUP",
-                            listdropdown: const [
-                              MapEntry("All", "All"),
-                              MapEntry("KAC", "KAC"),
-                              MapEntry("MEDIUM", "MEDIUM"),
-                            ],
-                            onChangeinside: (d, k) {
-                              setState(() {
-                                P01ALLCUSTOMERVAR.DropDownGroup = d;
-                              });
-                            },
-                            value: P01ALLCUSTOMERVAR.DropDownGroup,
-                            height: 30,
-                            width: 100,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                              'MKT GROUP',
-                              textAlign: TextAlign.start,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          AdvanceDropDown(
-                            hint: "MKT GROUP",
-                            listdropdown: const [
-                              MapEntry("All", "All"),
-                              MapEntry("1", "1"),
-                              MapEntry("2", "2"),
-                              MapEntry("5", "5"),
-                              MapEntry("6", "6"),
-                            ],
-                            onChangeinside: (d, k) {
-                              setState(() {
-                                P01ALLCUSTOMERVAR.DropDownMKTGroup = d;
-                              });
-                            },
-                            value: P01ALLCUSTOMERVAR.DropDownMKTGroup,
-                            height: 30,
-                            width: 100,
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                      MouseRegion(
-                        onEnter: (_) {
-                          setState(() {
-                            P01ALLCUSTOMERVAR.isHoveredClear = true;
-                          });
-                        },
-                        onExit: (_) {
-                          setState(() {
-                            P01ALLCUSTOMERVAR.isHoveredClear = false;
-                          });
-                        },
-                        child: InkWell(
-                          overlayColor: WidgetStateProperty.all(Colors.transparent),
-                          onTap: () {
-                            setState(() {
-                              P01ALLCUSTOMERVAR.isHoveredClear = false;
-                              P01ALLCUSTOMERVAR.iscontrol = true;
-                              P01ALLCUSTOMERVAR.search = '';
-                              P01ALLCUSTOMERVAR.DropDownType = 'All';
-                              P01ALLCUSTOMERVAR.DropDownGroup = 'All';
-                              P01ALLCUSTOMERVAR.DropDownMKTGroup = 'All';
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: P01ALLCUSTOMERVAR.isHoveredClear
-                                    ? Colors.yellowAccent.shade700
-                                    : Colors.redAccent.shade700,
-                                width: 3.0,
-                              ),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ShaderMask(
-                                  shaderCallback: (bounds) => LinearGradient(
-                                    colors: const [
-                                      Colors.white,
-                                      Colors.red,
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ).createShader(bounds),
-                                  child: TweenAnimationBuilder<double>(
-                                    tween: Tween<double>(
-                                      begin: P01ALLCUSTOMERVAR.isHoveredClear ? 15 : 17,
-                                      end: P01ALLCUSTOMERVAR.isHoveredClear ? 17 : 15,
-                                    ),
-                                    duration: Duration(milliseconds: 200),
-                                    builder: (context, size, child) {
-                                      return TweenAnimationBuilder<Color?>(
-                                        tween: ColorTween(
-                                          begin: P01ALLCUSTOMERVAR.isHoveredClear
-                                              ? Colors.redAccent.shade700
-                                              : Colors.yellowAccent.shade700,
-                                          end: P01ALLCUSTOMERVAR.isHoveredClear
-                                              ? Colors.yellowAccent.shade700
-                                              : Colors.redAccent.shade700,
-                                        ),
-                                        duration: Duration(milliseconds: 200),
-                                        builder: (context, color, child) {
-                                          return Text(
-                                            'CLEAR',
-                                            style: TextStyle(
-                                              fontSize: size,
-                                              color: color,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          );
-                                        },
-                                      );
+                            SizedBox(width: 10),
+                            SizedBox(
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context
+                                          .read<P01ALLCUSTOMERGETDATA_Bloc>()
+                                          .add(P01ALLCUSTOMERGETDATA_GET());
                                     },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.refresh_rounded,
+                                      color: Colors.blue,
+                                      size: 30,
+                                    ),
                                   ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Refresh',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      String? result = await showSelectionDialog(context, 'Export Excel');
+                                      if (result == 'MasterKPI') {
+                                        exportToExcelKPI(_datasearch);
+                                      } else if (result == 'MasterTS') {
+                                        await getMasterTS(context);
+                                        exportToExcelTS(P01ALLCUSTOMERVAR.masterTS);
+                                      } else if (result == 'MasterLab') {
+                                        await getMasterLab(context);
+                                        exportToExcelLab(P01ALLCUSTOMERVAR.masterLab);
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.download,
+                                      color: Colors.blue,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Export Excel',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            SizedBox(
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      showAddDialog(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.person_add_alt_rounded,
+                                      color: Colors.blue,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'New Customer',
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    'TYPE',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                AdvanceDropDown(
+                                  hint: "TYPE",
+                                  listdropdown: const [
+                                    MapEntry("-", "-"),
+                                    MapEntry("All", "All"),
+                                    MapEntry("A", "A"),
+                                    MapEntry("B", "B"),
+                                  ],
+                                  onChangeinside: (d, k) {
+                                    setState(() {
+                                      P01ALLCUSTOMERVAR.DropDownType = d;
+                                    });
+                                  },
+                                  value: P01ALLCUSTOMERVAR.DropDownType,
+                                  height: 30,
+                                  width: 100,
                                 ),
                               ],
                             ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    'GROUP',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                AdvanceDropDown(
+                                  hint: "GROUP",
+                                  listdropdown: const [
+                                    MapEntry("-", "-"),
+                                    MapEntry("All", "All"),
+                                    MapEntry("KAC", "KAC"),
+                                    MapEntry("MEDIUM", "MEDIUM"),
+                                  ],
+                                  onChangeinside: (d, k) {
+                                    setState(() {
+                                      P01ALLCUSTOMERVAR.DropDownGroup = d;
+                                    });
+                                  },
+                                  value: P01ALLCUSTOMERVAR.DropDownGroup,
+                                  height: 30,
+                                  width: 100,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    'MKT GROUP',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                AdvanceDropDown(
+                                  hint: "MKT GROUP",
+                                  listdropdown: const [
+                                    MapEntry("-", "-"),
+                                    MapEntry("All", "All"),
+                                    MapEntry("1", "1"),
+                                    MapEntry("2", "2"),
+                                    MapEntry("5", "5"),
+                                    MapEntry("6", "6"),
+                                  ],
+                                  onChangeinside: (d, k) {
+                                    setState(() {
+                                      P01ALLCUSTOMERVAR.DropDownMKTGroup = d;
+                                    });
+                                  },
+                                  value: P01ALLCUSTOMERVAR.DropDownMKTGroup,
+                                  height: 30,
+                                  width: 100,
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 10),
+                            MouseRegion(
+                              onEnter: (_) {
+                                setState(() {
+                                  P01ALLCUSTOMERVAR.isHoveredClear = true;
+                                });
+                              },
+                              onExit: (_) {
+                                setState(() {
+                                  P01ALLCUSTOMERVAR.isHoveredClear = false;
+                                });
+                              },
+                              child: InkWell(
+                                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                onTap: () {
+                                  setState(() {
+                                    P01ALLCUSTOMERVAR.isHoveredClear = false;
+                                    P01ALLCUSTOMERVAR.iscontrol = true;
+                                    P01ALLCUSTOMERVAR.search = '';
+                                    P01ALLCUSTOMERVAR.DropDownType = 'All';
+                                    P01ALLCUSTOMERVAR.DropDownGroup = 'All';
+                                    P01ALLCUSTOMERVAR.DropDownMKTGroup = 'All';
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 200),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: P01ALLCUSTOMERVAR.isHoveredClear
+                                          ? Colors.yellowAccent.shade700
+                                          : Colors.redAccent.shade700,
+                                      width: 3.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ShaderMask(
+                                        shaderCallback: (bounds) => LinearGradient(
+                                          colors: const [
+                                            Colors.white,
+                                            Colors.red,
+                                          ],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                        ).createShader(bounds),
+                                        child: TweenAnimationBuilder<double>(
+                                          tween: Tween<double>(
+                                            begin: P01ALLCUSTOMERVAR.isHoveredClear ? 15 : 17,
+                                            end: P01ALLCUSTOMERVAR.isHoveredClear ? 17 : 15,
+                                          ),
+                                          duration: Duration(milliseconds: 200),
+                                          builder: (context, size, child) {
+                                            return TweenAnimationBuilder<Color?>(
+                                              tween: ColorTween(
+                                                begin: P01ALLCUSTOMERVAR.isHoveredClear
+                                                    ? Colors.redAccent.shade700
+                                                    : Colors.yellowAccent.shade700,
+                                                end: P01ALLCUSTOMERVAR.isHoveredClear
+                                                    ? Colors.yellowAccent.shade700
+                                                    : Colors.redAccent.shade700,
+                                              ),
+                                              duration: Duration(milliseconds: 200),
+                                              builder: (context, color, child) {
+                                                return Text(
+                                                  'CLEAR',
+                                                  style: TextStyle(
+                                                    fontSize: size,
+                                                    color: color,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            if (USERDATA.Permission == 'Admin')
+                              // ปุ่ม Access Toggle
+                              MouseRegion(
+                                onEnter: (_) {
+                                  setState(() {
+                                    P01ALLCUSTOMERVAR.isHoveredAccess = true;
+                                  });
+                                },
+                                onExit: (_) {
+                                  setState(() {
+                                    P01ALLCUSTOMERVAR.isHoveredAccess = false;
+                                  });
+                                },
+                                child: InkWell(
+                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                  onTap: () {
+                                    setState(() {
+                                      P01ALLCUSTOMERVAR.isHoveredAccess = false;
+                                    });
+
+                                    // ตรวจสอบสถานะปัจจุบัน
+                                    if (P01ALLCUSTOMERVAR.master_Status == 'Not access') {
+                                      // กรณีต้องการเปิด Access
+                                      ConfirmationDialog.show(
+                                        context,
+                                        icon: Icons.lock_open,
+                                        iconColor: Colors.green,
+                                        title: 'Open Access',
+                                        content: 'Do you want to open access to edit master data?',
+                                        confirmText: 'Confirm',
+                                        confirmButtonColor: Colors.green,
+                                        cancelText: 'Cancel',
+                                        cancelButtonColor: Colors.grey,
+                                        onConfirm: () async {
+                                          setState(() {
+                                            P01ALLCUSTOMERVAR.master_Status = 'Access';
+                                            updateMasterSarStatus(context);
+                                          });
+                                        },
+                                      );
+                                    } else {
+                                      // กรณีต้องการปิด Access
+                                      ConfirmationDialog.show(
+                                        context,
+                                        icon: Icons.lock,
+                                        iconColor: Colors.red,
+                                        title: 'Close Access',
+                                        content: 'Do you want to close access to edit master data?',
+                                        confirmText: 'Confirm',
+                                        confirmButtonColor: Colors.red,
+                                        cancelText: 'Cancel',
+                                        cancelButtonColor: Colors.grey,
+                                        onConfirm: () async {
+                                          setState(() {
+                                            P01ALLCUSTOMERVAR.master_Status = 'Not access';
+                                            updateMasterSarStatus(context);
+                                          });
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 200),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: P01ALLCUSTOMERVAR.isHoveredAccess
+                                            ? (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                ? Colors.redAccent.shade700
+                                                : Colors.greenAccent.shade700)
+                                            : (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                ? Colors.green.shade700
+                                                : Colors.orange.shade700),
+                                        width: 3.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                              ? Icons.lock_open
+                                              : Icons.lock,
+                                          color: P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                              ? Colors.green
+                                              : Colors.orange,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            ShaderMask(
+                                              shaderCallback: (bounds) => LinearGradient(
+                                                colors: P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                    ? [Colors.white, Colors.green]
+                                                    : [Colors.white, Colors.orange],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                              ).createShader(bounds),
+                                              child: TweenAnimationBuilder<double>(
+                                                tween: Tween<double>(
+                                                  begin: P01ALLCUSTOMERVAR.isHoveredAccess ? 15 : 17,
+                                                  end: P01ALLCUSTOMERVAR.isHoveredAccess ? 17 : 15,
+                                                ),
+                                                duration: Duration(milliseconds: 200),
+                                                builder: (context, size, child) {
+                                                  return TweenAnimationBuilder<Color?>(
+                                                    tween: ColorTween(
+                                                      begin: P01ALLCUSTOMERVAR.isHoveredAccess
+                                                          ? (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                              ? Colors.green.shade700
+                                                              : Colors.orange.shade700)
+                                                          : (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                              ? Colors.redAccent.shade700
+                                                              : Colors.greenAccent.shade700),
+                                                      end: P01ALLCUSTOMERVAR.isHoveredAccess
+                                                          ? (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                              ? Colors.redAccent.shade700
+                                                              : Colors.greenAccent.shade700)
+                                                          : (P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                              ? Colors.green.shade700
+                                                              : Colors.orange.shade700),
+                                                    ),
+                                                    duration: Duration(milliseconds: 200),
+                                                    builder: (context, color, child) {
+                                                      return Text(
+                                                        P01ALLCUSTOMERVAR.master_Status == 'Access'
+                                                            ? 'CLOSE'
+                                                            : 'OPEN',
+                                                        style: TextStyle(
+                                                          fontSize: size,
+                                                          color: color,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: PaginatedDataTable(
+                            headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                            columnSpacing: 16,
+                            horizontalMargin: 12,
+                            showCheckboxColumn: false,
+                            rowsPerPage: P01ALLCUSTOMERVAR.rowsPerPage,
+                            availableRowsPerPage: const <int>[10, 15, 20],
+                            onRowsPerPageChanged: (value) => setState(() {
+                              P01ALLCUSTOMERVAR.rowsPerPage = value ?? 20;
+                            }),
+                            dataRowHeight: 35,
+                            sortColumnIndex: _sortColumnIndex,
+                            sortAscending: _sortAscending,
+                            columns: [
+                              buildStyledColumn('No.'),
+                              buildSortableColumn('CustFull', 1, sortData),
+                              buildSortableColumn('CustShort', 2, sortData),
+                              buildSortableColumn('Incharge', 3, sortData),
+                              buildSortableColumn('Type', 4, sortData),
+                              buildSortableColumn('Group', 5, sortData),
+                              buildSortableColumn('MKT Group', 6, sortData),
+                              buildSortableColumn('Frequency', 7, sortData),
+                              buildSortableColumn('Report Items', 8, sortData),
+                            ],
+                            source: dataSource,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: PaginatedDataTable(
-                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      columnSpacing: 16,
-                      horizontalMargin: 12,
-                      showCheckboxColumn: false,
-                      rowsPerPage: P01ALLCUSTOMERVAR.rowsPerPage,
-                      availableRowsPerPage: const <int>[10, 15, 20],
-                      onRowsPerPageChanged: (value) => setState(() {
-                        P01ALLCUSTOMERVAR.rowsPerPage = value ?? 20;
-                      }),
-                      dataRowHeight: 35,
-                      sortColumnIndex: _sortColumnIndex,
-                      sortAscending: _sortAscending,
-                      columns: [
-                        buildStyledColumn('No.'),
-                        buildSortableColumn('CustFull', 1, sortData),
-                        buildSortableColumn('CustShort', 2, sortData),
-                        buildSortableColumn('Incharge', 3, sortData),
-                        buildSortableColumn('Type', 4, sortData),
-                        buildSortableColumn('Group', 5, sortData),
-                        buildSortableColumn('MKT Group', 6, sortData),
-                        buildSortableColumn('Frequency', 7, sortData),
-                        buildSortableColumn('Report Items', 8, sortData),
-                      ],
-                      source: dataSource,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ));
+              ));
   }
 }
 
