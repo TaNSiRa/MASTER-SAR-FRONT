@@ -42,6 +42,7 @@ Future<void> updateMasterSarStatus(BuildContext context) async {
       "$ToServer/02MASTERSAR/updateMasterStatus",
       data: {
         "status": P01ALLCUSTOMERVAR.master_Status,
+        "user": USERDATA.NAME,
       },
       options: Options(
         validateStatus: (status) {

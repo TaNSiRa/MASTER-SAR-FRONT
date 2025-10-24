@@ -539,6 +539,7 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                                         cancelButtonColor: Colors.grey,
                                         onConfirm: () async {
                                           setState(() {
+                                            print(USERDATA.NAME);
                                             P01ALLCUSTOMERVAR.master_Status = 'Access';
                                             updateMasterSarStatus(context);
                                           });
@@ -558,6 +559,7 @@ class _P01ALLCUSTOMERMAINState extends State<P01ALLCUSTOMERMAIN> {
                                         cancelButtonColor: Colors.grey,
                                         onConfirm: () async {
                                           setState(() {
+                                            print(USERDATA.NAME);
                                             P01ALLCUSTOMERVAR.master_Status = 'Not access';
                                             updateMasterSarStatus(context);
                                           });
